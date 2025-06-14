@@ -32,9 +32,6 @@ jobs:
           elif echo "${{ toJson(github.event.issue.labels) }}" | grep -q '🎨 style'; then
             echo "type=style" >> $GITHUB_OUTPUT
             echo "template=style-task.yml" >> $GITHUB_OUTPUT
-          else
-            echo "type=other" >> $GITHUB_OUTPUT
-            echo "template=default.yml" >> $GITHUB_OUTPUT
           fi
 
       - name: Jira Login
