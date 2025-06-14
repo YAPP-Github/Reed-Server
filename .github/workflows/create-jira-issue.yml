@@ -32,8 +32,11 @@ jobs:
           elif echo "${{ toJson(github.event.issue.labels) }}" | grep -q '🎨 style'; then
             echo "type=style" >> $GITHUB_OUTPUT
             echo "template=style-task.yml" >> $GITHUB_OUTPUT
+          else
+            echo "type=other" >> $GITHUB_OUTPUT
+            echo "template=default.yml" >> $GITHUB_OUTPUT
           fi
-
+    
       - name: Jira Login
         uses: atlassian/gajira-login@v3
         env:
@@ -52,13 +55,13 @@ jobs:
         id: issue-parser
         with:
           template-path: .github/ISSUE_TEMPLATE/${{ steps.type.outputs.template }}
-
+          
       - name: Log Issue Parser
         run: |
           echo '${{ steps.issue-parser.outputs.issueparser_parentKey }}'
           echo '${{ steps.issue-parser.outputs.__ticket_number }}'
           echo '${{ steps.issue-parser.outputs.jsonString }}'
-
+          
       - name: Convert markdown to Jira Syntax
         uses: peter-evans/jira2md@v1
         id: md2jira
@@ -76,7 +79,7 @@ jobs:
             ### 참고 링크
             ${{ steps.issue-parser.outputs.issueparser_links }}
           mode: md2jira
-
+          
       - name: Create Issue
         id: create
         uses: atlassian/gajira-create@v3
@@ -91,7 +94,7 @@ jobs:
                 "key": "${{ steps.issue-parser.outputs.issueparser_parentKey }}"
               }
             }
-
+            
       - name: Log created issue
         run: echo "Jira Issue ${{ steps.issue-parser.outputs.parentKey }}/${{ steps.create.outputs.issue }} was created"
 
@@ -99,12 +102,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
+          
       - name: Switch to develop
         run: |
           git fetch origin develop
           git checkout develop
-
+          
       - name: Generate Branch Name
         id: branch
         run: |
@@ -121,7 +124,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "${{ steps.branch.outputs.branch }}"
           git push origin "${{ steps.branch.outputs.branch }}"
-
+    
       - name: Update issue title
         uses: actions-cool/issues-helper@v3
         with:
