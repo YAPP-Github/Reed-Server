@@ -8,7 +8,7 @@ dependencies {
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
 }
 
-tasks {j
+tasks {
     withType<Jar> { enabled = true }
     withType<BootJar> { enabled = false }
 }
