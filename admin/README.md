@@ -45,3 +45,11 @@ Admin ─────→ Domain ─────→ Global-utils
 - **Domain → Admin**: 도메인은 Admin을 모르는 순수 영역
 - **Infra → Admin**: 인프라는 관리 로직을 모름
 - **Global-utils → Admin**: 공통 유틸리티는 Admin에 의존하지 않음
+
+## **🏛️ Architecture**
+
+<img src="https://github.com/user-attachments/assets/90026fe7-7eed-4181-a205-0de50099b41b" alt="admin 모듈 사진">
+
+- UseCase는 여러 Admin Service를 조합하여 Facade 패턴으로 사용한다.
+- Admin의 Service(구현체)는 관리자 전용 비즈니스 로직을 처리하며, 필요한 경우 Domain Service를 호출한다. **(Service 구현은 모듈별로 책임과 역할에 맞게 각각 구현되어야 하고 서로 협력하여야 한다)**
+- Domain Service는 순수 비즈니스 로직을 담당한다.
