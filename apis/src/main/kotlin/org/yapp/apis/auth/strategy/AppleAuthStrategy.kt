@@ -1,5 +1,7 @@
 package org.yapp.apis.auth.strategy
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
@@ -15,6 +17,9 @@ import java.util.*
  */
 @Component
 class AppleAuthStrategy : AuthStrategy {
+
+    private val log = KotlinLogging.logger {}
+
 
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 
@@ -54,8 +59,13 @@ class AppleAuthStrategy : AuthStrategy {
             val name = extractField(payloadJson, "\"name\":\"", "\"")
 
             return AppleIdTokenPayload(sub, email, name)
+        } catch (e: IllegalArgumentException) {
+            throw AuthException(AuthErrorCode.INVALID_ID_TOKEN_FORMAT, "Invalid token format: ${e.message}")
+        } catch (e: JsonProcessingException) {
+            throw AuthException(AuthErrorCode.FAILED_TO_PARSE_ID_TOKEN, "JSON parsing failed: ${e.message}")
         } catch (e: Exception) {
-            throw AuthException(AuthErrorCode.FAILED_TO_PARSE_ID_TOKEN, "Failed to parse ID token: ${e.message}")
+            log.error("Unexpected error parsing Apple ID token", e)
+            throw AuthException(AuthErrorCode.FAILED_TO_PARSE_ID_TOKEN, "Unexpected error: ${e.message}")
         }
     }
 

@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.utils.IMPLEMENTATION
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 dependencies {
@@ -17,12 +16,13 @@ dependencies {
     implementation(Dependencies.Auth.JWT_IMPL)
     implementation(Dependencies.Auth.JWT_JACKSON)
     implementation(Dependencies.Swagger.SPRINGDOC_OPENAPI_STARTER_WEBMVC_UI)
+    implementation(Dependencies.Logging.KOTLIN_LOGGING)
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
 }
 
 tasks {
     withType<Jar> { enabled = false }
-    withType<BootJar> { 
+    withType<BootJar> {
         enabled = true
         mainClass.set("org.yapp.apis.ApisApplicationKt")
     }
