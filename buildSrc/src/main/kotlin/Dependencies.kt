@@ -35,4 +35,8 @@ object Dependencies {
     object Logging {
         const val KOTLIN_LOGGING = "io.github.microutils:kotlin-logging-jvm:3.0.5"
     }
+
+    object Uuid {
+        const val GENERATOR = "com.github.f4b6a3:uuid-creator:5.3.2"
+    }
 }

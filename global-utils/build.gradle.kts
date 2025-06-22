@@ -2,6 +2,8 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 dependencies {
     implementation(Dependencies.Spring.BOOT_STARTER_WEB)
+    implementation(Dependencies.Uuid.GENERATOR)
+
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
 }
 

@@ -24,7 +24,7 @@ class JwtTokenProvider(
 
     private val key = Keys.hmacShaKeyFor(secretKey.toByteArray())
 
-    fun generateAccessToken(userId: Long): String {
+    fun generateAccessToken(userId: UUID): String {
         val now = Date()
         val expiryDate = Date(now.time + accessTokenExpiration * 1000)
         return Jwts.builder()
@@ -36,7 +36,7 @@ class JwtTokenProvider(
             .compact()
     }
 
-    fun generateRefreshToken(userId: Long): String {
+    fun generateRefreshToken(userId: UUID): String {
         val now = Date()
         val expiryDate = Date(now.time + refreshTokenExpiration * 1000)
         return Jwts.builder()
@@ -61,10 +61,10 @@ class JwtTokenProvider(
         parseToken(token) // 예외는 내부에서 throw됨
     }
 
-    fun getUserIdFromToken(token: String): Long {
+    fun getUserIdFromToken(token: String): UUID {
         val claims = parseToken(token)
         return try {
-            claims.subject.toLong()
+            claims.subject.let { UUID.fromString(it) }
         } catch (e: NumberFormatException) {
             throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN, "Invalid user ID in token")
         }

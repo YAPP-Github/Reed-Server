@@ -3,6 +3,7 @@ package org.yapp.gateway.jwt
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.yapp.gateway.jwt.exception.JwtException
+import java.util.*
 
 /**
  * Implementation of JwtTokenService using JwtTokenProvider.
@@ -21,7 +22,7 @@ class JwtTokenServiceImpl(
      * @param userId The ID of the user.
      * @return The generated access token.
      */
-    override fun generateAccessToken(userId: Long): String {
+    override fun generateAccessToken(userId: UUID): String {
         return jwtTokenProvider.generateAccessToken(userId)
     }
 
@@ -31,7 +32,7 @@ class JwtTokenServiceImpl(
      * @param userId The ID of the user.
      * @return The generated refresh token.
      */
-    override fun generateRefreshToken(userId: Long): String {
+    override fun generateRefreshToken(userId: UUID): String {
         return jwtTokenProvider.generateRefreshToken(userId)
     }
 
@@ -52,7 +53,7 @@ class JwtTokenServiceImpl(
      * @return The user ID.
      * @throws JwtException if the token is invalid.
      */
-    override fun getUserIdFromToken(token: String): Long {
+    override fun getUserIdFromToken(token: String): UUID {
         return jwtTokenProvider.getUserIdFromToken(token)
     }
 

@@ -2,6 +2,7 @@ package org.yapp.domain.user
 
 import org.yapp.domain.auth.ProviderType
 import java.time.LocalDateTime
+import java.util.*
 
 /**
  * User domain model.
@@ -16,7 +17,7 @@ import java.time.LocalDateTime
  * @property updatedAt The timestamp when the user was last updated.
  */
 data class User(
-    val id: Long? = null,
+    val id: UUID? = null,
     val email: String,
     val nickname: String,
     val profileImageUrl: String? = null,

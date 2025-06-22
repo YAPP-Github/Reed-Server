@@ -1,6 +1,7 @@
 package org.yapp.domain.user
 
 import org.yapp.domain.auth.ProviderType
+import java.util.*
 
 /**
  * Repository interface for User domain model.
@@ -13,5 +14,5 @@ interface UserRepository {
 
     fun save(user: User): User
 
-    fun findById(id: Long): User
+    fun findById(id: UUID): User
 }

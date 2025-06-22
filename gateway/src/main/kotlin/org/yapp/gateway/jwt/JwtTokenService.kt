@@ -1,6 +1,7 @@
 package org.yapp.gateway.jwt
 
 import org.yapp.gateway.jwt.exception.JwtException
+import java.util.*
 
 /**
  * Interface for JWT token operations.
@@ -13,7 +14,7 @@ interface JwtTokenService {
      * @param userId The ID of the user.
      * @return The generated access token.
      */
-    fun generateAccessToken(userId: Long): String
+    fun generateAccessToken(userId: UUID): String
 
     /**
      * Generate a refresh token for the given user ID.
@@ -21,7 +22,7 @@ interface JwtTokenService {
      * @param userId The ID of the user.
      * @return The generated refresh token.
      */
-    fun generateRefreshToken(userId: Long): String
+    fun generateRefreshToken(userId: UUID): String
 
     /**
      * Validate a token.
@@ -38,7 +39,7 @@ interface JwtTokenService {
      * @return The user ID.
      * @throws JwtException if the token is invalid.
      */
-    fun getUserIdFromToken(token: String): Long
+    fun getUserIdFromToken(token: String): UUID
 
     /**
      * Get the refresh token expiration time in seconds.

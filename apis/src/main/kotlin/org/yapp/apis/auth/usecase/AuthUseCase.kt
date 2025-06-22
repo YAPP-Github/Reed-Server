@@ -8,6 +8,7 @@ import org.yapp.apis.auth.service.SocialAuthService
 import org.yapp.apis.token.service.TokenService
 import org.yapp.apis.user.service.UserService
 import org.yapp.gateway.jwt.JwtTokenService
+import java.util.*
 
 @Service
 class AuthUseCase(
@@ -31,11 +32,11 @@ class AuthUseCase(
         return generateTokenPair(userId)
     }
 
-    fun signOut(userId: Long) {
+    fun signOut(userId: UUID) {
         tokenService.delete(userId)
     }
 
-    fun getUserProfile(userId: Long): UserProfileResponse {
+    fun getUserProfile(userId: UUID): UserProfileResponse {
         val user = userService.findById(userId)
         return UserProfileResponse(
             id = user.id!!,
@@ -45,11 +46,11 @@ class AuthUseCase(
         )
     }
 
-    fun getUserIdFromAccessToken(accessToken: String): Long {
+    fun getUserIdFromAccessToken(accessToken: String): UUID {
         return jwtTokenService.getUserIdFromToken(accessToken)
     }
 
-    private fun generateTokenPair(userId: Long): TokenPairResponse {
+    private fun generateTokenPair(userId: UUID): TokenPairResponse {
         val accessToken = jwtTokenService.generateAccessToken(userId)
         val refreshToken = jwtTokenService.generateRefreshToken(userId)
         val expiration = jwtTokenService.getRefreshTokenExpiration()
