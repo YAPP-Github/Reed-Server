@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.yapp.apis.auth.dto.AuthDto
-import org.yapp.apis.auth.dto.UserProfileResponse
+import org.yapp.apis.auth.dto.request.SocialLoginRequest
+import org.yapp.apis.auth.dto.request.TokenRefreshRequest
+import org.yapp.apis.auth.dto.response.AuthResponse
+import org.yapp.apis.auth.dto.response.UserProfileResponse
 
 /**
  * API interface for authentication controller.
@@ -27,7 +29,7 @@ interface AuthControllerApi {
             ApiResponse(
                 responseCode = "200",
                 description = "Successful sign in or sign up",
-                content = [Content(schema = Schema(implementation = AuthDto.AuthResponse::class))]
+                content = [Content(schema = Schema(implementation = AuthResponse::class))]
             ),
             ApiResponse(
                 responseCode = "400",
@@ -40,7 +42,7 @@ interface AuthControllerApi {
         ]
     )
     @PostMapping("/signin")
-    fun signIn(@RequestBody request: AuthDto.SocialLoginRequest): ResponseEntity<AuthDto.AuthResponse>
+    fun signIn(@RequestBody request: SocialLoginRequest): ResponseEntity<AuthResponse>
 
     @Operation(
         summary = "Refresh token",
@@ -51,7 +53,7 @@ interface AuthControllerApi {
             ApiResponse(
                 responseCode = "200",
                 description = "Successful token refresh",
-                content = [Content(schema = Schema(implementation = AuthDto.AuthResponse::class))]
+                content = [Content(schema = Schema(implementation = AuthResponse::class))]
             ),
             ApiResponse(
                 responseCode = "400",
@@ -64,7 +66,7 @@ interface AuthControllerApi {
         ]
     )
     @PostMapping("/refresh")
-    fun refreshToken(@RequestBody request: AuthDto.TokenRefreshRequest): ResponseEntity<AuthDto.AuthResponse>
+    fun refreshToken(@RequestBody request: TokenRefreshRequest): ResponseEntity<AuthResponse>
 
     @Operation(
         summary = "Sign out",

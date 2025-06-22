@@ -1,4 +1,4 @@
-package org.yapp.apis.auth.dto
+package org.yapp.apis.auth.dto.response
 
 data class UserProfileResponse(
     val id: Long,
