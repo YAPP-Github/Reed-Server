@@ -5,6 +5,7 @@ import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
 import org.yapp.domain.user.UserEntity
 import org.yapp.domain.user.UserRepository
+import java.util.*
 
 /**
  * Implementation of UserRepository using JPA.
@@ -28,7 +29,7 @@ class UserRepositoryImpl(
         return savedEntity.toDomain()
     }
 
-    override fun findById(id: Long): User {
+    override fun findById(id: UUID): User {
         return jpaUserRepository.findById(id).orElseThrow {
             NoSuchElementException("User not found with id: $id")
         }.toDomain()

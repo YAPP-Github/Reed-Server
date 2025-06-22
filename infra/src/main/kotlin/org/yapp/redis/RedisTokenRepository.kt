@@ -3,6 +3,7 @@ package org.yapp.redis
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
 import org.yapp.domain.auth.TokenRepository
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -17,27 +18,27 @@ class RedisTokenRepository(
         private const val REFRESH_TOKEN_PREFIX = "refresh_token:"
     }
 
-    override fun saveRefreshToken(userId: Long, refreshToken: String, expirationTimeInSeconds: Long) {
+    override fun saveRefreshToken(userId: UUID, refreshToken: String, expirationTimeInSeconds: Long) {
         val key = getRefreshTokenKey(userId)
         redisTemplate.opsForValue().set(key, refreshToken, expirationTimeInSeconds, TimeUnit.SECONDS)
     }
 
-    override fun getRefreshToken(userId: Long): String? {
+    override fun getRefreshToken(userId: UUID): String? {
         val key = getRefreshTokenKey(userId)
         return redisTemplate.opsForValue().get(key)
     }
 
-    override fun deleteRefreshToken(userId: Long) {
+    override fun deleteRefreshToken(userId: UUID) {
         val key = getRefreshTokenKey(userId)
         redisTemplate.delete(key)
     }
 
-    override fun existsRefreshToken(userId: Long, refreshToken: String): Boolean {
+    override fun existsRefreshToken(userId: UUID, refreshToken: String): Boolean {
         val storedToken = getRefreshToken(userId)
         return storedToken != null && storedToken == refreshToken
     }
-    
-    private fun getRefreshTokenKey(userId: Long): String {
+
+    private fun getRefreshTokenKey(userId: UUID): String {
         return "$REFRESH_TOKEN_PREFIX$userId"
     }
 }
