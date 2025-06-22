@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*
 import org.yapp.apis.auth.dto.AuthDto
 import org.yapp.apis.auth.dto.UserProfileResponse
 import org.yapp.apis.auth.usecase.AuthUseCase
+import org.yapp.apis.util.AuthUtils
 
 /**
  * Implementation of the authentication controller API.
@@ -28,15 +29,15 @@ class AuthController(
     }
 
     @PostMapping("/signout")
-    override fun signOut(@RequestBody userId: Long): ResponseEntity<Void> {
+    override fun signOut(@RequestHeader("Authorization") authorization: String): ResponseEntity<Void> {
+        val userId = AuthUtils.extractUserIdFromAuthHeader(authorization, authUseCase::getUserIdFromAccessToken)
         authUseCase.signOut(userId)
         return ResponseEntity.noContent().build()
     }
 
     @GetMapping("/me")
     override fun getUserProfile(@RequestHeader("Authorization") authorization: String): ResponseEntity<UserProfileResponse> {
-        val accessToken = authorization.removePrefix("Bearer ").trim()
-        val userId = authUseCase.getUserIdFromAccessToken(accessToken)
+        val userId = AuthUtils.extractUserIdFromAuthHeader(authorization, authUseCase::getUserIdFromAccessToken)
         val userProfile = authUseCase.getUserProfile(userId)
         return ResponseEntity.ok(userProfile)
     }
