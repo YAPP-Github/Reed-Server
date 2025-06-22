@@ -1,8 +1,8 @@
 package org.yapp.apis.auth.usecase
 
+import org.yapp.apis.auth.dto.TokenPair
 import org.yapp.apis.auth.dto.UserProfileResponse
 import org.yapp.apis.auth.service.AuthCredentials
-import org.yapp.apis.auth.service.TokenPair
 
 /**
  * Interface for authentication use cases.

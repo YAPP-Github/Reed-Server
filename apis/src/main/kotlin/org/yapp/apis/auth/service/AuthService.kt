@@ -1,5 +1,6 @@
 package org.yapp.apis.auth.service
 
+import org.yapp.apis.auth.dto.TokenPair
 import org.yapp.apis.auth.dto.UserProfileResponse
 import org.yapp.domain.user.User
 
@@ -23,9 +24,3 @@ interface AuthService {
     fun getUserIdFromAccessToken(accessToken: String): Long
 
 }
-
-
-data class TokenPair(
-    val accessToken: String,
-    val refreshToken: String
-)

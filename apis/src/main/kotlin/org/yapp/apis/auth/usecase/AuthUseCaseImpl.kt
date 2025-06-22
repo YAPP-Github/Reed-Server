@@ -1,10 +1,10 @@
 package org.yapp.apis.auth.usecase
 
 import org.springframework.stereotype.Service
+import org.yapp.apis.auth.dto.TokenPair
 import org.yapp.apis.auth.dto.UserProfileResponse
 import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.AuthService
-import org.yapp.apis.auth.service.TokenPair
 
 /**
  * Implementation of AuthUseCase that uses AuthService.
