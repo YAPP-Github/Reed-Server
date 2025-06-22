@@ -1,6 +1,7 @@
 package org.yapp.gateway.jwt.exception
 
-import org.yapp.global.exception.CommonException
+import CommonException
+
 
 /**
  * Custom exception for JWT-related errors.
