@@ -31,11 +31,11 @@ class RedisConfig : InfraBaseConfig {
         redisStandaloneConfiguration.port = port
         return LettuceConnectionFactory(redisStandaloneConfiguration)
     }
-    
+
     @Bean
-    fun redisTemplate(): RedisTemplate<String, String> {
+    fun redisTemplate(connectionFactory: RedisConnectionFactory): RedisTemplate<String, String> {
         val redisTemplate = RedisTemplate<String, String>()
-        redisTemplate.connectionFactory = redisConnectionFactory()
+        redisTemplate.connectionFactory = connectionFactory
         redisTemplate.keySerializer = StringRedisSerializer()
         redisTemplate.valueSerializer = StringRedisSerializer()
         return redisTemplate
