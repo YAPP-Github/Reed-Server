@@ -1,5 +1,6 @@
 package org.yapp.global.exception
 
+import CommonException
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindException
