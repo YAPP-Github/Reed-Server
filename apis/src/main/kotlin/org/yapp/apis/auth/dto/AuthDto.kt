@@ -5,7 +5,7 @@ import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.service.AppleAuthCredentials
 import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.KakaoAuthCredentials
-import org.yapp.apis.auth.service.TokenPair
+import org.yapp.domain.auth.ProviderType
 
 /**
  * DTOs for authentication requests and responses.
@@ -16,17 +16,27 @@ object AuthDto {
      */
     data class SocialLoginRequest(
         val providerType: String,
-        val accessToken: String
+        val oauthToken: String
     ) {
+
+        init {
+            require(providerType.isNotBlank()) {
+                "Provider type must not be blank"
+            }
+            require(oauthToken.isNotBlank()) {
+                "Access token must not be blank"
+            }
+        }
+
         /**
          * Convert to AuthCredentials.
          *
          * @return The AuthCredentials.
          */
         fun toCredentials(): AuthCredentials {
-            return when (providerType.uppercase()) {
-                "KAKAO" -> KakaoAuthCredentials(accessToken)
-                "APPLE" -> AppleAuthCredentials(accessToken)
+            return when (ProviderType.valueOf(providerType.uppercase())) {
+                ProviderType.KAKAO -> KakaoAuthCredentials(oauthToken)
+                ProviderType.APPLE -> AppleAuthCredentials(oauthToken)
                 else -> throw AuthException(
                     AuthErrorCode.UNSUPPORTED_PROVIDER_TYPE,
                     "Unsupported provider type: $providerType"
