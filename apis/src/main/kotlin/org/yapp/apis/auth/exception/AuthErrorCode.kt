@@ -22,7 +22,8 @@ enum class AuthErrorCode(
     INVALID_ID_TOKEN_FORMAT(HttpStatus.BAD_REQUEST, "AUTH_008", "Invalid ID token format."),
     SUBJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH_009", "Subject not found in ID token."),
     FAILED_TO_PARSE_ID_TOKEN(HttpStatus.BAD_REQUEST, "AUTH_010", "Failed to parse ID token."),
-    FAILED_TO_GET_USER_INFO(HttpStatus.BAD_REQUEST, "AUTH_011", "Failed to get user info from provider.");
+    FAILED_TO_GET_USER_INFO(HttpStatus.BAD_REQUEST, "AUTH_011", "Failed to get user info from provider."),
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH_012", "User not found.");
 
     override fun getHttpStatus(): HttpStatus = httpStatus
     override fun getCode(): String = code

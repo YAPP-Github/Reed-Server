@@ -1,6 +1,7 @@
 package org.yapp.apis.auth.service
 
 import org.springframework.stereotype.Service
+import org.yapp.apis.auth.dto.TokenPair
 import org.yapp.apis.auth.dto.UserProfileResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
@@ -32,7 +33,9 @@ class AuthServiceImpl(
         )
 
         if (existingUser != null) {
-            return generateTokenPair(existingUser.id!!)
+            return generateTokenPair(
+                existingUser.id ?: throw IllegalStateException("Existing user id should not be null")
+            )
         }
 
         userRepository.findByEmail(userInfo.email)?.let {
@@ -70,11 +73,10 @@ class AuthServiceImpl(
         tokenRepository.deleteRefreshToken(userId)
     }
 
-    override fun getUserById(userId: Long): User? = null
+    override fun getUserById(userId: Long): User? = userRepository.findById(userId)
 
     override fun getUserProfile(userId: Long): UserProfileResponse {
         val user = userRepository.findById(userId)
-
         return UserProfileResponse(
             id = user.id!!,
             email = user.email,
@@ -98,7 +100,10 @@ class AuthServiceImpl(
 
     private fun getAuthStrategy(credentials: AuthCredentials): AuthStrategy {
         return authStrategies.find { it.getProviderType() == credentials.getProviderType() }
-            ?: throw AuthException(AuthErrorCode.UNSUPPORTED_PROVIDER_TYPE, "Unsupported provider type: ${credentials.getProviderType()}")
+            ?: throw AuthException(
+                AuthErrorCode.UNSUPPORTED_PROVIDER_TYPE,
+                "Unsupported provider type: ${credentials.getProviderType()}"
+            )
     }
 
     private fun generateTokenPair(userId: Long): TokenPair {
