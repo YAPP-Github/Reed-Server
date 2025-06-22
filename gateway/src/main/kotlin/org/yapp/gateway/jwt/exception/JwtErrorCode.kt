@@ -17,8 +17,8 @@ enum class JwtErrorCode(
     EXPIRED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "JWT_003", "Expired JWT token"),
     UNSUPPORTED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "JWT_004", "Unsupported JWT token"),
     EMPTY_JWT_CLAIMS(HttpStatus.UNAUTHORIZED, "JWT_005", "JWT claims string is empty"),
-    INVALID_USER_ID(HttpStatus.UNAUTHORIZED, "JWT_006", ""),
-    INVALID_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "JWT_007", "JWT 토큰 타입이 잘못되었거나 누락되었습니다.");
+    INVALID_USER_ID(HttpStatus.UNAUTHORIZED, "JWT_006", "Invalid user ID in token"),
+    INVALID_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "JWT_007", "Invalid or missing JWT token type");
 
     override fun getHttpStatus(): HttpStatus = httpStatus
     override fun getCode(): String = code
