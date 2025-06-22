@@ -31,4 +31,8 @@ object Dependencies {
         const val GLOBAL_UTILS = ":global-utils"
         const val GATEWAY = ":gateway"
     }
+
+    object Logging {
+        const val KOTLIN_LOGGING = "io.github.microutils:kotlin-logging-jvm:3.0.5"
+    }
 }
