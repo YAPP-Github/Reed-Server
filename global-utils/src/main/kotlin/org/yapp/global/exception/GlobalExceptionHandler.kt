@@ -1,7 +1,9 @@
 package org.yapp.global.exception
 
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
  */
 @RestControllerAdvice
 class GlobalExceptionHandler {
+
 
     /**
      * Handle BindException.
@@ -48,5 +51,35 @@ class GlobalExceptionHandler {
             .build()
 
         return ResponseEntity(error, errorCode.getHttpStatus())
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    protected fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+        val commonErrorCode = CommonErrorCode.INVALID_REQUEST
+
+        val fieldErrors = ex.bindingResult.fieldErrors.joinToString(", ") {
+            "${it.field}: ${it.defaultMessage}"
+        }
+
+        val error = ErrorResponse.builder()
+            .status(commonErrorCode.getHttpStatus().value())
+            .message(fieldErrors)
+            .code(commonErrorCode.getCode())
+            .build()
+
+        return ResponseEntity(error, commonErrorCode.getHttpStatus())
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    protected fun handleInvalidJson(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
+        val commonErrorCode = CommonErrorCode.MALFORMED_JSON
+
+        val error = ErrorResponse.builder()
+            .status(commonErrorCode.getHttpStatus().value())
+            .message("Malformed JSON request: ${ex.localizedMessage}")
+            .code(commonErrorCode.getCode())
+            .build()
+
+        return ResponseEntity(error, commonErrorCode.getHttpStatus())
     }
 }
