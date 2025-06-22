@@ -1,6 +1,7 @@
 package org.yapp.apis.auth.exception
 
-import org.yapp.global.exception.CommonException
+import CommonException
+
 
 /**
  * Custom exception for authentication-related errors.
@@ -21,13 +22,5 @@ class AuthException : CommonException {
      * @param errorCode The error code.
      * @param message The custom message.
      */
-    constructor(errorCode: AuthErrorCode, message: String) : super(errorCode, message)
-
-    /**
-     * Constructor with custom message.
-     * This constructor is for backward compatibility.
-     *
-     * @param message The custom message.
-     */
-    constructor(message: String) : super(AuthErrorCode.INVALID_CREDENTIALS, message)
+    constructor(errorCode: AuthErrorCode, message: String?) : super(errorCode, message)
 }
