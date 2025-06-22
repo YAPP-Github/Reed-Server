@@ -2,7 +2,7 @@ package org.yapp.domain.user
 
 import jakarta.persistence.*
 import org.yapp.domain.auth.ProviderType
-import java.time.LocalDateTime
+import org.yapp.domain.common.BaseTimeEntity
 
 /**
  * Entity class for User.
@@ -28,14 +28,9 @@ class UserEntity(
     val providerType: ProviderType,
 
     @Column(name = "provider_id", nullable = false, length = 100)
-    val providerId: String,
+    val providerId: String
+) : BaseTimeEntity() {
 
-    @Column(name = "created_at", nullable = false)
-    val createdAt: LocalDateTime = LocalDateTime.now(),
-
-    @Column(name = "updated_at", nullable = false)
-    val updatedAt: LocalDateTime = LocalDateTime.now()
-) {
     fun toDomain(): User {
         return User(
             id = id,
@@ -57,10 +52,11 @@ class UserEntity(
                 nickname = user.nickname,
                 profileImageUrl = user.profileImageUrl,
                 providerType = user.providerType,
-                providerId = user.providerId,
-                createdAt = user.createdAt,
-                updatedAt = user.updatedAt
-            )
+                providerId = user.providerId
+            ).apply {
+                this.createdAt = user.createdAt
+                this.updatedAt = user.updatedAt
+            }
         }
     }
 }
