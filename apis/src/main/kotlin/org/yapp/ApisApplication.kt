@@ -9,9 +9,6 @@ import org.springframework.boot.runApplication
 @SpringBootApplication
 class ApisApplication
 
-/**
- * Main function to start the application.
- */
 fun main(args: Array<String>) {
     runApplication<ApisApplication>(*args)
 }
