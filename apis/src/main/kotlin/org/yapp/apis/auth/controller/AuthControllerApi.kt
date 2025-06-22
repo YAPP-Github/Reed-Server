@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
@@ -42,7 +43,7 @@ interface AuthControllerApi {
         ]
     )
     @PostMapping("/signin")
-    fun signIn(@RequestBody request: SocialLoginRequest): ResponseEntity<AuthResponse>
+    fun signIn(@RequestBody @Valid request: SocialLoginRequest): ResponseEntity<AuthResponse>
 
     @Operation(
         summary = "Refresh token",
@@ -66,7 +67,7 @@ interface AuthControllerApi {
         ]
     )
     @PostMapping("/refresh")
-    fun refreshToken(@RequestBody request: TokenRefreshRequest): ResponseEntity<AuthResponse>
+    fun refreshToken(@RequestBody @Valid request: TokenRefreshRequest): ResponseEntity<AuthResponse>
 
     @Operation(
         summary = "Sign out",
