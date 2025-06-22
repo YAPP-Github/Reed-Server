@@ -1,25 +1,13 @@
-package org.yapp.domain.user.service
+package org.yapp.domain.domainservice
 
-import org.yapp.annotation.DomainService
+import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
-import org.yapp.domain.user.UserRepository
+import java.util.*
 
-@DomainService
-class UserDomainService(
-    private val userRepository: UserRepository
-) {
-    fun findOrCreate(user: User): Result<User> {
-        val existingByProvider = userRepository.findByProviderTypeAndProviderId(user.providerType, user.providerId)
-        if (existingByProvider != null) {
-            return Result.success(existingByProvider)
-        }
-
-        val existingByEmail = userRepository.findByEmail(user.email)
-        return if (existingByEmail == null) {
-            val saved = userRepository.save(user)
-            Result.success(saved)
-        } else {
-            Result.failure(IllegalStateException("Email already in use"))
-        }
-    }
+interface UserDomainService {
+    fun findById(id: UUID): User?
+    fun findByEmail(email: String): User?
+    fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): User?
+    fun save(user: User): User
+    fun findOrCreate(user: User): Result<User>
 }
