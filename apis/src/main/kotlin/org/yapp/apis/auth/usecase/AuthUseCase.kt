@@ -1,23 +1,60 @@
 package org.yapp.apis.auth.usecase
 
-import org.yapp.apis.auth.dto.TokenPair
-import org.yapp.apis.auth.dto.UserProfileResponse
+import org.springframework.stereotype.Service
+import org.yapp.apis.auth.dto.response.TokenPairResponse
+import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.service.AuthCredentials
+import org.yapp.apis.auth.service.SocialAuthService
+import org.yapp.apis.token.service.TokenService
+import org.yapp.apis.user.service.UserService
+import org.yapp.gateway.jwt.JwtTokenService
 
-/**
- * Interface for authentication use cases.
- */
-interface AuthUseCase {
+@Service
+class AuthUseCase(
+    private val socialAuthService: SocialAuthService,
+    private val userService: UserService,
+    private val tokenService: TokenService,
+    private val jwtTokenService: JwtTokenService
+) {
 
-    fun signIn(credentials: AuthCredentials): TokenPair
+    fun signIn(credentials: AuthCredentials): TokenPairResponse {
+        val strategy = socialAuthService.resolve(credentials)
+        val userInfo = strategy.authenticate(credentials)
 
-    fun signUp(credentials: AuthCredentials): TokenPair
+        val user = userService.findOrCreateUser(userInfo)
+        return generateTokenPair(user.id!!)
+    }
 
-    fun refreshToken(refreshToken: String): TokenPair
+    fun refreshToken(refreshToken: String): TokenPairResponse {
+        val userId = jwtTokenService.getUserIdFromToken(refreshToken)
+        tokenService.validateRefreshTokenOrThrow(userId, refreshToken)
+        return generateTokenPair(userId)
+    }
 
-    fun signOut(userId: Long)
+    fun signOut(userId: Long) {
+        tokenService.delete(userId)
+    }
 
-    fun getUserProfile(userId: Long): UserProfileResponse
+    fun getUserProfile(userId: Long): UserProfileResponse {
+        val user = userService.findById(userId)
+        return UserProfileResponse(
+            id = user.id!!,
+            email = user.email,
+            nickname = user.nickname,
+            provider = user.providerType.name
+        )
+    }
 
-    fun getUserIdFromAccessToken(accessToken: String): Long
+    fun getUserIdFromAccessToken(accessToken: String): Long {
+        return jwtTokenService.getUserIdFromToken(accessToken)
+    }
+
+    private fun generateTokenPair(userId: Long): TokenPairResponse {
+        val accessToken = jwtTokenService.generateAccessToken(userId)
+        val refreshToken = jwtTokenService.generateRefreshToken(userId)
+        val expiration = jwtTokenService.getRefreshTokenExpiration()
+
+        tokenService.save(userId, refreshToken, expiration)
+        return TokenPairResponse(accessToken, refreshToken)
+    }
 }
