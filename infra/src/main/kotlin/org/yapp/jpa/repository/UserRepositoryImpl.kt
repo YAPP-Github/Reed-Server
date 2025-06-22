@@ -29,6 +29,8 @@ class UserRepositoryImpl(
     }
 
     override fun findById(id: Long): User {
-        return jpaUserRepository.findById(id).get().toDomain()
+        return jpaUserRepository.findById(id).orElseThrow {
+            NoSuchElementException("User not found with id: $id")
+        }.toDomain()
     }
 }
