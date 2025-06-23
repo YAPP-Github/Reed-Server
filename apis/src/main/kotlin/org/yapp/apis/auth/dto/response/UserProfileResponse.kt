@@ -10,7 +10,7 @@ data class UserProfileResponse(
     val provider: ProviderType
 ) {
     companion object {
-        fun from(
+        fun of(
             id: UUID,
             email: String,
             nickname: String,

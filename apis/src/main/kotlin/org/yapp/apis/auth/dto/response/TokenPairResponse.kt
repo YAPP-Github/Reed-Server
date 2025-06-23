@@ -5,7 +5,7 @@ data class TokenPairResponse(
     val refreshToken: String
 ) {
     companion object {
-        fun from(accessToken: String, refreshToken: String): TokenPairResponse {
+        fun of(accessToken: String, refreshToken: String): TokenPairResponse {
             return TokenPairResponse(
                 accessToken = accessToken,
                 refreshToken = refreshToken
