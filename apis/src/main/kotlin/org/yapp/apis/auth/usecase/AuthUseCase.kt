@@ -39,7 +39,7 @@ class AuthUseCase(
 
     fun getUserProfile(userId: UUID): UserProfileResponse {
         val user = userService.findById(userId)
-        return UserProfileResponse.from(
+        return UserProfileResponse.of(
             id = user.id!!,
             email = user.email,
             nickname = user.nickname,
@@ -57,6 +57,6 @@ class AuthUseCase(
         val expiration = jwtTokenService.getRefreshTokenExpiration()
 
         tokenService.save(userId, refreshToken, expiration)
-        return TokenPairResponse.from(accessToken, refreshToken)
+        return TokenPairResponse.of(accessToken, refreshToken)
     }
 }
