@@ -7,6 +7,7 @@ import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.SocialAuthService
 import org.yapp.apis.token.service.TokenService
 import org.yapp.apis.user.service.UserService
+import org.yapp.domain.auth.ProviderType
 import org.yapp.gateway.jwt.JwtTokenService
 import java.util.*
 
@@ -38,11 +39,11 @@ class AuthUseCase(
 
     fun getUserProfile(userId: UUID): UserProfileResponse {
         val user = userService.findById(userId)
-        return UserProfileResponse(
+        return UserProfileResponse.from(
             id = user.id!!,
             email = user.email,
             nickname = user.nickname,
-            provider = user.providerType.name
+            provider = ProviderType.valueOf(user.providerType.name)
         )
     }
 
@@ -56,6 +57,6 @@ class AuthUseCase(
         val expiration = jwtTokenService.getRefreshTokenExpiration()
 
         tokenService.save(userId, refreshToken, expiration)
-        return TokenPairResponse(accessToken, refreshToken)
+        return TokenPairResponse.from(accessToken, refreshToken)
     }
 }

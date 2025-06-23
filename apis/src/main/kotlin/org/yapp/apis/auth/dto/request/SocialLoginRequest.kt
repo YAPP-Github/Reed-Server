@@ -6,22 +6,25 @@ import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.service.AppleAuthCredentials
 import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.KakaoAuthCredentials
+import org.yapp.domain.auth.ProviderType
 
 data class SocialLoginRequest(
     @field:NotBlank(message = "Provider type is required")
-    val providerType: String,
+    val providerType: ProviderType,
 
     @field:NotBlank(message = "OAuth token is required")
     val oauthToken: String
 ) {
-    fun toCredentials(): AuthCredentials {
-        return when (providerType.uppercase()) {
-            "KAKAO" -> KakaoAuthCredentials(oauthToken)
-            "APPLE" -> AppleAuthCredentials(oauthToken)
-            else -> throw AuthException(
-                AuthErrorCode.UNSUPPORTED_PROVIDER_TYPE,
-                "Unsupported provider type: $providerType"
-            )
+    companion object {
+        fun toCredentials(request: SocialLoginRequest): AuthCredentials {
+            return when (request.providerType) {
+                ProviderType.KAKAO -> KakaoAuthCredentials(request.oauthToken)
+                ProviderType.APPLE -> AppleAuthCredentials(request.oauthToken)
+                else -> throw AuthException(
+                    AuthErrorCode.UNSUPPORTED_PROVIDER_TYPE,
+                    "Unsupported provider type: ${request.providerType}"
+                )
+            }
         }
     }
 }

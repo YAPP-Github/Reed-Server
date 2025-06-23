@@ -18,7 +18,7 @@ class AuthController(
 ) : AuthControllerApi {
 
     override fun signIn(request: SocialLoginRequest): ResponseEntity<AuthResponse> {
-        val credentials = request.toCredentials()
+        val credentials = SocialLoginRequest.toCredentials(request)
         val tokenPair = authUseCase.signIn(credentials)
         return ResponseEntity.ok(AuthResponse.fromTokenPair(tokenPair))
     }
