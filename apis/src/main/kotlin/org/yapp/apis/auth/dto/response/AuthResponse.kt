@@ -3,7 +3,7 @@ package org.yapp.apis.auth.dto.response
 /**
  * Response for authentication.
  */
-data class AuthResponse(
+data class AuthResponse private constructor(
     val accessToken: String,
     val refreshToken: String
 ) {

@@ -11,7 +11,7 @@ import java.util.*
 
 @Entity
 @Table(name = "users")
-class UserEntity(
+class UserEntity private constructor(
     @Id
     @JdbcTypeCode(Types.VARCHAR)
     @Column(length = 36, updatable = false, nullable = false)

@@ -49,6 +49,7 @@ subprojects {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
             jvmTarget = Versions.JAVA_VERSION
+            freeCompilerArgs += "-Xconsistent-data-class-copy-visibility"
         }
     }
 }

@@ -8,16 +8,17 @@ import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.KakaoAuthCredentials
 import org.yapp.domain.auth.ProviderType
 
-data class SocialLoginRequest(
+
+data class SocialLoginRequest private constructor(
     @field:NotBlank(message = "Provider type is required")
-    val providerType: ProviderType,
+    val providerType: String,
 
     @field:NotBlank(message = "OAuth token is required")
     val oauthToken: String
 ) {
     companion object {
         fun toCredentials(request: SocialLoginRequest): AuthCredentials {
-            return when (request.providerType) {
+            return when (ProviderType.valueOf(request.providerType.uppercase())) {
                 ProviderType.KAKAO -> KakaoAuthCredentials(request.oauthToken)
                 ProviderType.APPLE -> AppleAuthCredentials(request.oauthToken)
                 else -> throw AuthException(

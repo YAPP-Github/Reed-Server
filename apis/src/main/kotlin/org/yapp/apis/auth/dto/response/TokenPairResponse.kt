@@ -1,6 +1,6 @@
 package org.yapp.apis.auth.dto.response
 
-data class TokenPairResponse(
+data class TokenPairResponse private constructor(
     val accessToken: String,
     val refreshToken: String
 ) {
