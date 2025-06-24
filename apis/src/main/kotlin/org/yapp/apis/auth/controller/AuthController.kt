@@ -28,7 +28,7 @@ class AuthController(
         return ResponseEntity.ok(AuthResponse.fromTokenPair(tokenPair))
     }
 
-    override fun signOut(authorization: String): ResponseEntity<Void> {
+    override fun signOut(authorization: String): ResponseEntity<Unit> {
         val userId = AuthUtils.extractUserIdFromAuthHeader(authorization, authUseCase::getUserIdFromAccessToken)
         authUseCase.signOut(userId)
         return ResponseEntity.noContent().build()

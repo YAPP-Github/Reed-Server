@@ -86,7 +86,7 @@ interface AuthControllerApi {
         ]
     )
     @PostMapping("/signout")
-    fun signOut(@RequestHeader("Authorization") authorization: String): ResponseEntity<Void>
+    fun signOut(@RequestHeader("Authorization") authorization: String): ResponseEntity<Unit>
 
 
     @Operation(
