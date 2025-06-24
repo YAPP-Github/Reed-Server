@@ -2,7 +2,6 @@ package org.yapp.gateway.jwt
 
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
-import io.jsonwebtoken.security.SignatureException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -103,7 +102,7 @@ class JwtTokenProvider(
                 .build()
                 .parseClaimsJws(token)
                 .body
-        } catch (e: SignatureException) {
+        } catch (e: SecurityException) {
             throw JwtException(JwtErrorCode.INVALID_JWT_SIGNATURE)
         } catch (e: MalformedJwtException) {
             throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN)
