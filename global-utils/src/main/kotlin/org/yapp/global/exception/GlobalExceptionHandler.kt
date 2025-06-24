@@ -92,4 +92,19 @@ class GlobalExceptionHandler {
 
         return ResponseEntity(error, commonErrorCode.getHttpStatus())
     }
+
+    @ExceptionHandler(Exception::class)
+    protected fun handleGeneralException(ex: Exception): ResponseEntity<ErrorResponse> {
+        val commonErrorCode = CommonErrorCode.INTERNAL_SERVER_ERROR
+
+        log.error(ex) { "Unexpected error occurred: ${ex.message}" }
+
+        val error = ErrorResponse.builder()
+            .status(commonErrorCode.getHttpStatus().value())
+            .message("An unexpected error occurred")
+            .code(commonErrorCode.getCode())
+            .build()
+
+        return ResponseEntity(error, commonErrorCode.getHttpStatus())
+    }
 }
