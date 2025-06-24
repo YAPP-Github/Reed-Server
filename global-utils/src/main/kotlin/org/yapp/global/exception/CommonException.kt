@@ -1,5 +1,6 @@
+package org.yapp.global.exception
+
 import org.springframework.web.server.ResponseStatusException
-import org.yapp.global.exception.BaseErrorCode
 
 open class CommonException(
     val errorCode: BaseErrorCode,
