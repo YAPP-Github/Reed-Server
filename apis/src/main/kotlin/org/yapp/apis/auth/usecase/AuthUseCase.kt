@@ -6,7 +6,7 @@ import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.SocialAuthService
 import org.yapp.apis.auth.service.TokenService
-import org.yapp.apis.user.service.UserService
+import org.yapp.apis.auth.service.UserService
 import org.yapp.domain.auth.ProviderType
 import org.yapp.gateway.jwt.JwtTokenService
 import java.util.*

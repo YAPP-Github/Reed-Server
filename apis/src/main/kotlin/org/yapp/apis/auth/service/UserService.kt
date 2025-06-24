@@ -1,4 +1,4 @@
-package org.yapp.apis.user.service
+package org.yapp.apis.auth.service
 
 import org.springframework.stereotype.Service
 import org.yapp.apis.auth.exception.AuthErrorCode
