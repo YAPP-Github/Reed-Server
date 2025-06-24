@@ -1,4 +1,4 @@
-package org.yapp.apis.token.service
+package org.yapp.apis.auth.service
 
 import org.springframework.stereotype.Service
 import org.yapp.apis.auth.exception.AuthErrorCode
@@ -8,19 +8,19 @@ import java.util.*
 
 @Service
 class TokenService(
-    private val tokenDomainserviceRedis: TokenDomainRedisService,
+    private val tokenDomainRedisService: TokenDomainRedisService,
 ) {
 
     fun delete(userId: UUID) {
-        tokenDomainserviceRedis.deleteRefreshToken(userId)
+        tokenDomainRedisService.deleteRefreshToken(userId)
     }
 
     fun save(userId: UUID, refreshToken: String, expiration: Long) {
-        tokenDomainserviceRedis.saveRefreshToken(userId, refreshToken, expiration)
+        tokenDomainRedisService.saveRefreshToken(userId, refreshToken, expiration)
     }
 
     fun validateRefreshTokenOrThrow(userId: UUID, refreshToken: String) {
-        val exists = tokenDomainserviceRedis.validateRefreshToken(userId, refreshToken)
+        val exists = tokenDomainRedisService.validateRefreshToken(userId, refreshToken)
         if (!exists) {
             throw AuthException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND)
         }

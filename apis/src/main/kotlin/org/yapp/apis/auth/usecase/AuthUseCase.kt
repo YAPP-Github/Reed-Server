@@ -5,7 +5,7 @@ import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.SocialAuthService
-import org.yapp.apis.token.service.TokenService
+import org.yapp.apis.auth.service.TokenService
 import org.yapp.apis.user.service.UserService
 import org.yapp.domain.auth.ProviderType
 import org.yapp.gateway.jwt.JwtTokenService
@@ -38,7 +38,7 @@ class AuthUseCase(
     }
 
     fun getUserProfile(userId: UUID): UserProfileResponse {
-        val user = userService.findById(userId)
+        val user = userService.findUserById(userId)
         return UserProfileResponse.of(
             id = user.id!!,
             email = user.email,

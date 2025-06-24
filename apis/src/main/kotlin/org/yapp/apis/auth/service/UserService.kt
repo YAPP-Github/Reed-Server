@@ -12,7 +12,7 @@ class UserService(
     private val userDomainService: UserDomainService
 ) {
 
-    fun findById(userId: UUID): User {
+    fun findUserById(userId: UUID): User {
         return userDomainService.findById(userId)
             ?: throw AuthException(AuthErrorCode.USER_NOT_FOUND, "User not found: $userId")
     }
