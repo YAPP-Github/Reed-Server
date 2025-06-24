@@ -1,5 +1,6 @@
 package org.yapp.apis.auth.dto.request
 
+import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
@@ -8,11 +9,24 @@ import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.KakaoAuthCredentials
 import org.yapp.domain.auth.ProviderType
 
-
+@Schema(
+    name = "SocialLoginRequest",
+    description = "DTO for social login requests")
 data class SocialLoginRequest private constructor(
+
+    @Schema(
+        description = "Type of social login provider (e.g., KAKAO, APPLE)",
+        example = "KAKAO",
+        required = true
+    )
     @field:NotBlank(message = "Provider type is required")
     val providerType: String,
 
+    @Schema(
+        description = "OAuth token issued by the social provider",
+        example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        required = true
+    )
     @field:NotBlank(message = "OAuth token is required")
     val oauthToken: String
 ) {
