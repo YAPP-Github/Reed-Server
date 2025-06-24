@@ -1,24 +1,23 @@
-package org.yapp.domain.redisservice
-
+package org.yapp.domain.service.redis
 
 import org.yapp.annotation.DomainService
 import org.yapp.domain.auth.TokenRepository
 import java.util.*
 
 @DomainService
-class TokenDomainRedisServiceImpl(
+class TokenDomainRedisService(
     private val tokenRepository: TokenRepository
-) : TokenDomainRedisService {
+) {
 
-    override fun saveRefreshToken(userId: UUID, refreshToken: String, expiration: Long) {
+    fun saveRefreshToken(userId: UUID, refreshToken: String, expiration: Long) {
         tokenRepository.saveRefreshToken(userId, refreshToken, expiration)
     }
 
-    override fun deleteRefreshToken(userId: UUID) {
+    fun deleteRefreshToken(userId: UUID) {
         tokenRepository.deleteRefreshToken(userId)
     }
 
-    override fun validateRefreshToken(userId: UUID, refreshToken: String): Boolean {
+    fun validateRefreshToken(userId: UUID, refreshToken: String): Boolean {
         return tokenRepository.existsRefreshToken(userId, refreshToken)
     }
 }
