@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>소셜 로그인 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: #f0f0f0;
+        }
+
+        .tab.active {
+            background: #fff;
+            border-bottom: none;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .kakao-btn {
+            background-color: #FEE500;
+            color: #000;
+        }
+
+        .apple-btn {
+            background-color: #000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<h1 style="text-align:center">소셜 로그인 테스트</h1>
+
+<div class="tabs">
+    <div class="tab active" data-tab="kakao">카카오 로그인</div>
+    <div class="tab" data-tab="apple">애플 로그인</div>
+</div>
+
+<div class="tab-content active" id="kakao">
+    <p style="text-align:center;">카카오 계정으로 로그인하려면 아래 버튼을 클릭하세요.</p>
+    <div style="text-align:center;">
+        <button id="kakao-login-btn" class="btn kakao-btn">카카오 로그인</button>
+    </div>
+</div>
+
+<div class="tab-content" id="apple">
+    <p style="text-align:center;">애플 계정으로 로그인하려면 아래 버튼을 클릭하세요.</p>
+    <div style="text-align:center;">
+        <button id="apple-login-btn" class="btn apple-btn">Apple 로그인</button>
+    </div>
+</div>
+
+<!-- 결과 출력 -->
+<pre id="result" style="margin-top: 30px; white-space: pre-wrap;"></pre>
+
+<!-- Kakao SDK -->
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+
+<!-- Apple SDK (실제 서비스용) -->
+<script type="text/javascript"
+        src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+
+<script>
+    // 탭 전환
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    // Kakao init
+    const KAKAO_JS_KEY = '';
+    const API_SERVER = window.location.origin;
+
+    Kakao.init(KAKAO_JS_KEY);
+
+    document.getElementById('kakao-login-btn').addEventListener('click', () => {
+        Kakao.Auth.login({
+            scope: 'account_email,profile_nickname',
+            success: function (authObj) {
+                const accessToken = authObj.access_token;
+                fetch(`${API_SERVER}/api/v1/auth/signin`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({providerType: "KAKAO", accessToken})
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('result').textContent = 'Kakao 로그인 성공\n\nJWT: ' + data.accessToken;
+                    })
+                    .catch(err => {
+                        document.getElementById('result').textContent = 'Kakao 로그인 실패: ' + err.message;
+                    });
+            },
+            fail: function (err) {
+                document.getElementById('result').textContent = 'Kakao 로그인 실패: ' + JSON.stringify(err);
+            }
+        });
+    });
+
+    // Apple 로그인
+    document.getElementById('apple-login-btn').addEventListener('click', () => {
+        AppleID.auth.init({
+            clientId: '',
+            scope: 'name email',
+            redirectURI: 'http://localhost:8080/kakao-login.html',
+            usePopup: true
+        });
+
+        AppleID.auth.signIn()
+            .then(response => {
+                // id_token을 서버로 전송
+                const id_token = response.authorization.id_token;
+                fetch(`${API_SERVER}/api/v1/auth/signin`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({providerType: "APPLE", idToken: id_token})
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('result').textContent = 'Apple 로그인 성공\n\nJWT: ' + data.accessToken;
+                    })
+                    .catch(err => {
+                        document.getElementById('result').textContent = 'Apple 로그인 실패: ' + err.message;
+                    });
+            })
+            .catch(error => {
+                document.getElementById('result').textContent = 'Apple 로그인 실패: ' + JSON.stringify(error);
+            });
+    });
+</script>
+
+</body>
+</html>

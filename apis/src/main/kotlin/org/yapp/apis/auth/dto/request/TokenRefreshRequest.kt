@@ -1,0 +1,8 @@
+package org.yapp.apis.auth.dto.request
+
+import jakarta.validation.constraints.NotBlank
+
+data class TokenRefreshRequest private constructor(
+    @field:NotBlank(message = "Refresh token is required")
+    val refreshToken: String
+)

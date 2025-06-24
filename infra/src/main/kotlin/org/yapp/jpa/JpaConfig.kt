@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.yapp.InfraBaseConfig
 
 @EnableTransactionManagement
-@EntityScan("org.yapp")
-@EnableJpaRepositories("org.yapp")
+@EntityScan(basePackages = ["org.yapp.domain.user"])
+@EnableJpaRepositories(basePackages = ["org.yapp.jpa.repository"])
 class JpaConfig : InfraBaseConfig {
 
 }

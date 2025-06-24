@@ -5,6 +5,10 @@ dependencies {
     implementation(project(Dependencies.Projects.DOMAIN))
     implementation(project(Dependencies.Projects.GLOBAL_UTILS))
     implementation(Dependencies.Spring.BOOT_STARTER_WEB)
+    implementation(Dependencies.Spring.BOOT_STARTER_SECURITY)
+    implementation(Dependencies.Auth.JWT)
+    implementation(Dependencies.Auth.JWT_IMPL)
+    implementation(Dependencies.Auth.JWT_JACKSON)
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
 }
 
