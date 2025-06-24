@@ -7,7 +7,6 @@ import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.SocialAuthService
 import org.yapp.apis.auth.service.TokenService
 import org.yapp.apis.auth.service.UserService
-import org.yapp.domain.auth.ProviderType
 import org.yapp.gateway.jwt.JwtTokenService
 import java.util.*
 
@@ -43,7 +42,7 @@ class AuthUseCase(
             id = user.id!!,
             email = user.email,
             nickname = user.nickname,
-            provider = ProviderType.valueOf(user.providerType.name)
+            provider = user.providerType
         )
     }
 
