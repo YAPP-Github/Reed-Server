@@ -72,8 +72,14 @@ class JwtTokenProvider(
 
     fun getTokenType(token: String): String {
         val claims = parseToken(token)
-        return claims["type"] as? String
-            ?: throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN, "Token type claim is missing")
+        return when (val type = claims["type"]) {
+            is String -> type
+            null -> throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN, "Token type claim is missing")
+            else -> throw JwtException(
+                JwtErrorCode.INVALID_JWT_TOKEN,
+                "Token type claim has invalid type: ${type::class.simpleName}"
+            )
+        }
     }
 
     fun getAuthentication(token: String): Authentication {
