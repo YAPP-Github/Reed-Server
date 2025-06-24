@@ -32,7 +32,7 @@ class KakaoAuthStrategy(
 
     override fun getProviderType(): ProviderType = ProviderType.KAKAO
 
-    override fun authenticate(credentials: AuthCredentials): Result<User> {
+    override fun authenticate(credentials: AuthCredentials): User {
         return runCatching {
             if (credentials !is KakaoAuthCredentials) {
                 throw AuthException(AuthErrorCode.INVALID_CREDENTIALS, "Credentials must be KakaoAuthCredentials")
@@ -40,7 +40,7 @@ class KakaoAuthStrategy(
 
             val kakaoUser = fetchKakaoUserInfo(credentials.accessToken)
             createUser(kakaoUser)
-        }.recoverCatching { exception ->
+        }.getOrElse { exception ->
             log.error("Kakao authentication failed", exception)
             throw when (exception) {
                 is AuthException -> exception

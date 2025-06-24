@@ -24,7 +24,7 @@ class AppleAuthStrategy(
 
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 
-    override fun authenticate(credentials: AuthCredentials): Result<User> {
+    override fun authenticate(credentials: AuthCredentials): User {
         return runCatching {
             if (credentials !is AppleAuthCredentials) {
                 throw AuthException(AuthErrorCode.INVALID_CREDENTIALS, "Credentials must be AppleAuthCredentials")
@@ -32,7 +32,7 @@ class AppleAuthStrategy(
 
             val payload = parseIdToken(credentials.idToken)
             createUser(payload)
-        }.recoverCatching { exception ->
+        }.getOrElse { exception ->
             log.error("Apple authentication failed", exception)
             throw when (exception) {
                 is AuthException -> exception

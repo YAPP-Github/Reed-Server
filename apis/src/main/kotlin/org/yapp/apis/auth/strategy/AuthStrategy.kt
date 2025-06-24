@@ -11,6 +11,6 @@ import org.yapp.domain.user.User
 interface AuthStrategy {
 
     fun getProviderType(): ProviderType
-    
-    fun authenticate(credentials: AuthCredentials): Result<User>
+
+    fun authenticate(credentials: AuthCredentials): User
 }
