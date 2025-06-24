@@ -1,6 +1,6 @@
 package org.yapp.apis.auth.strategy
 
-import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import org.yapp.apis.auth.exception.AuthErrorCode
@@ -16,22 +16,78 @@ import java.util.*
  * Implementation of AuthStrategy for Apple authentication.
  */
 @Component
-class AppleAuthStrategy : AuthStrategy {
+class AppleAuthStrategy(
+    private val objectMapper: ObjectMapper
+) : AuthStrategy {
 
     private val log = KotlinLogging.logger {}
 
-
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 
-    override fun authenticate(credentials: AuthCredentials): User {
-        if (credentials !is AppleAuthCredentials) {
-            throw AuthException(AuthErrorCode.INVALID_CREDENTIALS, "Credentials must be AppleAuthCredentials")
+    override fun authenticate(credentials: AuthCredentials): Result<User> {
+        return runCatching {
+            if (credentials !is AppleAuthCredentials) {
+                throw AuthException(AuthErrorCode.INVALID_CREDENTIALS, "Credentials must be AppleAuthCredentials")
+            }
+
+            val payload = parseIdToken(credentials.idToken)
+            createUser(payload)
+        }.recoverCatching { exception ->
+            log.error("Apple authentication failed", exception)
+            throw when (exception) {
+                is AuthException -> exception
+                else -> AuthException(AuthErrorCode.FAILED_TO_GET_USER_INFO, exception.message)
+            }
         }
+    }
 
-        val payload = parseIdToken(credentials.idToken)
+    private fun parseIdToken(idToken: String): AppleIdTokenPayload {
+        return runCatching {
+            val parts = idToken.split(".")
+            require(parts.size == 3) { "Invalid JWT format: expected 3 parts but got ${parts.size}" }
 
+            val decodedPayload = decodeBase64UrlSafe(parts[1])
+            val payloadJson = String(decodedPayload, Charsets.UTF_8)
+            val payloadMap = objectMapper.readValue(payloadJson, Map::class.java)
+
+            val sub = payloadMap["sub"] as? String
+                ?: throw AuthException(AuthErrorCode.SUBJECT_NOT_FOUND, "Subject not found in token")
+
+            AppleIdTokenPayload(
+                sub = sub,
+                email = payloadMap["email"] as? String,
+                name = payloadMap["name"] as? String
+            )
+        }.getOrElse { exception ->
+            throw when (exception) {
+                is AuthException -> exception
+                is IllegalArgumentException -> AuthException(
+                    AuthErrorCode.INVALID_ID_TOKEN_FORMAT, "Invalid token format: ${exception.message}"
+                )
+
+                else -> AuthException(
+                    AuthErrorCode.FAILED_TO_PARSE_ID_TOKEN, "Failed to parse token: ${exception.message}"
+                )
+            }
+        }
+    }
+
+    private fun decodeBase64UrlSafe(encoded: String): ByteArray {
+        return runCatching {
+            Base64.getUrlDecoder().decode(encoded)
+        }.getOrElse { exception ->
+            throw AuthException(
+                AuthErrorCode.INVALID_ID_TOKEN_FORMAT, "Invalid Base64 encoding: ${exception.message}"
+            )
+        }
+    }
+
+    private fun createUser(payload: AppleIdTokenPayload): User {
         return User(
-            email = payload.email ?: throw AuthException(AuthErrorCode.EMAIL_NOT_FOUND),
+            email = payload.email ?: throw AuthException(
+                AuthErrorCode.EMAIL_NOT_FOUND,
+                "Email not found in Apple ID token"
+            ),
             nickname = NicknameGenerator.generate(),
             profileImageUrl = null, // Apple doesn't provide profile image
             providerType = ProviderType.APPLE,
@@ -39,53 +95,7 @@ class AppleAuthStrategy : AuthStrategy {
         )
     }
 
-
-    private fun parseIdToken(idToken: String): AppleIdTokenPayload {
-        try {
-            val parts = idToken.split(".")
-            if (parts.size != 3) {
-                throw AuthException(AuthErrorCode.INVALID_ID_TOKEN_FORMAT)
-            }
-
-            val payload = parts[1]
-            val decodedPayload = Base64.getUrlDecoder().decode(payload)
-            val payloadJson = String(decodedPayload)
-
-            // In a real implementation, you would use a JSON library to parse the payload
-            // For simplicity, we'll just extract the required fields manually
-            val sub = extractField(payloadJson, "\"sub\":\"", "\"")
-                ?: throw AuthException(AuthErrorCode.SUBJECT_NOT_FOUND)
-            val email = extractField(payloadJson, "\"email\":\"", "\"")
-            val name = extractField(payloadJson, "\"name\":\"", "\"")
-
-            return AppleIdTokenPayload(sub, email, name)
-        } catch (e: IllegalArgumentException) {
-            throw AuthException(AuthErrorCode.INVALID_ID_TOKEN_FORMAT, "Invalid token format: ${e.message}")
-        } catch (e: JsonProcessingException) {
-            throw AuthException(AuthErrorCode.FAILED_TO_PARSE_ID_TOKEN, "JSON parsing failed: ${e.message}")
-        } catch (e: Exception) {
-            log.error("Unexpected error parsing Apple ID token", e)
-            throw AuthException(AuthErrorCode.FAILED_TO_PARSE_ID_TOKEN, "Unexpected error: ${e.message}")
-        }
-    }
-
-
-    private fun extractField(json: String, prefix: String, suffix: String): String? {
-        val startIndex = json.indexOf(prefix)
-        if (startIndex == -1) {
-            return null
-        }
-
-        val valueStartIndex = startIndex + prefix.length
-        val valueEndIndex = json.indexOf(suffix, valueStartIndex)
-        if (valueEndIndex == -1) {
-            return null
-        }
-
-        return json.substring(valueStartIndex, valueEndIndex)
-    }
-
-    data class AppleIdTokenPayload(
+    private data class AppleIdTokenPayload(
         val sub: String,
         val email: String?,
         val name: String?

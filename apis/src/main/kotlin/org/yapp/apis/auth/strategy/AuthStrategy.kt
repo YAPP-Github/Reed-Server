@@ -12,5 +12,5 @@ interface AuthStrategy {
 
     fun getProviderType(): ProviderType
     
-    fun authenticate(credentials: AuthCredentials): User
+    fun authenticate(credentials: AuthCredentials): Result<User>
 }
