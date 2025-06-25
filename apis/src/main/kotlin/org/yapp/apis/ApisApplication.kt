@@ -15,7 +15,7 @@ import org.springframework.boot.runApplication
         "org.yapp.gateway",
         "org.yapp.globalutils"
     ] ,
-//    exclude = [JpaRepositoriesAutoConfiguration::class]
+    exclude = [JpaRepositoriesAutoConfiguration::class]
 )
 class ApisApplication
 
