@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Label PR based on title
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const prTitle = context.payload.pull_request.title;
@@ -25,7 +25,7 @@ jobs:
               { pattern: /^chore:/i, label: '⚙️ chore' },
               { pattern: /^docs:/i, label: '📃 docs' },
               { pattern: /^refactor:/i, label: '🔨 refactor' },
-              { pattern: /^test:/i, label: '✅ test' }
+              { pattern: /^test:/i, label: '✅ test' },
               { pattern: /^style:/i, label: '🎨 style' }
             ];
 
