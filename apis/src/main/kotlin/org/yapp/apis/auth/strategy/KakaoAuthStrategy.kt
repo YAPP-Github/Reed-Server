@@ -53,7 +53,6 @@ class KakaoAuthStrategy(
         return runCatching {
             val headers = HttpHeaders().apply {
                 set("Authorization", "Bearer $accessToken")
-                set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
             }
 
             val entity = HttpEntity<String>(headers)
