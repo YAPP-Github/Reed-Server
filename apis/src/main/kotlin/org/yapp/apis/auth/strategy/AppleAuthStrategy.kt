@@ -22,6 +22,11 @@ class AppleAuthStrategy(
 
     private val log = KotlinLogging.logger {}
 
+    companion object {
+        private const val JWT_PARTS_COUNT = 3
+        private const val JWT_PAYLOAD_INDEX = 1
+    }
+
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 
     override fun authenticate(credentials: AuthCredentials): User {
@@ -44,9 +49,9 @@ class AppleAuthStrategy(
     private fun parseIdToken(idToken: String): AppleIdTokenPayload {
         return runCatching {
             val parts = idToken.split(".")
-            require(parts.size == 3) { "Invalid JWT format: expected 3 parts but got ${parts.size}" }
+            require(parts.size == JWT_PARTS_COUNT) { "Invalid JWT format: expected $JWT_PARTS_COUNT parts but got ${parts.size}" }
 
-            val decodedPayload = decodeBase64UrlSafe(parts[1])
+            val decodedPayload = decodeBase64UrlSafe(parts[JWT_PAYLOAD_INDEX])
             val payloadJson = String(decodedPayload, Charsets.UTF_8)
             val payloadMap = objectMapper.readValue(payloadJson, Map::class.java)
 
