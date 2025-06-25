@@ -13,7 +13,7 @@ import org.springframework.boot.runApplication
         "org.yapp.infra",
         "org.yapp.domain",
         "org.yapp.gateway",
-        "org.yapp.global.util"
+        "org.yapp.globalutils"
     ] ,
 //    exclude = [JpaRepositoriesAutoConfiguration::class]
 )
