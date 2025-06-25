@@ -1,4 +1,4 @@
-package org.yapp
+package org.yapp.infra
 
 import org.springframework.context.annotation.Import
 

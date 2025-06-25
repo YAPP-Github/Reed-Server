@@ -1,4 +1,4 @@
-package org.yapp.user.entity
+package org.yapp.infra.user.entity
 
 
 import jakarta.persistence.*

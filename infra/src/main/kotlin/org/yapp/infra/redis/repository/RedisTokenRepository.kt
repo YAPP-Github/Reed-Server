@@ -1,4 +1,4 @@
-package org.yapp.redis.repository
+package org.yapp.infra.redis.repository
 
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository

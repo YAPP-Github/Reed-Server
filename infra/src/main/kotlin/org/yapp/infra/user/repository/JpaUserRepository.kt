@@ -1,8 +1,8 @@
-package org.yapp.user.repository
+package org.yapp.infra.user.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.yapp.domain.auth.ProviderType
-import org.yapp.user.entity.UserEntity
+import org.yapp.infra.user.entity.UserEntity
 import java.util.*
 
 /**

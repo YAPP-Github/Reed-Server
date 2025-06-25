@@ -1,4 +1,4 @@
-package org.yapp
+package org.yapp.infra
 
 interface InfraBaseConfig {
 }

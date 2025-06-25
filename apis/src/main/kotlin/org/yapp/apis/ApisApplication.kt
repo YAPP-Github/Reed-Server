@@ -1,4 +1,4 @@
-package org.yapp
+package org.yapp.apis
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

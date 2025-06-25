@@ -1,4 +1,4 @@
-package org.yapp.config.internal.async
+package org.yapp.infra.config.internal.async
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.event.ApplicationEventMulticaster
@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import java.util.concurrent.Executor
-import org.yapp.InfraBaseConfig
+import org.yapp.infra.InfraBaseConfig
 
 @EnableAsync
 class AsyncConfig : InfraBaseConfig, AsyncConfigurer {
