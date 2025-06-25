@@ -11,7 +11,8 @@ import org.springframework.boot.runApplication
         "org.yapp.apis",
         "org.yapp.infra",
         "org.yapp.domain",
-        "org.yapp.gateway"
+        "org.yapp.gateway",
+        "org.yapp.global.util"
     ]
 )
 class ApisApplication
