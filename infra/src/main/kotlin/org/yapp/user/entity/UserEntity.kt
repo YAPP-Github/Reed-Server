@@ -1,10 +1,11 @@
-package org.yapp.domain.user
+package org.yapp.user.entity
 
 
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.common.BaseTimeEntity
+import org.yapp.domain.user.User
 import org.yapp.global.util.UuidGenerator
 import java.sql.Types
 import java.util.*

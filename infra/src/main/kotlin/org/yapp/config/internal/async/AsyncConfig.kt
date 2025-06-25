@@ -1,4 +1,4 @@
-package org.yapp.async
+package org.yapp.config.internal.async
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.event.ApplicationEventMulticaster

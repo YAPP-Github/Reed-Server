@@ -1,8 +1,8 @@
 package org.yapp
 
-import org.yapp.async.AsyncConfig
-import org.yapp.jpa.JpaConfig
-import org.yapp.redis.RedisConfig
+import org.yapp.config.internal.async.AsyncConfig
+import org.yapp.config.internal.jpa.JpaConfig
+import org.yapp.config.external.redis.RedisConfig
 
 enum class InfraBaseConfigGroup(
     val configClass: Class<out InfraBaseConfig>
