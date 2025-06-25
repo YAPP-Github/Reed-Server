@@ -8,13 +8,13 @@ import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
-import org.yapp.apis.auth.exception.AuthErrorCode
-import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.dto.AuthCredentials
 import org.yapp.apis.auth.dto.KakaoAuthCredentials
+import org.yapp.apis.auth.dto.UserCreateInfo
+import org.yapp.apis.auth.exception.AuthErrorCode
+import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.util.NicknameGenerator
 import org.yapp.domain.auth.ProviderType
-import org.yapp.domain.user.User
 
 /**
  * Implementation of AuthStrategy for Kakao authentication.
@@ -32,14 +32,14 @@ class KakaoAuthStrategy(
 
     override fun getProviderType(): ProviderType = ProviderType.KAKAO
 
-    override fun authenticate(credentials: AuthCredentials): User {
+    override fun authenticate(credentials: AuthCredentials): UserCreateInfo {
         return runCatching {
             if (credentials !is KakaoAuthCredentials) {
                 throw AuthException(AuthErrorCode.INVALID_CREDENTIALS, "Credentials must be KakaoAuthCredentials")
             }
 
             val kakaoUser = fetchKakaoUserInfo(credentials.accessToken)
-            createUser(kakaoUser)
+            createUserInfo(kakaoUser)
         }.getOrElse { exception ->
             log.error("Kakao authentication failed", exception)
             throw when (exception) {
@@ -83,8 +83,8 @@ class KakaoAuthStrategy(
         }
     }
 
-    private fun createUser(kakaoUser: KakaoUserResponse): User {
-        return User(
+    private fun createUserInfo(kakaoUser: KakaoUserResponse): UserCreateInfo {
+        return UserCreateInfo.of(
             email = kakaoUser.kakaoAccount?.email ?: ("kakao_" + kakaoUser.id),
             nickname = NicknameGenerator.generate(),
             profileImageUrl = kakaoUser.kakaoAccount?.profile?.profileImageUrl,

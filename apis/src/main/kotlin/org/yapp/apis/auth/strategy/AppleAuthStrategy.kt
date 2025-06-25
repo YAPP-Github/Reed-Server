@@ -3,13 +3,13 @@ package org.yapp.apis.auth.strategy
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
-import org.yapp.apis.auth.exception.AuthErrorCode
-import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.dto.AppleAuthCredentials
 import org.yapp.apis.auth.dto.AuthCredentials
+import org.yapp.apis.auth.dto.UserCreateInfo
+import org.yapp.apis.auth.exception.AuthErrorCode
+import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.util.NicknameGenerator
 import org.yapp.domain.auth.ProviderType
-import org.yapp.domain.user.User
 import java.util.*
 
 /**
@@ -29,14 +29,14 @@ class AppleAuthStrategy(
 
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 
-    override fun authenticate(credentials: AuthCredentials): User {
+    override fun authenticate(credentials: AuthCredentials): UserCreateInfo {
         return runCatching {
             if (credentials !is AppleAuthCredentials) {
                 throw AuthException(AuthErrorCode.INVALID_CREDENTIALS, "Credentials must be AppleAuthCredentials")
             }
 
             val payload = parseIdToken(credentials.idToken)
-            createUser(payload)
+            createUserInfo(payload)
         }.getOrElse { exception ->
             log.error("Apple authentication failed", exception)
             throw when (exception) {
@@ -87,8 +87,8 @@ class AppleAuthStrategy(
         }
     }
 
-    private fun createUser(payload: AppleIdTokenPayload): User {
-        return User(
+    private fun createUserInfo(payload: AppleIdTokenPayload): UserCreateInfo {
+        return UserCreateInfo.of(
             email = payload.email ?: throw AuthException(
                 AuthErrorCode.EMAIL_NOT_FOUND,
                 "Email not found in Apple ID token"
