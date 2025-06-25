@@ -1,10 +1,10 @@
-package org.yapp
+package org.yapp.globalutils
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest(classes = [DomainApplicationTests::class])
-class DomainApplicationTests {
+@SpringBootTest(classes = [GlobalUtilsApplicationTests::class])
+class GlobalUtilsApplicationTests {
 
     @Test
     fun contextLoads() {

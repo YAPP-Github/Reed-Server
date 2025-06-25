@@ -1,4 +1,4 @@
-package org.yapp.annotation
+package org.yapp.globalutils
 
 import org.springframework.stereotype.Component
 

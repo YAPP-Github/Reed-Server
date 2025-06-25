@@ -1,4 +1,4 @@
-package org.yapp.global.util
+package org.yapp.globalutils
 
 import com.github.f4b6a3.uuid.UuidCreator
 import java.util.*

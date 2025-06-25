@@ -1,10 +1,10 @@
-package org.yapp
+package org.yapp.batch
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest(classes = [InfraApplicationTests::class])
-class InfraApplicationTests {
+@SpringBootTest
+class BatchApplicationTests {
 
     @Test
     fun contextLoads() {
