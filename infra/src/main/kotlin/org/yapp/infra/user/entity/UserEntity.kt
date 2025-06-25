@@ -40,7 +40,7 @@ class UserEntity private constructor(
     var profileImageUrl: String? = profileImageUrl
         protected set
 
-    fun toDomain(): User = User(
+    fun toDomain(): User = User.reconstruct(
         id = id,
         email = email,
         nickname = nickname,
