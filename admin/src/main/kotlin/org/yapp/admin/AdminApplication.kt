@@ -1,11 +1,11 @@
-package org.yapp
+package org.yapp.admin
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class BatchApplication
+class AdminApplication
 
 fun main(args: Array<String>) {
-    runApplication<BatchApplication>(*args)
+	runApplication<AdminApplication>(*args)
 }
