@@ -4,6 +4,7 @@ import org.yapp.annotation.DomainService
 import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
 import org.yapp.domain.user.UserRepository
+import org.yapp.domain.user.vo.SocialUserProfile
 import org.yapp.global.util.TimeProvider
 import java.util.*
 
@@ -28,24 +29,25 @@ class UserDomainService(
         return userRepository.findByProviderTypeAndProviderId(providerType, providerId)
     }
 
-    fun findOrCreate(user: User): Result<User> {
-        val existingByProvider = findByProviderTypeAndProviderId(user.providerType, user.providerId)
+    fun findOrCreate(socialUserProfile: SocialUserProfile): Result<User> {
+        val existingByProvider =
+            findByProviderTypeAndProviderId(socialUserProfile.providerType, socialUserProfile.providerId)
         if (existingByProvider != null) {
             return Result.success(existingByProvider)
         }
 
-        val existingByEmail = findByEmail(user.email)
+        val existingByEmail = findByEmail(socialUserProfile.email)
         if (existingByEmail != null) {
             return Result.failure(IllegalStateException("Email already in use"))
         }
 
         val now = timeProvider.now()
         val newUser = User.create(
-            email = user.email,
-            nickname = user.nickname,
-            profileImageUrl = user.profileImageUrl,
-            providerType = user.providerType,
-            providerId = user.providerId,
+            email = socialUserProfile.email,
+            nickname = socialUserProfile.nickname,
+            profileImageUrl = socialUserProfile.profileImageUrl,
+            providerType = socialUserProfile.providerType,
+            providerId = socialUserProfile.providerId,
             now,
             now
         )
