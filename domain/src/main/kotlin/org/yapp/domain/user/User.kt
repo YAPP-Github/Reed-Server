@@ -16,13 +16,58 @@ import java.util.*
  * @property createdAt The timestamp when the user was created.
  * @property updatedAt The timestamp when the user was last updated.
  */
-data class User(
-    val id: UUID? = null,
+data class User private constructor(
+    val id: UUID?,
     val email: String,
     val nickname: String,
-    val profileImageUrl: String? = null,
+    val profileImageUrl: String?,
     val providerType: ProviderType,
     val providerId: String,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
-    val updatedAt: LocalDateTime = LocalDateTime.now()
-)
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
+) {
+    companion object {
+        fun create(
+            email: String,
+            nickname: String,
+            profileImageUrl: String?,
+            providerType: ProviderType,
+            providerId: String,
+            createdAt: LocalDateTime,
+            updatedAt: LocalDateTime
+        ): User {
+            return User(
+                id = UUID.randomUUID(),
+                email = email,
+                nickname = nickname,
+                profileImageUrl = profileImageUrl,
+                providerType = providerType,
+                providerId = providerId,
+                createdAt = createdAt,
+                updatedAt = updatedAt
+            )
+        }
+
+        fun reconstruct(
+            id: UUID,
+            email: String,
+            nickname: String,
+            profileImageUrl: String?,
+            providerType: ProviderType,
+            providerId: String,
+            createdAt: LocalDateTime,
+            updatedAt: LocalDateTime
+        ): User {
+            return User(
+                id = id,
+                email = email,
+                nickname = nickname,
+                profileImageUrl = profileImageUrl,
+                providerType = providerType,
+                providerId = providerId,
+                createdAt = createdAt,
+                updatedAt = updatedAt
+            )
+        }
+    }
+}
