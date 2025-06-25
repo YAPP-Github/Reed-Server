@@ -1,6 +1,6 @@
 package org.yapp.apis.auth.strategy
 
-import org.yapp.apis.auth.service.AuthCredentials
+import org.yapp.apis.auth.dto.AuthCredentials
 import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
 

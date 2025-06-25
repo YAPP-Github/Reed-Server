@@ -10,8 +10,8 @@ import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.service.AuthCredentials
-import org.yapp.apis.auth.service.KakaoAuthCredentials
+import org.yapp.apis.auth.dto.AuthCredentials
+import org.yapp.apis.auth.dto.KakaoAuthCredentials
 import org.yapp.apis.util.NicknameGenerator
 import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User

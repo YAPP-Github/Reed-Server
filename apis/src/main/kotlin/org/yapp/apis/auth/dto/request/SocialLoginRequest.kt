@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.service.AppleAuthCredentials
-import org.yapp.apis.auth.service.AuthCredentials
-import org.yapp.apis.auth.service.KakaoAuthCredentials
+import org.yapp.apis.auth.dto.AppleAuthCredentials
+import org.yapp.apis.auth.dto.AuthCredentials
+import org.yapp.apis.auth.dto.KakaoAuthCredentials
 import org.yapp.domain.auth.ProviderType
 
 @Schema(

@@ -5,8 +5,8 @@ import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.service.AppleAuthCredentials
-import org.yapp.apis.auth.service.AuthCredentials
+import org.yapp.apis.auth.dto.AppleAuthCredentials
+import org.yapp.apis.auth.dto.AuthCredentials
 import org.yapp.apis.util.NicknameGenerator
 import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
