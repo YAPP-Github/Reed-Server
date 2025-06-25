@@ -6,14 +6,14 @@ import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.service.AuthCredentials
 import org.yapp.apis.auth.service.SocialAuthService
 import org.yapp.apis.auth.service.TokenService
-import org.yapp.apis.auth.service.UserService
+import org.yapp.apis.auth.service.UserAuthService
 import org.yapp.gateway.jwt.JwtTokenService
 import java.util.*
 
 @Service
 class AuthUseCase(
     private val socialAuthService: SocialAuthService,
-    private val userService: UserService,
+    private val userAuthService: UserAuthService,
     private val tokenService: TokenService,
     private val jwtTokenService: JwtTokenService
 ) {
@@ -22,7 +22,7 @@ class AuthUseCase(
         val strategy = socialAuthService.resolve(credentials)
         val userInfo = strategy.authenticate(credentials)
 
-        val user = userService.findOrCreateUser(userInfo)
+        val user = userAuthService.findOrCreateUser(userInfo)
         return generateTokenPair(user.id!!)
     }
 
@@ -37,7 +37,7 @@ class AuthUseCase(
     }
 
     fun getUserProfile(userId: UUID): UserProfileResponse {
-        val user = userService.findUserById(userId)
+        val user = userAuthService.findUserById(userId)
         return UserProfileResponse.of(
             id = user.id!!,
             email = user.email,

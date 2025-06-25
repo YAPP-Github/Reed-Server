@@ -8,7 +8,7 @@ import org.yapp.domain.user.User
 import java.util.*
 
 @Service
-class UserService(
+class UserAuthService(
     private val userDomainService: UserDomainService
 ) {
 
