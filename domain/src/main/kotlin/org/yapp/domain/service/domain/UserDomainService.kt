@@ -4,11 +4,13 @@ import org.yapp.annotation.DomainService
 import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
 import org.yapp.domain.user.UserRepository
+import org.yapp.global.util.TimeProvider
 import java.util.*
 
 @DomainService
 class UserDomainService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val timeProvider: TimeProvider
 ) {
 
     fun findById(id: UUID): User? {
@@ -20,13 +22,10 @@ class UserDomainService(
     }
 
     fun findByProviderTypeAndProviderId(
-        providerType: ProviderType, providerId: String
+        providerType: ProviderType,
+        providerId: String
     ): User? {
         return userRepository.findByProviderTypeAndProviderId(providerType, providerId)
-    }
-
-    fun save(user: User): User {
-        return userRepository.save(user)
     }
 
     fun findOrCreate(user: User): Result<User> {
@@ -36,11 +35,26 @@ class UserDomainService(
         }
 
         val existingByEmail = findByEmail(user.email)
-        return if (existingByEmail == null) {
-            val saved = save(user)
-            Result.success(saved)
-        } else {
-            Result.failure(IllegalStateException("Email already in use"))
+        if (existingByEmail != null) {
+            return Result.failure(IllegalStateException("Email already in use"))
         }
+
+        val now = timeProvider.now()
+        val newUser = User.create(
+            email = user.email,
+            nickname = user.nickname,
+            profileImageUrl = user.profileImageUrl,
+            providerType = user.providerType,
+            providerId = user.providerId,
+            now,
+            now
+        )
+
+        val saved = save(newUser)
+        return Result.success(saved)
+    }
+
+    fun save(user: User): User {
+        return userRepository.save(user)
     }
 }
