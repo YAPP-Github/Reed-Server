@@ -33,24 +33,26 @@ class KakaoAuthStrategy(
     override fun getProviderType(): ProviderType = ProviderType.KAKAO
 
     override fun authenticate(credentials: AuthCredentials): UserCreateInfo {
-        return runCatching {
-            if (credentials !is KakaoAuthCredentials) {
-                throw AuthException(AuthErrorCode.INVALID_CREDENTIALS, "Credentials must be KakaoAuthCredentials")
-            }
-
-            val kakaoUser = fetchKakaoUserInfo(credentials.accessToken)
+        return try {
+            val kakaoCredentials = credentials as KakaoAuthCredentials
+            val kakaoUser = fetchKakaoUserInfo(kakaoCredentials.accessToken)
             createUserInfo(kakaoUser)
-        }.getOrElse { exception ->
+        } catch (exception: Exception) {
             log.error("Kakao authentication failed", exception)
-            throw when (exception) {
-                is AuthException -> exception
-                else -> AuthException(AuthErrorCode.FAILED_TO_GET_USER_INFO, exception.message)
+            when (exception) {
+                is AuthException -> throw exception
+                is ClassCastException -> throw AuthException(
+                    AuthErrorCode.INVALID_CREDENTIALS,
+                    "Credentials must be KakaoAuthCredentials"
+                )
+
+                else -> throw AuthException(AuthErrorCode.FAILED_TO_GET_USER_INFO, exception.message)
             }
         }
     }
 
     private fun fetchKakaoUserInfo(accessToken: String): KakaoUserResponse {
-        return runCatching {
+        try {
             val headers = HttpHeaders().apply {
                 set("Authorization", "Bearer $accessToken")
             }
@@ -63,19 +65,19 @@ class KakaoAuthStrategy(
                 KakaoUserResponse::class.java
             )
 
-            response.body ?: throw AuthException(
+            return response.body ?: throw AuthException(
                 AuthErrorCode.FAILED_TO_GET_USER_INFO,
                 "Failed to get user info from Kakao"
             )
-        }.getOrElse { exception ->
-            throw when (exception) {
-                is AuthException -> exception
-                is RestClientException -> AuthException(
+        } catch (exception: Exception) {
+            when (exception) {
+                is AuthException -> throw exception
+                is RestClientException -> throw AuthException(
                     AuthErrorCode.FAILED_TO_GET_USER_INFO,
                     "Failed to call Kakao API: ${exception.message}"
                 )
 
-                else -> AuthException(
+                else -> throw AuthException(
                     AuthErrorCode.FAILED_TO_GET_USER_INFO,
                     "Unexpected error: ${exception.message}"
                 )
@@ -85,7 +87,7 @@ class KakaoAuthStrategy(
 
     private fun createUserInfo(kakaoUser: KakaoUserResponse): UserCreateInfo {
         return UserCreateInfo.of(
-            email = kakaoUser.kakaoAccount?.email ?: ("kakao_" + kakaoUser.id),
+            email = kakaoUser.kakaoAccount?.email ?: ("kakao_${kakaoUser.id}@kakao.com"),
             nickname = NicknameGenerator.generate(),
             profileImageUrl = kakaoUser.kakaoAccount?.profile?.profileImageUrl,
             providerType = ProviderType.KAKAO,
