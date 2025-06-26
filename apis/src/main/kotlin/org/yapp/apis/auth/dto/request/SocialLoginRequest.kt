@@ -2,17 +2,18 @@ package org.yapp.apis.auth.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
-import org.yapp.apis.auth.exception.AuthErrorCode
-import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.dto.AppleAuthCredentials
 import org.yapp.apis.auth.dto.AuthCredentials
 import org.yapp.apis.auth.dto.KakaoAuthCredentials
+import org.yapp.apis.auth.exception.AuthErrorCode
+import org.yapp.apis.auth.exception.AuthException
 import org.yapp.domain.auth.ProviderType
 
 @Schema(
     name = "SocialLoginRequest",
-    description = "DTO for social login requests")
-data class SocialLoginRequest private constructor(
+    description = "DTO for social login requests"
+)
+data class SocialLoginRequest(
 
     @Schema(
         description = "Type of social login provider (e.g., KAKAO, APPLE)",
@@ -32,13 +33,18 @@ data class SocialLoginRequest private constructor(
 ) {
     companion object {
         fun toCredentials(request: SocialLoginRequest): AuthCredentials {
-            return when (ProviderType.valueOf(request.providerType.uppercase())) {
-                ProviderType.KAKAO -> KakaoAuthCredentials(request.oauthToken)
-                ProviderType.APPLE -> AppleAuthCredentials(request.oauthToken)
-                else -> throw AuthException(
+            val provider = try {
+                ProviderType.valueOf(request.providerType.uppercase())
+            } catch (e: IllegalArgumentException) {
+                throw AuthException(
                     AuthErrorCode.UNSUPPORTED_PROVIDER_TYPE,
                     "Unsupported provider type: ${request.providerType}"
                 )
+            }
+
+            return when (provider) {
+                ProviderType.KAKAO -> KakaoAuthCredentials(request.oauthToken)
+                ProviderType.APPLE -> AppleAuthCredentials(request.oauthToken)
             }
         }
     }
