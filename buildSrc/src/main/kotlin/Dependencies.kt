@@ -39,4 +39,8 @@ object Dependencies {
     object Uuid {
         const val GENERATOR = "com.github.f4b6a3:uuid-creator:5.3.2"
     }
+
+    object Feign {
+        const val STARTER_OPENFEIGN = "org.springframework.cloud:spring-cloud-starter-openfeign"
+    }
 }
