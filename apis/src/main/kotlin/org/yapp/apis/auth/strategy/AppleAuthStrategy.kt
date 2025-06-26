@@ -1,5 +1,6 @@
 package org.yapp.apis.auth.strategy
 
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
@@ -30,59 +31,61 @@ class AppleAuthStrategy(
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 
     override fun authenticate(credentials: AuthCredentials): UserCreateInfo {
-        return runCatching {
-            if (credentials !is AppleAuthCredentials) {
-                throw AuthException(AuthErrorCode.INVALID_CREDENTIALS, "Credentials must be AppleAuthCredentials")
-            }
-
-            val payload = parseIdToken(credentials.idToken)
+        return try {
+            val appleCredentials = credentials as AppleAuthCredentials
+            val payload = parseIdToken(appleCredentials.idToken)
             createUserInfo(payload)
-        }.getOrElse { exception ->
+        } catch (exception: Exception) {
             log.error("Apple authentication failed", exception)
-            throw when (exception) {
-                is AuthException -> exception
-                else -> AuthException(AuthErrorCode.FAILED_TO_GET_USER_INFO, exception.message)
+            when (exception) {
+                is AuthException -> throw exception
+                is ClassCastException -> throw AuthException(
+                    AuthErrorCode.INVALID_CREDENTIALS,
+                    "Credentials must be AppleAuthCredentials"
+                )
+
+                else -> throw AuthException(AuthErrorCode.FAILED_TO_GET_USER_INFO, exception.message)
             }
         }
     }
 
     private fun parseIdToken(idToken: String): AppleIdTokenPayload {
-        return runCatching {
+        return try {
             val parts = idToken.split(".")
-            require(parts.size == JWT_PARTS_COUNT) { "Invalid JWT format: expected $JWT_PARTS_COUNT parts but got ${parts.size}" }
+            require(parts.size == JWT_PARTS_COUNT) {
+                "Invalid JWT format: expected $JWT_PARTS_COUNT parts but got ${parts.size}"
+            }
 
             val decodedPayload = decodeBase64UrlSafe(parts[JWT_PAYLOAD_INDEX])
             val payloadJson = String(decodedPayload, Charsets.UTF_8)
-            val payloadMap = objectMapper.readValue(payloadJson, Map::class.java)
 
-            val sub = payloadMap["sub"] as? String
-                ?: throw AuthException(AuthErrorCode.SUBJECT_NOT_FOUND, "Subject not found in token")
+            objectMapper.readValue(payloadJson, AppleIdTokenPayload::class.java)
 
-            AppleIdTokenPayload(
-                sub = sub,
-                email = payloadMap["email"] as? String,
-                name = payloadMap["name"] as? String
+        } catch (e: IllegalArgumentException) {
+            throw AuthException(
+                AuthErrorCode.INVALID_ID_TOKEN_FORMAT,
+                "Invalid token format: ${e.message}"
             )
-        }.getOrElse { exception ->
-            throw when (exception) {
-                is AuthException -> exception
-                is IllegalArgumentException -> AuthException(
-                    AuthErrorCode.INVALID_ID_TOKEN_FORMAT, "Invalid token format: ${exception.message}"
-                )
-
-                else -> AuthException(
-                    AuthErrorCode.FAILED_TO_PARSE_ID_TOKEN, "Failed to parse token: ${exception.message}"
-                )
-            }
+        } catch (e: JsonProcessingException) {
+            throw AuthException(
+                AuthErrorCode.FAILED_TO_PARSE_ID_TOKEN,
+                "Failed to parse JSON: ${e.message}"
+            )
+        } catch (e: Exception) {
+            throw AuthException(
+                AuthErrorCode.FAILED_TO_PARSE_ID_TOKEN,
+                "Failed to parse token: ${e.message}"
+            )
         }
     }
 
     private fun decodeBase64UrlSafe(encoded: String): ByteArray {
-        return runCatching {
+        return try {
             Base64.getUrlDecoder().decode(encoded)
-        }.getOrElse { exception ->
+        } catch (e: IllegalArgumentException) {
             throw AuthException(
-                AuthErrorCode.INVALID_ID_TOKEN_FORMAT, "Invalid Base64 encoding: ${exception.message}"
+                AuthErrorCode.INVALID_ID_TOKEN_FORMAT,
+                "Invalid Base64 encoding: ${e.message}"
             )
         }
     }
@@ -104,5 +107,14 @@ class AppleAuthStrategy(
         val sub: String,
         val email: String?,
         val name: String?
-    )
+    ) {
+        init {
+            require(sub.isNotBlank()) { "Subject cannot be blank" }
+            email?.let {
+                require(it.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))) {
+                    "Invalid email format: $it"
+                }
+            }
+        }
+    }
 }
