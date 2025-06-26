@@ -9,10 +9,8 @@ class KakaoApi internal constructor(
 ) {
     fun fetchUserInfo(accessToken: String): Result<KakaoUserInfo> {
         return runCatching {
-            return runCatching {
-                val response = kakaoFeignApi.getUserInfo("Bearer $accessToken")
-                KakaoUserInfo.from(response)
-            }
+            val response = kakaoFeignApi.getUserInfo("Bearer $accessToken")
+            KakaoUserInfo.from(response)
         }
     }
 }
