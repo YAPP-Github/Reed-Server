@@ -6,6 +6,7 @@ import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.helper.AuthTokenHelper
 import org.yapp.apis.auth.service.SocialAuthService
+import org.yapp.apis.auth.service.TokenService
 import org.yapp.apis.auth.service.UserAuthService
 import java.util.*
 
@@ -13,6 +14,7 @@ import java.util.*
 class AuthUseCase(
     private val socialAuthService: SocialAuthService,
     private val userAuthService: UserAuthService,
+    private val tokenService: TokenService,
     private val authTokenHelper: AuthTokenHelper
 ) {
 
@@ -25,11 +27,13 @@ class AuthUseCase(
 
     fun refreshToken(refreshToken: String): TokenPairResponse {
         val userId = authTokenHelper.validateAndGetUserIdFromRefreshToken(refreshToken)
+        authTokenHelper.deleteToken(refreshToken)
         return authTokenHelper.generateTokenPair(userId)
     }
 
     fun signOut(userId: UUID) {
-        authTokenHelper.deleteToken(userId)
+        val refreshToken = tokenService.getRefreshTokenByUserId(userId)
+        authTokenHelper.deleteToken(refreshToken.token)
     }
 
     fun getUserProfile(userId: UUID): UserProfileResponse {
