@@ -3,16 +3,16 @@ package org.yapp.infra.user.repository
 import org.springframework.stereotype.Repository
 import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
-import org.yapp.infra.user.entity.UserEntity
 import org.yapp.domain.user.UserRepository
+import org.yapp.globalutils.util.TimeProvider
+import org.yapp.infra.user.entity.UserEntity
 import java.util.*
 
-/**
- * Implementation of UserRepository using JPA.
- */
+
 @Repository
 class UserRepositoryImpl(
-    private val jpaUserRepository: JpaUserRepository
+    private val jpaUserRepository: JpaUserRepository,
+    private val timeProvider: TimeProvider
 ) : UserRepository {
 
     override fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): User? {
@@ -33,5 +33,35 @@ class UserRepositoryImpl(
         return jpaUserRepository.findById(id).orElseThrow {
             NoSuchElementException("User not found with id: $id")
         }.toDomain()
+    }
+
+    override fun findByProviderTypeAndProviderIdIncludingDeleted(
+        providerType: ProviderType,
+        providerId: String
+    ): User? {
+        return jpaUserRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType, providerId)?.toDomain()
+    }
+
+    override fun findByEmailIncludingDeleted(email: String): User? {
+        return jpaUserRepository.findByEmailIncludingDeleted(email)?.toDomain()
+    }
+
+    override fun softDelete(user: User): User {
+        val userEntity = jpaUserRepository.findById(user.id!!).orElseThrow {
+            NoSuchElementException("User not found with id: ${user.id}")
+        }
+        userEntity.deletedAt = timeProvider.now()
+        val savedEntity = jpaUserRepository.save(userEntity)
+        return savedEntity.toDomain()
+    }
+
+    override fun restore(user: User): User {
+        val userEntity = jpaUserRepository.findByProviderTypeAndProviderIdIncludingDeleted(
+            user.providerType, user.providerId
+        )
+            ?: throw NoSuchElementException("User not found with provider: ${user.providerType} and id: ${user.providerId}")
+        userEntity.deletedAt = null
+        val savedEntity = jpaUserRepository.save(userEntity)
+        return savedEntity.toDomain()
     }
 }

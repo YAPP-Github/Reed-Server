@@ -47,7 +47,7 @@ interface AuthControllerApi {
 
     @Operation(
         summary = "Refresh token",
-        description = "Refresh an access token using a refresh token"
+        description = "Refresh an access token using a refresh token. Returns both a new access token and a new refresh token. The client MUST use the new refresh token for subsequent refreshes, as the old refresh token is deleted from the server."
     )
     @ApiResponses(
         value = [

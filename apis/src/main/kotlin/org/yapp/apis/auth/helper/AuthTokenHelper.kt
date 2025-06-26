@@ -22,16 +22,15 @@ class AuthTokenHelper(
     }
 
     fun validateAndGetUserIdFromRefreshToken(refreshToken: String): UUID {
-        val userId = jwtTokenService.getUserIdFromToken(refreshToken)
-        tokenService.validateRefreshTokenOrThrow(userId, refreshToken)
-        return userId
+        tokenService.validateRefreshTokenByTokenOrThrow(refreshToken)
+        return tokenService.getUserIdFromToken(refreshToken)
     }
 
     fun getUserIdFromAccessToken(accessToken: String): UUID {
         return jwtTokenService.getUserIdFromToken(accessToken)
     }
 
-    fun deleteToken(userId: UUID) {
-        tokenService.delete(userId)
+    fun deleteToken(token: String) {
+        tokenService.deleteByToken(token)
     }
 }
