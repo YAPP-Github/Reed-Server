@@ -8,6 +8,4 @@ interface JpaRefreshTokenRepository : CrudRepository<RefreshTokenEntity, UUID> {
     fun findByUserId(userId: UUID): RefreshTokenEntity?
 
     fun findByToken(token: String): RefreshTokenEntity?
-
-    fun save(refreshTokenEntity: RefreshTokenEntity): RefreshTokenEntity
 }
