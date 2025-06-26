@@ -22,30 +22,22 @@ class JwtTokenProvider(
     private val refreshTokenExpiration: Long
 ) {
 
+    companion object {
+        private const val TOKEN_TYPE_CLAIM = "type"
+        private const val ACCESS_TOKEN_TYPE = "access"
+        private const val REFRESH_TOKEN_TYPE = "refresh"
+        private const val DEFAULT_ROLE = "ROLE_USER"
+        private const val MILLISECONDS_PER_SECOND = 1000L
+    }
+
     private val key = Keys.hmacShaKeyFor(secretKey.toByteArray())
 
     fun generateAccessToken(userId: UUID): String {
-        val now = Date()
-        val expiryDate = Date(now.time + accessTokenExpiration * 1000)
-        return Jwts.builder()
-            .setSubject(userId.toString())
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .claim("type", "access")
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact()
+        return generateToken(userId, accessTokenExpiration, ACCESS_TOKEN_TYPE)
     }
 
     fun generateRefreshToken(userId: UUID): String {
-        val now = Date()
-        val expiryDate = Date(now.time + refreshTokenExpiration * 1000)
-        return Jwts.builder()
-            .setSubject(userId.toString())
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .claim("type", "refresh")
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact()
+        return generateToken(userId, refreshTokenExpiration, REFRESH_TOKEN_TYPE)
     }
 
     fun validateToken(token: String): Boolean {
@@ -75,13 +67,12 @@ class JwtTokenProvider(
 
     fun getTokenType(token: String): String {
         val claims = parseToken(token)
-        return when (val type = claims["type"]) {
+        return when (val type = claims[TOKEN_TYPE_CLAIM]) {
             is String -> type
             null -> throw CustomJwtException(
                 JwtErrorCode.INVALID_JWT_TOKEN,
                 "Token type claim is missing"
             )
-
             else -> throw CustomJwtException(
                 JwtErrorCode.INVALID_JWT_TOKEN,
                 "Token type claim has invalid type: ${type::class.simpleName}"
@@ -92,7 +83,7 @@ class JwtTokenProvider(
     fun getAuthentication(token: String): Authentication {
         validateTokenAndThrow(token)
         val userId = getUserIdFromToken(token)
-        val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
+        val authorities = listOf(SimpleGrantedAuthority(DEFAULT_ROLE))
         return UsernamePasswordAuthenticationToken(userId, "", authorities)
     }
 
@@ -121,5 +112,18 @@ class JwtTokenProvider(
         } catch (e: IllegalArgumentException) {
             throw CustomJwtException(JwtErrorCode.EMPTY_JWT_CLAIMS)
         }
+    }
+
+    private fun generateToken(userId: UUID, expiration: Long, type: String): String {
+        val now = Date()
+        val expiryDate = Date(now.time + expiration * MILLISECONDS_PER_SECOND)
+
+        return Jwts.builder()
+            .setSubject(userId.toString())
+            .setIssuedAt(now)
+            .setExpiration(expiryDate)
+            .claim("type", type)
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact()
     }
 }
