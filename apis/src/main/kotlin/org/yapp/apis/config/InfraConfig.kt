@@ -12,5 +12,4 @@ import org.yapp.infra.InfraBaseConfigGroup
         InfraBaseConfigGroup.REDIS,
     ]
 )
-class InfraConfig {
-}
+class InfraConfig

@@ -8,7 +8,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
 import org.yapp.gateway.jwt.exception.JwtErrorCode
-import org.yapp.gateway.jwt.exception.JwtException
+import org.yapp.gateway.jwt.exception.JwtException as CustomJwtException
+
 import java.util.*
 
 @Component
@@ -65,7 +66,10 @@ class JwtTokenProvider(
         return try {
             claims.subject.let { UUID.fromString(it) }
         } catch (e: NumberFormatException) {
-            throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN, "Invalid user ID in token")
+            throw CustomJwtException(
+                JwtErrorCode.INVALID_JWT_TOKEN,
+                "Invalid user ID in token"
+            )
         }
     }
 
@@ -73,8 +77,12 @@ class JwtTokenProvider(
         val claims = parseToken(token)
         return when (val type = claims["type"]) {
             is String -> type
-            null -> throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN, "Token type claim is missing")
-            else -> throw JwtException(
+            null -> throw CustomJwtException(
+                JwtErrorCode.INVALID_JWT_TOKEN,
+                "Token type claim is missing"
+            )
+
+            else -> throw CustomJwtException(
                 JwtErrorCode.INVALID_JWT_TOKEN,
                 "Token type claim has invalid type: ${type::class.simpleName}"
             )
@@ -103,15 +111,15 @@ class JwtTokenProvider(
                 .parseClaimsJws(token)
                 .body
         } catch (e: SecurityException) {
-            throw JwtException(JwtErrorCode.INVALID_JWT_SIGNATURE)
+            throw CustomJwtException(JwtErrorCode.INVALID_JWT_SIGNATURE)
         } catch (e: MalformedJwtException) {
-            throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN)
+            throw CustomJwtException(JwtErrorCode.INVALID_JWT_TOKEN)
         } catch (e: ExpiredJwtException) {
-            throw JwtException(JwtErrorCode.EXPIRED_JWT_TOKEN)
+            throw CustomJwtException(JwtErrorCode.EXPIRED_JWT_TOKEN)
         } catch (e: UnsupportedJwtException) {
-            throw JwtException(JwtErrorCode.UNSUPPORTED_JWT_TOKEN)
+            throw CustomJwtException(JwtErrorCode.UNSUPPORTED_JWT_TOKEN)
         } catch (e: IllegalArgumentException) {
-            throw JwtException(JwtErrorCode.EMPTY_JWT_CLAIMS)
+            throw CustomJwtException(JwtErrorCode.EMPTY_JWT_CLAIMS)
         }
     }
 }

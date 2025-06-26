@@ -1,7 +1,7 @@
 package org.yapp.gateway.jwt.exception
 
 import org.springframework.http.HttpStatus
-import org.yapp.globalutils.global.exception.BaseErrorCode
+import org.yapp.globalutils.exception.BaseErrorCode
 
 /**
  * Error codes for JWT-related errors.
