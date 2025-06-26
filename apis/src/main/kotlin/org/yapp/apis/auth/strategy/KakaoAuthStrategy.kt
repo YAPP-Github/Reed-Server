@@ -10,6 +10,7 @@ import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.helper.KakaoApiHelper
 import org.yapp.apis.util.NicknameGenerator
 import org.yapp.domain.auth.ProviderType
+import org.yapp.infra.external.oauth.kakao.KakaoApi
 
 /**
  * Implementation of AuthStrategy for Kakao authentication.
@@ -26,7 +27,7 @@ class KakaoAuthStrategy(
     override fun authenticate(credentials: AuthCredentials): UserCreateInfo {
         return try {
             val kakaoCredentials = validateCredentials(credentials)
-            val kakaoUser = kakaoApiHelper.fetchUserInfo(kakaoCredentials.accessToken)
+            val kakaoUser = kakaoApiHelper.getUserInfo(kakaoCredentials.accessToken)
             createUserInfo(kakaoUser)
         } catch (exception: Exception) {
             log.error("Kakao authentication failed", exception)
@@ -45,11 +46,11 @@ class KakaoAuthStrategy(
             )
     }
 
-    private fun createUserInfo(kakaoUser: KakaoApiHelper.KakaoUserResponse): UserCreateInfo {
+    private fun createUserInfo(kakaoUser: KakaoApi.KakaoUserInfo): UserCreateInfo {
         return UserCreateInfo.of(
-            email = kakaoUser.kakaoAccount?.email ?: ("kakao_${kakaoUser.id}@kakao.com"),
+            email = kakaoUser.email ?: ("kakao_${kakaoUser.id}@kakao.com"),
             nickname = NicknameGenerator.generate(),
-            profileImageUrl = kakaoUser.kakaoAccount?.profile?.profileImageUrl,
+            profileImageUrl = kakaoUser.profileImageUrl,
             providerType = ProviderType.KAKAO,
             providerId = kakaoUser.id.toString()
         )
