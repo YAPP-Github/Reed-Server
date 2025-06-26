@@ -7,6 +7,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import org.yapp.infra.InfraBaseConfig
 
@@ -14,6 +15,7 @@ import org.yapp.infra.InfraBaseConfig
  * Configuration for Redis.
  */
 @Configuration
+@EnableRedisRepositories(basePackages = ["org.yapp.infra.external.redis.repository"])
 class RedisConfig : InfraBaseConfig {
 
     @Value("\${spring.data.redis.host:localhost}")
