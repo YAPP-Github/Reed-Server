@@ -28,7 +28,7 @@ class TokenDomainRedisService(
 
     fun validateRefreshTokenByToken(refreshToken: String): Boolean {
         val storedToken = refreshTokenRepository.findByToken(refreshToken)
-        return storedToken != null
+        return storedToken != null && storedToken.expiresAt.isAfter(LocalDateTime.now())
     }
 
     fun getUserIdFromToken(refreshToken: String): UUID? {
