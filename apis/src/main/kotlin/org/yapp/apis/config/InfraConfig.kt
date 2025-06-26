@@ -10,6 +10,7 @@ import org.yapp.infra.InfraBaseConfigGroup
         InfraBaseConfigGroup.JPA,
         InfraBaseConfigGroup.ASYNC,
         InfraBaseConfigGroup.REDIS,
+        InfraBaseConfigGroup.OAUTH
     ]
 )
 class InfraConfig
