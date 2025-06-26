@@ -2,7 +2,7 @@ name: PR Title Labeler
 
 on:
   pull_request_target:
-    types: [opened, edited, reopened]
+    types: [ opened, edited, reopened ]
 
 jobs:
   label-pr:
@@ -29,9 +29,13 @@ jobs:
               { pattern: /^style:/i, label: '🎨 style' }
             ];
 
-            const labelsToAdd = labelMap
-              .filter(entry => entry.pattern.test(prTitle))
-              .map(entry => entry.label);
+            const labelsToAdd = Array.from(
+              new Set(
+                labelMap
+                  .filter(entry => entry.pattern.test(prTitle))
+                  .map(entry => entry.label)
+              )
+            );
 
             if (labelsToAdd.length > 0) {
               await github.rest.issues.addLabels({
