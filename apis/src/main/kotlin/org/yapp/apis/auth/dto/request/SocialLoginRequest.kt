@@ -13,38 +13,32 @@ import org.yapp.domain.auth.ProviderType
     name = "SocialLoginRequest",
     description = "DTO for social login requests"
 )
-data class SocialLoginRequest(
-
-    @Schema(
-        description = "Type of social login provider (e.g., KAKAO, APPLE)",
-        example = "KAKAO",
-        required = true
-    )
+data class SocialLoginRequest private constructor(
+    @Schema(description = "Type of social login provider", example = "KAKAO", required = true)
     @field:NotBlank(message = "Provider type is required")
-    val providerType: String,
+    val providerType: String? = null,
 
-    @Schema(
-        description = "OAuth token issued by the social provider",
-        example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-        required = true
-    )
+    @Schema(description = "OAuth token issued by the social provider", example = "eyJ...", required = true)
     @field:NotBlank(message = "OAuth token is required")
-    val oauthToken: String
+    val oauthToken: String? = null
 ) {
+    fun validProviderType(): String = providerType!!
+    fun validOauthToken(): String = oauthToken!!
+
     companion object {
         fun toCredentials(request: SocialLoginRequest): AuthCredentials {
             val provider = try {
-                ProviderType.valueOf(request.providerType.uppercase())
+                ProviderType.valueOf(request.validProviderType().uppercase())
             } catch (e: IllegalArgumentException) {
                 throw AuthException(
                     AuthErrorCode.UNSUPPORTED_PROVIDER_TYPE,
-                    "Unsupported provider type: ${request.providerType}"
+                    "Unsupported provider type: ${request.validProviderType()}"
                 )
             }
 
             return when (provider) {
-                ProviderType.KAKAO -> KakaoAuthCredentials(request.oauthToken)
-                ProviderType.APPLE -> AppleAuthCredentials(request.oauthToken)
+                ProviderType.KAKAO -> KakaoAuthCredentials(request.validOauthToken())
+                ProviderType.APPLE -> AppleAuthCredentials(request.validOauthToken())
             }
         }
     }

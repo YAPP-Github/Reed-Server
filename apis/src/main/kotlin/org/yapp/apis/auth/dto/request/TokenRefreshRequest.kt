@@ -15,5 +15,7 @@ data class TokenRefreshRequest private constructor(
         example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
         required = true
     )
-    val refreshToken: String
-)
+    val refreshToken: String? = null
+) {
+    fun validRefreshToken(): String = refreshToken!!
+}
