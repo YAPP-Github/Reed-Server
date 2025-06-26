@@ -7,9 +7,13 @@ import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 class KakaoApi internal constructor(
     private val kakaoFeignApi: KakaoFeignApi
 ) {
+    companion object {
+        private const val BEARER_PREFIX = "Bearer "
+    }
+
     fun fetchUserInfo(accessToken: String): Result<KakaoUserInfo> {
         return runCatching {
-            val response = kakaoFeignApi.getUserInfo("Bearer $accessToken")
+            val response = kakaoFeignApi.getUserInfo(BEARER_PREFIX + accessToken)
             KakaoUserInfo.from(response)
         }
     }
