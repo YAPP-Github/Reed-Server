@@ -1,5 +1,6 @@
 package org.yapp.globalutils.exception
 
+import jakarta.validation.ConstraintViolationException
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -18,10 +19,12 @@ class GlobalExceptionHandler {
     private val log = KotlinLogging.logger {}
 
     /**
-     * Handle BindException.
+     * BindException 처리
      *
-     * @param ex The exception.
-     * @return The response entity.
+     * 주로 다음과 같은 경우에 발생합니다:
+     * - @ModelAttribute 바인딩 실패
+     * - 요청 파라미터 타입 변환 실패
+     * - URL 파라미터 바인딩 오류
      */
     @ExceptionHandler(BindException::class)
     protected fun handleParamViolationException(ex: BindException): ResponseEntity<ErrorResponse> {
@@ -39,10 +42,7 @@ class GlobalExceptionHandler {
     }
 
     /**
-     * Handle CommonException.
-     *
-     * @param ex The exception.
-     * @return The response entity.
+     * 비즈니스 로직 처리 중 발생하는 커스텀 예외 처리
      */
     @ExceptionHandler(CommonException::class)
     protected fun handleApplicationException(ex: CommonException): ResponseEntity<ErrorResponse> {
@@ -59,6 +59,9 @@ class GlobalExceptionHandler {
         return ResponseEntity(error, errorCode.getHttpStatus())
     }
 
+    /**
+     * @Valid를 통한 요청 본문(@RequestBody) 검증 실패 처리
+     */
     @ExceptionHandler(MethodArgumentNotValidException::class)
     protected fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         val commonErrorCode = CommonErrorCode.INVALID_REQUEST
@@ -78,6 +81,32 @@ class GlobalExceptionHandler {
         return ResponseEntity(error, commonErrorCode.getHttpStatus())
     }
 
+
+    /**
+     * 메서드 파라미터 검증 실패(@RequestParam, @PathVariable 등)
+     */
+    @ExceptionHandler(ConstraintViolationException::class)
+    protected fun handleConstraintViolationException(ex: ConstraintViolationException): ResponseEntity<ErrorResponse> {
+        val commonErrorCode = CommonErrorCode.INVALID_REQUEST
+
+        val constraintErrors = ex.constraintViolations.joinToString(", ") {
+            "${it.propertyPath}: ${it.message}"
+        }
+
+        log.warn { "Constraint validation failed: $constraintErrors" }
+
+        val error = ErrorResponse.builder()
+            .status(commonErrorCode.getHttpStatus().value())
+            .message("Constraint validation failed: $constraintErrors")
+            .code(commonErrorCode.getCode())
+            .build()
+
+        return ResponseEntity(error, commonErrorCode.getHttpStatus())
+    }
+
+    /**
+     * JSON 파싱 실패 또는 잘못된 형식의 요청 본문 처리
+     */
     @ExceptionHandler(HttpMessageNotReadableException::class)
     protected fun handleInvalidJson(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
         val commonErrorCode = CommonErrorCode.MALFORMED_JSON
@@ -93,6 +122,12 @@ class GlobalExceptionHandler {
         return ResponseEntity(error, commonErrorCode.getHttpStatus())
     }
 
+    /**
+     * 그 외 모든 예외 처리
+     *
+     * 예외가 위에서 처리되지 않은 경우 이 핸들러가 최종 처리합니다.
+     * 사용자에게는 일반적인 오류 메시지를 전달하고, 내부 로그에는 상세 정보를 기록합니다.
+     */
     @ExceptionHandler(Exception::class)
     protected fun handleGeneralException(ex: Exception): ResponseEntity<ErrorResponse> {
         val commonErrorCode = CommonErrorCode.INTERNAL_SERVER_ERROR
