@@ -1,5 +1,6 @@
 package org.yapp.domain.service.domain
 
+import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
 import org.yapp.domain.user.UserRepository
 import org.yapp.domain.user.vo.SocialUserProfile
@@ -19,22 +20,14 @@ class UserDomainService(
     fun findByEmail(email: String): User? =
         userRepository.findByEmail(email)
 
-    fun findByProvider(profile: SocialUserProfile): User? =
-        userRepository.findByProviderTypeAndProviderId(profile.providerType, profile.providerId)
+    fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): User? =
+        userRepository.findByProviderTypeAndProviderId(providerType, providerId)
 
-    fun findDeletedByProvider(profile: SocialUserProfile): User? =
-        userRepository.findByProviderTypeAndProviderIdIncludingDeleted(profile.providerType, profile.providerId)
-
-    fun findDeletedByEmail(email: String): User? =
-        userRepository.findByEmailIncludingDeleted(email)
+    fun findByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): User? =
+        userRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType, providerId)
 
     fun existsActiveByEmail(email: String): Boolean =
         findByEmail(email) != null
-
-    fun existsDeletedByEmailWithDifferentProvider(profile: SocialUserProfile): Boolean {
-        val deletedUser = findDeletedByEmail(profile.email)
-        return deletedUser != null && deletedUser.providerType != profile.providerType
-    }
 
     fun create(profile: SocialUserProfile): User {
         val now = timeProvider.now()

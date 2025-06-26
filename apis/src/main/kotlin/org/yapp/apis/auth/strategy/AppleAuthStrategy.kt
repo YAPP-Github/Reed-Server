@@ -47,10 +47,7 @@ class AppleAuthStrategy(
 
     private fun createUserInfo(payload: AppleJwtHelper.AppleIdTokenPayload): UserCreateInfo {
         return UserCreateInfo.of(
-            email = payload.email ?: throw AuthException(
-                AuthErrorCode.EMAIL_NOT_FOUND,
-                "Email not found in Apple ID token"
-            ),
+            email = payload.email,
             nickname = NicknameGenerator.generate(),
             profileImageUrl = null, // Apple doesn't provide profile image
             providerType = ProviderType.APPLE,

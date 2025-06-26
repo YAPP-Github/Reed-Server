@@ -4,15 +4,13 @@ import org.springframework.stereotype.Repository
 import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
 import org.yapp.domain.user.UserRepository
-import org.yapp.globalutils.util.TimeProvider
 import org.yapp.infra.user.entity.UserEntity
 import java.util.*
 
 
 @Repository
 class UserRepositoryImpl(
-    private val jpaUserRepository: JpaUserRepository,
-    private val timeProvider: TimeProvider
+    private val jpaUserRepository: JpaUserRepository
 ) : UserRepository {
 
     override fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): User? {
@@ -36,23 +34,9 @@ class UserRepositoryImpl(
     }
 
     override fun findByProviderTypeAndProviderIdIncludingDeleted(
-        providerType: ProviderType,
-        providerId: String
+        providerType: ProviderType, providerId: String
     ): User? {
         return jpaUserRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType, providerId)?.toDomain()
-    }
-
-    override fun findByEmailIncludingDeleted(email: String): User? {
-        return jpaUserRepository.findByEmailIncludingDeleted(email)?.toDomain()
-    }
-
-    override fun softDelete(user: User): User {
-        val userEntity = jpaUserRepository.findById(user.id!!).orElseThrow {
-            NoSuchElementException("User not found with id: ${user.id}")
-        }
-        userEntity.deletedAt = timeProvider.now()
-        val savedEntity = jpaUserRepository.save(userEntity)
-        return savedEntity.toDomain()
     }
 
     override fun restore(user: User): User {
