@@ -12,5 +12,4 @@ interface RefreshTokenRepository {
     fun deleteByToken(token: String)
 
     fun save(refreshToken: RefreshToken): RefreshToken
-
 }

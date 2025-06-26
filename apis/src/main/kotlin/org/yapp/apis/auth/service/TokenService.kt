@@ -12,7 +12,6 @@ class TokenService(
     private val tokenDomainRedisService: TokenDomainRedisService,
 ) {
 
-
     fun deleteByToken(token: String) {
         tokenDomainRedisService.deleteRefreshTokenByToken(token)
     }

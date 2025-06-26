@@ -21,10 +21,7 @@ class RefreshTokenRepositoryImpl(
     }
 
     override fun deleteByToken(token: String) {
-        val entity = jpaRefreshTokenRepository.findByToken(token)
-        if (entity != null) {
-            jpaRefreshTokenRepository.deleteById(entity.id)
-        }
+        jpaRefreshTokenRepository.deleteByToken(token)
     }
 
     override fun save(refreshToken: RefreshToken): RefreshToken {
