@@ -110,11 +110,6 @@ class AppleAuthStrategy(
     ) {
         init {
             require(sub.isNotBlank()) { "Subject cannot be blank" }
-            email?.let {
-                require(it.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))) {
-                    "Invalid email format: $it"
-                }
-            }
         }
     }
 }
