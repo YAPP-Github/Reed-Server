@@ -1,4 +1,4 @@
-package org.yapp.globalutils
+package org.yapp.globalutils.annotation
 
 import org.springframework.stereotype.Component
 
@@ -6,6 +6,4 @@ import org.springframework.stereotype.Component
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 @Component
-annotation class DomainService {
-
-}
+annotation class DomainService

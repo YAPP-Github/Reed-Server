@@ -1,6 +1,6 @@
 package org.yapp.domain.service.redis
 
-import org.yapp.globalutils.DomainService
+import org.yapp.globalutils.annotation.DomainService
 import org.yapp.domain.auth.TokenRepository
 import java.util.*
 

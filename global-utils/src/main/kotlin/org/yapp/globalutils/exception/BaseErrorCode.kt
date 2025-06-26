@@ -1,4 +1,4 @@
-package org.yapp.globalutils.global.exception
+package org.yapp.globalutils.exception
 
 import org.springframework.http.HttpStatus
 

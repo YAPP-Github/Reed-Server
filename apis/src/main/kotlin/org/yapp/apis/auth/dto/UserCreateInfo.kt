@@ -1,22 +1,23 @@
 package org.yapp.apis.auth.dto
 
-import org.jetbrains.annotations.NotNull
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.NotBlank
 import org.yapp.domain.auth.ProviderType
 
-data class UserCreateInfo private constructor(
-    @field:NotNull
-    val email: String,
+data class UserCreateInfo(
+    @field:NotBlank(message = "이메일은 필수 입력값입니다.")
+    val email: String? = null,
 
-    @field:NotNull
-    val nickname: String,
+    @field:NotBlank(message = "닉네임은 필수 입력값입니다.")
+    val nickname: String? = null,
 
     val profileImageUrl: String? = null,
 
-    @field:NotNull
-    val providerType: ProviderType,
+    @field:NotNull(message = "프로바이더 타입은 필수 입력값입니다.")
+    val providerType: ProviderType? = null,
 
-    @field:NotNull
-    val providerId: String
+    @field:NotBlank(message = "프로바이더 ID는 필수 입력값입니다.")
+    val providerId: String? = null
 ) {
     companion object {
         fun of(

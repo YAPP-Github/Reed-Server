@@ -1,4 +1,4 @@
-package org.yapp.globalutils
+package org.yapp.globalutils.util
 
 import java.time.LocalDateTime
 

@@ -1,4 +1,4 @@
-package org.yapp.globalutils
+package org.yapp.globalutils.util
 
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime

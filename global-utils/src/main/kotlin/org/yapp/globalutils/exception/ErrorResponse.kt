@@ -1,4 +1,4 @@
-package org.yapp.globalutils.global.exception
+package org.yapp.globalutils.exception
 
 /**
  * Error response class for API responses.
