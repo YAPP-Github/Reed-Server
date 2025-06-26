@@ -27,7 +27,7 @@ class UserAuthService(
 
         // 2. soft-deleted 유저 조회 및 복구
         userDomainService.findByProviderTypeAndProviderIdIncludingDeleted(userInfo.providerType, userInfo.providerId)
-            ?.let { return userDomainService.restore(it) }
+            ?.let { return userDomainService.restoreDeletedUser(it) }
 
         // 3. 새 유저 생성할 때만 SocialUserProfile 생성
         return createNewUser(userInfo)

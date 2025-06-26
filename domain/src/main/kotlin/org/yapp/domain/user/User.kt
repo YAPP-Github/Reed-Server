@@ -28,6 +28,17 @@ data class User private constructor(
     val updatedAt: LocalDateTime,
     val deletedAt: LocalDateTime? = null
 ) {
+
+    fun restore(): User {
+        require(this.isDeleted()) { "User is already active" }
+        return this.copy(
+            deletedAt = null,
+            updatedAt = LocalDateTime.now()
+        )
+    }
+
+    fun isDeleted(): Boolean = deletedAt != null
+
     companion object {
         fun create(
             email: String,

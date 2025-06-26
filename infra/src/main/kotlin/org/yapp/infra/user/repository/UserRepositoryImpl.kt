@@ -38,14 +38,4 @@ class UserRepositoryImpl(
     ): User? {
         return jpaUserRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType, providerId)?.toDomain()
     }
-
-    override fun restore(user: User): User {
-        val userEntity = jpaUserRepository.findByProviderTypeAndProviderIdIncludingDeleted(
-            user.providerType, user.providerId
-        )
-            ?: throw NoSuchElementException("User not found with provider: ${user.providerType} and id: ${user.providerId}")
-        userEntity.deletedAt = null
-        val savedEntity = jpaUserRepository.save(userEntity)
-        return savedEntity.toDomain()
-    }
 }

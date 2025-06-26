@@ -43,8 +43,8 @@ class UserDomainService(
         return save(user)
     }
 
-    fun restore(user: User): User =
-        userRepository.restore(user)
+    fun restoreDeletedUser(deletedUser: User): User =
+        save(deletedUser.restore())
 
     fun save(user: User): User =
         userRepository.save(user)
