@@ -1,6 +1,7 @@
 package org.yapp.infra.external.oauth.kakao
 
 import org.springframework.stereotype.Component
+import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
 @Component
 class KakaoApi internal constructor(
@@ -8,21 +9,10 @@ class KakaoApi internal constructor(
 ) {
     fun fetchUserInfo(accessToken: String): Result<KakaoUserInfo> {
         return runCatching {
-            val response = kakaoFeignApi.getUserInfo("Bearer $accessToken")
-
-            KakaoUserInfo(
-                id = response.id,
-                email = response.kakaoAccount?.email,
-                nickname = response.kakaoAccount?.profile?.nickname,
-                profileImageUrl = response.kakaoAccount?.profile?.profileImageUrl
-            )
+            return runCatching {
+                val response = kakaoFeignApi.getUserInfo("Bearer $accessToken")
+                KakaoUserInfo.from(response)
+            }
         }
     }
-
-    data class KakaoUserInfo(
-        val id: Long,
-        val email: String?,
-        val nickname: String?,
-        val profileImageUrl: String?
-    )
 }

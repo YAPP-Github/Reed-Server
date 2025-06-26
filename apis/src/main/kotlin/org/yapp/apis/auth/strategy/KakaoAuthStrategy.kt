@@ -10,7 +10,7 @@ import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.helper.KakaoApiHelper
 import org.yapp.apis.util.NicknameGenerator
 import org.yapp.domain.auth.ProviderType
-import org.yapp.infra.external.oauth.kakao.KakaoApi
+import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
 /**
  * Implementation of AuthStrategy for Kakao authentication.
@@ -46,7 +46,7 @@ class KakaoAuthStrategy(
             )
     }
 
-    private fun createUserInfo(kakaoUser: KakaoApi.KakaoUserInfo): UserCreateInfo {
+    private fun createUserInfo(kakaoUser: KakaoUserInfo): UserCreateInfo {
         return UserCreateInfo.of(
             email = kakaoUser.email ?: ("kakao_${kakaoUser.id}@kakao.com"),
             nickname = NicknameGenerator.generate(),

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.infra.external.oauth.kakao.KakaoApi
+import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
 @Component
 class KakaoApiHelper(
@@ -13,7 +14,7 @@ class KakaoApiHelper(
 ) {
     private val log = KotlinLogging.logger {}
 
-    fun getUserInfo(accessToken: String): KakaoApi.KakaoUserInfo {
+    fun getUserInfo(accessToken: String): KakaoUserInfo {
         return kakaoApi.fetchUserInfo(accessToken)
             .onSuccess { userInfo ->
                 log.info("Successfully fetched Kakao user info for userId: ${userInfo.id}")
