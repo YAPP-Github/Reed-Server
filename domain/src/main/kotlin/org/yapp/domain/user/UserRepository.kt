@@ -15,4 +15,12 @@ interface UserRepository {
     fun save(user: User): User
 
     fun findById(id: UUID): User
+
+    fun findByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): User?
+
+    fun findByEmailIncludingDeleted(email: String): User?
+
+    fun softDelete(user: User): User
+
+    fun restore(user: User): User
 }

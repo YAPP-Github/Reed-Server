@@ -15,6 +15,7 @@ import java.util.*
  * @property providerId The ID from the authentication provider.
  * @property createdAt The timestamp when the user was created.
  * @property updatedAt The timestamp when the user was last updated.
+ * @property deletedAt The timestamp when the user was soft-deleted, or null if the user is not deleted.
  */
 data class User private constructor(
     val id: UUID?,
@@ -24,7 +25,8 @@ data class User private constructor(
     val providerType: ProviderType,
     val providerId: String,
     val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
+    val updatedAt: LocalDateTime,
+    val deletedAt: LocalDateTime? = null
 ) {
     companion object {
         fun create(
@@ -34,7 +36,8 @@ data class User private constructor(
             providerType: ProviderType,
             providerId: String,
             createdAt: LocalDateTime,
-            updatedAt: LocalDateTime
+            updatedAt: LocalDateTime,
+            deletedAt: LocalDateTime? = null
         ): User {
             return User(
                 id = UUID.randomUUID(),
@@ -44,7 +47,8 @@ data class User private constructor(
                 providerType = providerType,
                 providerId = providerId,
                 createdAt = createdAt,
-                updatedAt = updatedAt
+                updatedAt = updatedAt,
+                deletedAt = deletedAt
             )
         }
 
@@ -56,7 +60,8 @@ data class User private constructor(
             providerType: ProviderType,
             providerId: String,
             createdAt: LocalDateTime,
-            updatedAt: LocalDateTime
+            updatedAt: LocalDateTime,
+            deletedAt: LocalDateTime? = null
         ): User {
             return User(
                 id = id,
@@ -66,7 +71,8 @@ data class User private constructor(
                 providerType = providerType,
                 providerId = providerId,
                 createdAt = createdAt,
-                updatedAt = updatedAt
+                updatedAt = updatedAt,
+                deletedAt = deletedAt
             )
         }
     }
