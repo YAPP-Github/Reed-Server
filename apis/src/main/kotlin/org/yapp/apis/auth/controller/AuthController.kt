@@ -14,6 +14,7 @@ import org.yapp.apis.util.AuthUtils
  * Implementation of the authentication controller API.
  */
 @RestController
+@RequestMapping("/api/v1/auth")
 class AuthController(
     private val authUseCase: AuthUseCase
 ) : AuthControllerApi {
