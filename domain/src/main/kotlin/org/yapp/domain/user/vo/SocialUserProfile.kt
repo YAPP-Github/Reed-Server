@@ -1,6 +1,7 @@
 package org.yapp.domain.user.vo
 
 import org.yapp.domain.auth.ProviderType
+import org.yapp.globalutils.util.RegexUtils
 
 data class SocialUserProfile private constructor(
     val email: String,
@@ -11,7 +12,7 @@ data class SocialUserProfile private constructor(
 ) {
     init {
         require(email.isNotBlank()) { "Email must not be blank" }
-        require(email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"))) { "Email format is invalid" }
+        require(RegexUtils.isValidEmail(email)) { "Email format is invalid" }
         require(nickname.isNotBlank()) { "Nickname must not be blank" }
         require(nickname.length in 2..30) { "Nickname length must be between 2 and 30" }
         require(providerId.isNotBlank()) { "ProviderId must not be blank" }
