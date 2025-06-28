@@ -1,6 +1,5 @@
 package org.yapp.apis.auth.usecase
 
-import org.springframework.stereotype.Service
 import org.yapp.apis.auth.dto.AuthCredentials
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
@@ -8,9 +7,10 @@ import org.yapp.apis.auth.helper.AuthTokenHelper
 import org.yapp.apis.auth.service.SocialAuthService
 import org.yapp.apis.auth.service.TokenService
 import org.yapp.apis.auth.service.UserAuthService
+import org.yapp.globalutils.annotation.UseCase
 import java.util.*
 
-@Service
+@UseCase
 class AuthUseCase(
     private val socialAuthService: SocialAuthService,
     private val userAuthService: UserAuthService,
