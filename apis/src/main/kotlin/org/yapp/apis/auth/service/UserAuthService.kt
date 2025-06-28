@@ -1,6 +1,7 @@
 package org.yapp.apis.auth.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.auth.dto.UserCreateInfo
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
@@ -11,6 +12,7 @@ import org.yapp.domain.user.vo.SocialUserProfile
 import java.util.*
 
 @Service
+@Transactional(readOnly = true)
 class UserAuthService(
     private val userDomainService: UserDomainService
 ) {
@@ -20,6 +22,7 @@ class UserAuthService(
             ?: throw AuthException(AuthErrorCode.USER_NOT_FOUND, "User not found: $userId")
     }
 
+    @Transactional
     fun findOrCreateUser(userInfo: UserCreateInfo): User {
         // 1. providerId로 기존 유저 조회
         userDomainService.findByProviderTypeAndProviderId(userInfo.providerType, userInfo.providerId)
@@ -32,6 +35,7 @@ class UserAuthService(
         // 3. 새 유저 생성할 때만 SocialUserProfile 생성
         return createNewUser(userInfo)
     }
+
 
     private fun createNewUser(userInfo: UserCreateInfo): User {
         val finalEmail = userInfo.email?.takeIf { it.isNotBlank() }
