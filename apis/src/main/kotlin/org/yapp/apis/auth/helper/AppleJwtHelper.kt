@@ -3,12 +3,12 @@ package org.yapp.apis.auth.helper
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import mu.KotlinLogging
-import org.springframework.stereotype.Component
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
+import org.yapp.globalutils.annotation.Helper
 import java.util.*
 
-@Component
+@Helper
 class AppleJwtHelper(
     private val objectMapper: ObjectMapper
 ) {

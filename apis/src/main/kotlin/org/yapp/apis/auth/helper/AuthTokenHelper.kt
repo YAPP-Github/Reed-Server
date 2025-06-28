@@ -1,12 +1,12 @@
 package org.yapp.apis.auth.helper
 
-import org.springframework.stereotype.Component
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.service.TokenService
 import org.yapp.gateway.jwt.JwtTokenService
+import org.yapp.globalutils.annotation.Helper
 import java.util.*
 
-@Component
+@Helper
 class AuthTokenHelper(
     private val tokenService: TokenService,
     private val jwtTokenService: JwtTokenService

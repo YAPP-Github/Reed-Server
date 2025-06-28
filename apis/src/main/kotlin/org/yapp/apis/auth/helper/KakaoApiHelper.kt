@@ -1,14 +1,13 @@
 package org.yapp.apis.auth.helper
 
 import mu.KotlinLogging
-import org.springframework.stereotype.Component
-
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
+import org.yapp.globalutils.annotation.Helper
 import org.yapp.infra.external.oauth.kakao.KakaoApi
 import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
-@Component
+@Helper
 class KakaoApiHelper(
     private val kakaoApi: KakaoApi
 ) {
