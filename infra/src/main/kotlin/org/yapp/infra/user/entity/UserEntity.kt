@@ -18,7 +18,7 @@ class UserEntity private constructor(
     @Id
     @JdbcTypeCode(Types.VARCHAR)
     @Column(length = 36, updatable = false, nullable = false)
-    val id: UUID = UuidGenerator.create(),
+    val id: UUID,
 
     @Column(nullable = false, length = 100)
     val email: String,
@@ -56,7 +56,7 @@ class UserEntity private constructor(
 
     companion object {
         fun fromDomain(user: User): UserEntity = UserEntity(
-            id = user.id ?: UuidGenerator.create(),
+            id = user.id, // 도메인 모델의 id가 non-null이므로 안전
             email = user.email,
             nickname = user.nickname,
             profileImageUrl = user.profileImageUrl,

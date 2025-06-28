@@ -18,7 +18,7 @@ import java.util.*
  * @property deletedAt The timestamp when the user was soft-deleted, or null if the user is not deleted.
  */
 data class User private constructor(
-    val id: UUID?,
+    val id: UUID,
     val email: String,
     val nickname: String,
     val profileImageUrl: String?,

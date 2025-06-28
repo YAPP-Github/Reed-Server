@@ -26,7 +26,7 @@ class AuthUseCase(
         val strategy = socialAuthService.resolve(credentials)
         val userInfo = strategy.authenticate(credentials)
         val user = userAuthService.findOrCreateUser(userInfo)
-        return authTokenHelper.generateTokenPair(user.id!!)
+        return authTokenHelper.generateTokenPair(user.id)
     }
 
     @Transactional
@@ -45,7 +45,7 @@ class AuthUseCase(
     fun getUserProfile(userId: UUID): UserProfileResponse {
         val user = userAuthService.findUserById(userId)
         return UserProfileResponse.of(
-            id = user.id!!,
+            id = user.id,
             email = user.email,
             nickname = user.nickname,
             provider = user.providerType
