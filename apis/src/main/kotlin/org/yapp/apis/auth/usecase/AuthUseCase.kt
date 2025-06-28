@@ -1,5 +1,7 @@
 package org.yapp.apis.auth.usecase
 
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.auth.dto.AuthCredentials
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
@@ -11,6 +13,7 @@ import org.yapp.globalutils.annotation.UseCase
 import java.util.*
 
 @UseCase
+@Transactional(readOnly = true)
 class AuthUseCase(
     private val socialAuthService: SocialAuthService,
     private val userAuthService: UserAuthService,
@@ -18,6 +21,7 @@ class AuthUseCase(
     private val authTokenHelper: AuthTokenHelper
 ) {
 
+    @Transactional
     fun signIn(credentials: AuthCredentials): TokenPairResponse {
         val strategy = socialAuthService.resolve(credentials)
         val userInfo = strategy.authenticate(credentials)
@@ -25,12 +29,14 @@ class AuthUseCase(
         return authTokenHelper.generateTokenPair(user.id!!)
     }
 
+    @Transactional
     fun refreshToken(refreshToken: String): TokenPairResponse {
         val userId = authTokenHelper.validateAndGetUserIdFromRefreshToken(refreshToken)
         authTokenHelper.deleteToken(refreshToken)
         return authTokenHelper.generateTokenPair(userId)
     }
 
+    @Transactional
     fun signOut(userId: UUID) {
         val refreshToken = tokenService.getRefreshTokenByUserId(userId)
         authTokenHelper.deleteToken(refreshToken.token)
@@ -46,6 +52,7 @@ class AuthUseCase(
         )
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     fun getUserIdFromAccessToken(accessToken: String): UUID {
         return authTokenHelper.getUserIdFromAccessToken(accessToken)
     }
