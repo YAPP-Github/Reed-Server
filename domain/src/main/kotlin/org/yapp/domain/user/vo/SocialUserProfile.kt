@@ -17,7 +17,7 @@ data class SocialUserProfile private constructor(
         require(nickname.length in 2..30) { "Nickname length must be between 2 and 30" }
         require(providerId.isNotBlank()) { "ProviderId must not be blank" }
         profileImageUrl?.let {
-            require(it.startsWith("http")) { "ProfileImageUrl must be a valid URL" }
+            require(RegexUtils.isValidProfileImageUrl(it)) { "ProfileImageUrl must be a valid URL" }
         }
     }
 
