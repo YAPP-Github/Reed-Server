@@ -1,7 +1,7 @@
 package org.yapp.apis.auth.exception
 
 import org.springframework.http.HttpStatus
-import org.yapp.global.exception.BaseErrorCode
+import org.yapp.globalutils.exception.BaseErrorCode
 
 /**
  * Error codes for authentication-related errors.

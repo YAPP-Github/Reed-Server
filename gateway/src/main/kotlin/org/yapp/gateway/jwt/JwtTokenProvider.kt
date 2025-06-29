@@ -2,14 +2,14 @@ package org.yapp.gateway.jwt
 
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
-import io.jsonwebtoken.security.SignatureException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
 import org.yapp.gateway.jwt.exception.JwtErrorCode
-import org.yapp.gateway.jwt.exception.JwtException
+import org.yapp.gateway.jwt.exception.JwtException as CustomJwtException
+
 import java.util.*
 
 @Component
@@ -22,30 +22,22 @@ class JwtTokenProvider(
     private val refreshTokenExpiration: Long
 ) {
 
+    companion object {
+        private const val TOKEN_TYPE_CLAIM = "type"
+        private const val ACCESS_TOKEN_TYPE = "access"
+        private const val REFRESH_TOKEN_TYPE = "refresh"
+        private const val DEFAULT_ROLE = "ROLE_USER"
+        private const val MILLISECONDS_PER_SECOND = 1000L
+    }
+
     private val key = Keys.hmacShaKeyFor(secretKey.toByteArray())
 
     fun generateAccessToken(userId: UUID): String {
-        val now = Date()
-        val expiryDate = Date(now.time + accessTokenExpiration * 1000)
-        return Jwts.builder()
-            .setSubject(userId.toString())
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .claim("type", "access")
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact()
+        return generateToken(userId, accessTokenExpiration, ACCESS_TOKEN_TYPE)
     }
 
     fun generateRefreshToken(userId: UUID): String {
-        val now = Date()
-        val expiryDate = Date(now.time + refreshTokenExpiration * 1000)
-        return Jwts.builder()
-            .setSubject(userId.toString())
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .claim("type", "refresh")
-            .signWith(key, SignatureAlgorithm.HS512)
-            .compact()
+        return generateToken(userId, refreshTokenExpiration, REFRESH_TOKEN_TYPE)
     }
 
     fun validateToken(token: String): Boolean {
@@ -66,20 +58,32 @@ class JwtTokenProvider(
         return try {
             claims.subject.let { UUID.fromString(it) }
         } catch (e: NumberFormatException) {
-            throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN, "Invalid user ID in token")
+            throw CustomJwtException(
+                JwtErrorCode.INVALID_JWT_TOKEN,
+                "Invalid user ID in token"
+            )
         }
     }
 
     fun getTokenType(token: String): String {
         val claims = parseToken(token)
-        return claims["type"] as? String
-            ?: throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN, "Token type claim is missing")
+        return when (val type = claims[TOKEN_TYPE_CLAIM]) {
+            is String -> type
+            null -> throw CustomJwtException(
+                JwtErrorCode.INVALID_JWT_TOKEN,
+                "Token type claim is missing"
+            )
+            else -> throw CustomJwtException(
+                JwtErrorCode.INVALID_JWT_TOKEN,
+                "Token type claim has invalid type: ${type::class.simpleName}"
+            )
+        }
     }
 
     fun getAuthentication(token: String): Authentication {
         validateTokenAndThrow(token)
         val userId = getUserIdFromToken(token)
-        val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
+        val authorities = listOf(SimpleGrantedAuthority(DEFAULT_ROLE))
         return UsernamePasswordAuthenticationToken(userId, "", authorities)
     }
 
@@ -97,16 +101,29 @@ class JwtTokenProvider(
                 .build()
                 .parseClaimsJws(token)
                 .body
-        } catch (e: SignatureException) {
-            throw JwtException(JwtErrorCode.INVALID_JWT_SIGNATURE)
+        } catch (e: SecurityException) {
+            throw CustomJwtException(JwtErrorCode.INVALID_JWT_SIGNATURE)
         } catch (e: MalformedJwtException) {
-            throw JwtException(JwtErrorCode.INVALID_JWT_TOKEN)
+            throw CustomJwtException(JwtErrorCode.INVALID_JWT_TOKEN)
         } catch (e: ExpiredJwtException) {
-            throw JwtException(JwtErrorCode.EXPIRED_JWT_TOKEN)
+            throw CustomJwtException(JwtErrorCode.EXPIRED_JWT_TOKEN)
         } catch (e: UnsupportedJwtException) {
-            throw JwtException(JwtErrorCode.UNSUPPORTED_JWT_TOKEN)
+            throw CustomJwtException(JwtErrorCode.UNSUPPORTED_JWT_TOKEN)
         } catch (e: IllegalArgumentException) {
-            throw JwtException(JwtErrorCode.EMPTY_JWT_CLAIMS)
+            throw CustomJwtException(JwtErrorCode.EMPTY_JWT_CLAIMS)
         }
+    }
+
+    private fun generateToken(userId: UUID, expiration: Long, type: String): String {
+        val now = Date()
+        val expiryDate = Date(now.time + expiration * MILLISECONDS_PER_SECOND)
+
+        return Jwts.builder()
+            .setSubject(userId.toString())
+            .setIssuedAt(now)
+            .setExpiration(expiryDate)
+            .claim("type", type)
+            .signWith(key, SignatureAlgorithm.HS512)
+            .compact()
     }
 }

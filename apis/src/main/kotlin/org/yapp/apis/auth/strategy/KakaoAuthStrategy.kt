@@ -1,74 +1,58 @@
 package org.yapp.apis.auth.strategy
 
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
+import mu.KotlinLogging
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestTemplate
+import org.yapp.apis.auth.dto.AuthCredentials
+import org.yapp.apis.auth.dto.KakaoAuthCredentials
+import org.yapp.apis.auth.dto.UserCreateInfo
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.service.AuthCredentials
-import org.yapp.apis.auth.service.KakaoAuthCredentials
+import org.yapp.apis.auth.helper.KakaoApiHelper
 import org.yapp.apis.util.NicknameGenerator
 import org.yapp.domain.auth.ProviderType
-import org.yapp.domain.user.User
+import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
 /**
  * Implementation of AuthStrategy for Kakao authentication.
  */
 @Component
 class KakaoAuthStrategy(
-    private val restTemplate: RestTemplate
+    private val kakaoApiHelper: KakaoApiHelper
 ) : AuthStrategy {
 
-    companion object {
-        private const val KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me"
-    }
+    private val log = KotlinLogging.logger {}
 
     override fun getProviderType(): ProviderType = ProviderType.KAKAO
 
-    override fun authenticate(credentials: AuthCredentials): User {
-        if (credentials !is KakaoAuthCredentials) {
-            throw AuthException(AuthErrorCode.INVALID_CREDENTIALS, "Credentials must be KakaoAuthCredentials")
+    override fun authenticate(credentials: AuthCredentials): UserCreateInfo {
+        return try {
+            val kakaoCredentials = validateCredentials(credentials)
+            val kakaoUser = kakaoApiHelper.getUserInfo(kakaoCredentials.accessToken)
+            createUserInfo(kakaoUser)
+        } catch (exception: Exception) {
+            log.error("Kakao authentication failed", exception)
+            when (exception) {
+                is AuthException -> throw exception
+                else -> throw AuthException(AuthErrorCode.FAILED_TO_GET_USER_INFO, exception.message)
+            }
         }
+    }
 
-        val headers = HttpHeaders().apply {
-            set("Authorization", "Bearer ${credentials.accessToken}")
-            set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
-        }
+    private fun validateCredentials(credentials: AuthCredentials): KakaoAuthCredentials {
+        return credentials as? KakaoAuthCredentials
+            ?: throw AuthException(
+                AuthErrorCode.INVALID_CREDENTIALS,
+                "Credentials must be KakaoAuthCredentials"
+            )
+    }
 
-        val entity = HttpEntity<String>(headers)
-        val response = restTemplate.exchange(
-            KAKAO_USER_INFO_URL,
-            HttpMethod.GET,
-            entity,
-            KakaoUserResponse::class.java
-        )
-
-        val kakaoUser = response.body ?: throw AuthException(AuthErrorCode.FAILED_TO_GET_USER_INFO, "Failed to get user info from Kakao")
-
-        return User(
-            email = kakaoUser.kakao_account?.email ?: ("kakao_" + kakaoUser.id),
+    private fun createUserInfo(kakaoUser: KakaoUserInfo): UserCreateInfo {
+        return UserCreateInfo.of(
+            email = kakaoUser.email ?: ("kakao_${kakaoUser.id}@kakao.com"),
             nickname = NicknameGenerator.generate(),
-            profileImageUrl = kakaoUser.kakao_account?.profile?.profile_image_url,
+            profileImageUrl = kakaoUser.profileImageUrl,
             providerType = ProviderType.KAKAO,
             providerId = kakaoUser.id.toString()
         )
     }
-
-
-    data class KakaoUserResponse(
-        val id: Long,
-        val kakao_account: KakaoAccount?
-    )
-
-    data class KakaoAccount(
-        val email: String?,
-        val profile: KakaoProfile?
-    )
-
-    data class KakaoProfile(
-        val nickname: String?,
-        val profile_image_url: String?
-    )
 }

@@ -27,6 +27,7 @@ Global-utils ─────→ External Libraries Only (Apache Commons, Jackson
 
 - **모든 모듈 → Global-utils**: 모든 상위 모듈에서 Global-utils 사용 가능
 - **Global-utils → External Libraries**: Apache Commons, Jackson, Spring Core, Validation 등
+- 기술적 표준 기반의 검증 로직으로, 비즈니스 변화에 영향을 받지 않는 Validator만 포함한다.
 
 ### ❌ Forbidden Dependency Rule
 

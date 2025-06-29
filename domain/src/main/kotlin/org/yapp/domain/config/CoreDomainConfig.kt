@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @EntityScan("org.yapp")
 @EnableJpaRepositories("org.yapp")
-class CoreDomainConfig {
-}
+class CoreDomainConfig

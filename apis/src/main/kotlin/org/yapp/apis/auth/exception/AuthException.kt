@@ -1,6 +1,6 @@
 package org.yapp.apis.auth.exception
 
-import CommonException
+import org.yapp.globalutils.exception.CommonException
 
 class AuthException(
     errorCode: AuthErrorCode,

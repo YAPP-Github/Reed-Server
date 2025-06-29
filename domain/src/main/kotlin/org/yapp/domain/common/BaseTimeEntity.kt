@@ -19,4 +19,7 @@ abstract class BaseTimeEntity {
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     lateinit var updatedAt: LocalDateTime
+
+    @Column(name = "deleted_at")
+    var deletedAt: LocalDateTime? = null
 }

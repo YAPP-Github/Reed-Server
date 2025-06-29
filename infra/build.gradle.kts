@@ -6,6 +6,7 @@ dependencies {
     implementation(Dependencies.Spring.BOOT_STARTER_WEB)
     implementation(Dependencies.Spring.BOOT_STARTER_DATA_JPA)
     implementation(Dependencies.Spring.BOOT_STARTER_DATA_REDIS)
+    implementation(Dependencies.Feign.STARTER_OPENFEIGN)
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
     implementation(Dependencies.Spring.KOTLIN_REFLECT)
 }

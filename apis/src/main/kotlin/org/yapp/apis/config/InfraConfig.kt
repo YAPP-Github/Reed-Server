@@ -1,8 +1,8 @@
 package org.yapp.apis.config
 
 import org.springframework.context.annotation.Configuration
-import org.yapp.EnableInfraBaseConfig
-import org.yapp.InfraBaseConfigGroup
+import org.yapp.infra.EnableInfraBaseConfig
+import org.yapp.infra.InfraBaseConfigGroup
 
 @Configuration(proxyBeanMethods = false)
 @EnableInfraBaseConfig(
@@ -10,7 +10,7 @@ import org.yapp.InfraBaseConfigGroup
         InfraBaseConfigGroup.JPA,
         InfraBaseConfigGroup.ASYNC,
         InfraBaseConfigGroup.REDIS,
+        InfraBaseConfigGroup.OAUTH
     ]
 )
-class InfraConfig {
-}
+class InfraConfig

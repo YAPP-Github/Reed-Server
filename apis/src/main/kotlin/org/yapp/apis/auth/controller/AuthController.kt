@@ -1,7 +1,8 @@
 package org.yapp.apis.auth.controller
 
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
@@ -13,28 +14,33 @@ import org.yapp.apis.util.AuthUtils
  * Implementation of the authentication controller API.
  */
 @RestController
+@RequestMapping("/api/v1/auth")
 class AuthController(
     private val authUseCase: AuthUseCase
 ) : AuthControllerApi {
 
-    override fun signIn(request: SocialLoginRequest): ResponseEntity<AuthResponse> {
+    @PostMapping("/signin")
+    override fun signIn(@RequestBody @Valid request: SocialLoginRequest): ResponseEntity<AuthResponse> {
         val credentials = SocialLoginRequest.toCredentials(request)
         val tokenPair = authUseCase.signIn(credentials)
         return ResponseEntity.ok(AuthResponse.fromTokenPair(tokenPair))
     }
 
-    override fun refreshToken(request: TokenRefreshRequest): ResponseEntity<AuthResponse> {
-        val tokenPair = authUseCase.refreshToken(request.refreshToken)
+    @PostMapping("/refresh")
+    override fun refreshToken(@RequestBody @Valid request: TokenRefreshRequest): ResponseEntity<AuthResponse> {
+        val tokenPair = authUseCase.refreshToken(request.validRefreshToken())
         return ResponseEntity.ok(AuthResponse.fromTokenPair(tokenPair))
     }
 
-    override fun signOut(authorization: String): ResponseEntity<Void> {
+    @PostMapping("/signout")
+    override fun signOut(@RequestHeader("Authorization") authorization: String): ResponseEntity<Unit> {
         val userId = AuthUtils.extractUserIdFromAuthHeader(authorization, authUseCase::getUserIdFromAccessToken)
         authUseCase.signOut(userId)
         return ResponseEntity.noContent().build()
     }
 
-    override fun getUserProfile(authorization: String): ResponseEntity<UserProfileResponse> {
+    @GetMapping("/me")
+    override fun getUserProfile(@RequestHeader("Authorization") authorization: String): ResponseEntity<UserProfileResponse> {
         val userId = AuthUtils.extractUserIdFromAuthHeader(authorization, authUseCase::getUserIdFromAccessToken)
         val userProfile = authUseCase.getUserProfile(userId)
         return ResponseEntity.ok(userProfile)

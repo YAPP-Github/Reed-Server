@@ -1,12 +1,10 @@
 spring:
   application:
     name: apis
-  main:
-    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:apis_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:}
+    password: ${MYSQL_PASSWORD:1234}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

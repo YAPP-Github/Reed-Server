@@ -8,11 +8,13 @@ import java.util.*
  */
 interface UserRepository {
 
-    fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): User?
+    fun findById(id: UUID): User
 
     fun findByEmail(email: String): User?
 
-    fun save(user: User): User
+    fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): User?
 
-    fun findById(id: UUID): User
+    fun findByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): User?
+
+    fun save(user: User): User
 }
