@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: optional:application-secret.properties
+
+  application:
+    name: apis
+
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiration: 1800  # 30 minutes
+  refresh-token-expiration: 1209600  # 2 weeks
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  override-with-generic-response: false
