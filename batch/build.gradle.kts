@@ -6,13 +6,15 @@ dependencies {
     implementation(project(Dependencies.Projects.INFRA))
 
     implementation(Dependencies.Spring.BOOT_STARTER_WEB)
-    implementation(Dependencies.Spring.BOOT_STARTER_DATA_JPA)
     implementation(Dependencies.Spring.BOOT_STARTER_SECURITY)
     implementation(Dependencies.Spring.BOOT_STARTER_VALIDATION)
     implementation(Dependencies.Spring.BOOT_STARTER_ACTUATOR)
+    testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
+
     implementation(Dependencies.Database.MYSQL_CONNECTOR)
 
-    testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
+    testImplementation(Dependencies.TestContainers.MYSQL)
+    testImplementation(Dependencies.TestContainers.JUNIT_JUPITER)
 }
 
 tasks {

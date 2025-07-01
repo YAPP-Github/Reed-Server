@@ -48,4 +48,8 @@ object Dependencies {
         const val MYSQL = "org.testcontainers:mysql:1.21.3"
         const val JUNIT_JUPITER = "org.testcontainers:junit-jupiter:1.21.3"
     }
+
+    object Flyway {
+        const val MYSQL = "org.flywaydb:flyway-mysql"
+    }
 }
