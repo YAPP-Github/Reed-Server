@@ -173,6 +173,6 @@ gradle-app.setting
 node_modules/
 
 # secret
-application-secret.properties
+application-*-secret.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,kotlin,gradle
