@@ -1,0 +1,15 @@
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}

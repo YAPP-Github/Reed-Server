@@ -1,0 +1,4 @@
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiration: 1800      # 30 minutes (초 단위)
+  refresh-token-expiration: 1209600  # 2 weeks (초 단위)
