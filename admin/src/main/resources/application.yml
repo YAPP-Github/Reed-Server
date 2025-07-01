@@ -1,16 +1,65 @@
+server:
+  port: 8080
+  shutdown: graceful
+
 spring:
-  application:
-    name: admin
-  datasource:
-    url: jdbc:mysql://localhost:3306/admin_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
+  profiles:
+    group:
+      dev:
+        - persistence
+        - jwt
+        - redis
+      prod:
+        - persistence
+        - jwt
+        - redis
+      test:
+        - persistence
+        - jwt
+        - redis
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 30MB
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  override-with-generic-response: false
+
+---
+spring:
+  config:
+    import: optional:file:secret/application-dev-secret.properties
+    activate:
+      on-profile: dev
+
+---
+spring:
+  config:
+    import: optional:file:secret/application-prod-secret.properties
+    activate:
+      on-profile: prod
+
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+
+---
+spring:
+  config:
+    import: optional:file:../secret/application-test-secret.properties
+    activate:
+      on-profile: test
+
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
