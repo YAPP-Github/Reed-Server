@@ -25,10 +25,13 @@ jobs:
         with:
           fetch-depth: 0  # SonarCloud를 위한 전체 히스토리 가져오기
 
-      - name: Inject application-secret.properties from Secrets
+      - name: Create secret properties files from GitHub Secrets
         run: |
-          echo "${{ secrets.APPLICATION_SECRET_PROPERTIES }}" > apis/src/main/resources/application-secret.properties
-          chmod 600 apis/src/main/resources/application-secret.properties
+          mkdir ./secret
+          echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./secret/application-dev-secret.properties
+          echo "${{ secrets.PROD_SECRET_PROPERTIES }}" > ./secret/application-prod-secret.properties
+          echo "${{ secrets.TEST_SECRET_PROPERTIES }}" > ./secret/application-test-secret.properties
+          chmod 600 ./secret/*
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
