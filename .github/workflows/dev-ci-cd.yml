@@ -96,4 +96,4 @@ jobs:
             export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
             export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
             export IMAGE_TAG="${{ needs.build-and-push.outputs.tags }}"
-            ./deploy.sh dev
+            ./deploy.sh
