@@ -2,12 +2,33 @@
 FROM gradle:8.7-jdk21 AS build
 ARG MODULE=apis
 WORKDIR /app
+
+# 의존성 캐싱 최적화를 위한 단계별 복사
+# 1. 의존성 관련 파일만 먼저 복사
+COPY build.gradle settings.gradle ./
+COPY ${MODULE}/build.gradle ./${MODULE}/
+
+# 2. 소스코드 없이 의존성만 다운로드
+RUN ./gradlew :${MODULE}:dependencies --no-daemon
+
+# 3. 소스코드 전체 복사
 COPY . .
-RUN ./gradlew :${MODULE}:bootJar --no-daemon
+
+# 4. 실제 애플리케이션 빌드
+RUN ./gradlew :${MODULE}:bootJar --parallel --no-daemon
 
 # Run stage
 FROM openjdk:21-slim
 ARG MODULE=apis
 WORKDIR /app
-COPY --from=build /app/${MODULE}/build/libs/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# 멀티스테이지 빌드로 최종 이미지 크기 최소화
+COPY --from=build /app/${MODULE}/build/libs/${MODULE}-*.jar app.jar
+
+# 런타임에 필요한 secret 폴더 복사
+COPY --from=build /app/secret ./secret/
+
+# JVM 실행 설정
+# - Xms512m: 초기 힙 메모리 512MB
+# - Xmx1g: 최대 힙 메모리 1GB
+ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-jar", "app.jar"]
