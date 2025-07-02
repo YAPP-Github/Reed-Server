@@ -1,4 +1,4 @@
-name: Dev CI/CD - Build and Deploy
+name: Dev CI/CD - Build, Push and Deploy
 
 on:
   push:
@@ -15,9 +15,10 @@ env:
   MODULE: apis
 
 jobs:
-  build:
+  build-push-and-deploy:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    environment: development
 
     steps:
       - name: Checkout code
@@ -27,38 +28,8 @@ jobs:
         run: |
           mkdir ./secret
           echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./secret/application-dev-secret.properties
-          echo "${{ secrets.PROD_SECRET_PROPERTIES }}" > ./secret/application-prod-secret.properties
           echo "${{ secrets.TEST_SECRET_PROPERTIES }}" > ./secret/application-test-secret.properties
           chmod 600 ./secret/*
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-home-cache-cleanup: true
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Run full Gradle build and test
-        run: ./gradlew build --parallel --build-cache
-
-  build-and-push:
-    needs: build
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    outputs:
-      tags: ${{ steps.meta.outputs.tags }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -78,10 +49,11 @@ jobs:
             type=raw,value=development-latest
 
       - name: Build and push Docker image
+        id: build-and-push
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: Dockerfile-dev
+          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -90,13 +62,6 @@ jobs:
           build-args: |
             MODULE=${{ env.MODULE }}
 
-  deploy-dev:
-    needs: build-and-push
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    environment: development
-
-    steps:
       - name: Deploy to Development Server
         uses: appleboy/ssh-action@v1.2.2
         with:
@@ -107,7 +72,7 @@ jobs:
           script: |
             export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
             export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
-            export IMAGE_TAG="${{ needs.build-and-push.outputs.tags }}"
+            export IMAGE_TAG="$(echo "${{ steps.meta.outputs.tags }}" | head -n1)"
             cd ~/deploy
             chmod +x ./deploy.sh
             ./deploy.sh
