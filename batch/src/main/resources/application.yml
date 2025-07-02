@@ -16,7 +16,6 @@ spring:
       test:
         - persistence
         - jwt
-        - redis
   servlet:
     multipart:
       max-file-size: 10MB
