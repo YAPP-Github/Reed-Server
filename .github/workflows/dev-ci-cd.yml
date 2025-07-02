@@ -3,7 +3,7 @@ name: Dev CI/CD - Build and Deploy
 on:
   push:
     branches:
-    - develop
+      - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -93,5 +93,7 @@ jobs:
           port: ${{ secrets.DEV_PORT }}
           script: |
             cd /opt/app
+            export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+            export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
             export IMAGE_TAG="${{ needs.build-and-push.outputs.tags }}"
             ./deploy.sh dev

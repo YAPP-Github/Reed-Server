@@ -97,6 +97,8 @@ jobs:
           port: ${{ secrets.PROD_PORT }}
           script: |
             cd /opt/app
+            export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+            export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
             export IMAGE_TAG="$(echo "${{ needs.build-and-push.outputs.tags }}" | head -n1)"
             export VERSION_TAG="${{ needs.build-and-push.outputs.version }}"
             export RELEASE_VERSION="${{ github.event.release.tag_name }}"
