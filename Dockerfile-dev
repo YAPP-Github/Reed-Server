@@ -7,6 +7,7 @@ RUN ./gradlew :${MODULE}:bootJar --no-daemon
 
 # Run stage
 FROM openjdk:21-slim
+ARG MODULE=apis
 WORKDIR /app
 COPY --from=build /app/${MODULE}/build/libs/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
