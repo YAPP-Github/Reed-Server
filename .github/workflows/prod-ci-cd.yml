@@ -12,15 +12,12 @@ concurrency:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ninecraft0523/ninecraft-server
+  MODULE: apis
 
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
-    outputs:
-      image-digest: ${{ steps.build.outputs.digest }}
-      version: ${{ steps.meta.outputs.version }}
-      tags: ${{ steps.meta.outputs.tags }}
 
     steps:
       - name: Checkout code
@@ -52,14 +49,18 @@ jobs:
       - name: Run full Gradle build with strict validation
         run: ./gradlew build --parallel --build-cache --warning-mode all
 
-      - name: Extract metadata for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=raw,value=production-latest
+  build-and-push:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+      version: ${{ steps.meta.outputs.version }}
+      tags: ${{ steps.meta.outputs.tags }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -69,6 +70,15 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=production-latest
 
       - name: Build and push Docker image
         id: build
@@ -80,6 +90,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            MODULE=${{ env.MODULE }}
 
   deploy-prod:
     needs: build-and-push
@@ -96,7 +108,6 @@ jobs:
           key: ${{ secrets.PROD_SSH_KEY }}
           port: ${{ secrets.PROD_PORT }}
           script: |
-            cd /opt/app
             export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
             export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
             export IMAGE_TAG="$(echo "${{ needs.build-and-push.outputs.tags }}" | head -n1)"
