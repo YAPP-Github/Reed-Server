@@ -43,4 +43,14 @@ object Dependencies {
     object Feign {
         const val STARTER_OPENFEIGN = "org.springframework.cloud:spring-cloud-starter-openfeign"
     }
+
+    object TestContainers {
+        const val MYSQL = "org.testcontainers:mysql:1.21.3"
+        const val JUNIT_JUPITER = "org.testcontainers:junit-jupiter:1.21.3"
+        const val REDIS = "com.redis:testcontainers-redis:2.2.2"
+    }
+
+    object Flyway {
+        const val MYSQL = "org.flywaydb:flyway-mysql"
+    }
 }

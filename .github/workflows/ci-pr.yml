@@ -1,0 +1,51 @@
+name: CI - Pull Request
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build-validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # SonarCloud를 위한 전체 히스토리 가져오기
+
+      - name: Create secret properties files from GitHub Secrets
+        run: |
+          mkdir ./secret
+          echo "${{ secrets.DEV_SECRET_PROPERTIES }}" > ./secret/application-dev-secret.properties
+          echo "${{ secrets.PROD_SECRET_PROPERTIES }}" > ./secret/application-prod-secret.properties
+          echo "${{ secrets.TEST_SECRET_PROPERTIES }}" > ./secret/application-test-secret.properties
+          chmod 600 ./secret/*
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Gradle packages
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-home-cache-cleanup: true
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run Gradle check (fast validation)
+        run: ./gradlew check --parallel --build-cache

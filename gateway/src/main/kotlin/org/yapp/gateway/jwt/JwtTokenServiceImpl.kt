@@ -11,9 +11,6 @@ import java.util.*
 @Service
 class JwtTokenServiceImpl(
     private val jwtTokenProvider: JwtTokenProvider,
-
-    @Value("\${jwt.refresh-token-expiration}")
-    private val refreshTokenExpiration: Long
 ) : JwtTokenService {
 
     /**
@@ -63,6 +60,6 @@ class JwtTokenServiceImpl(
      * @return The refresh token expiration time in seconds.
      */
     override fun getRefreshTokenExpiration(): Long {
-        return refreshTokenExpiration
+        return jwtTokenProvider.getRefreshTokenExpiration();
     }
 }

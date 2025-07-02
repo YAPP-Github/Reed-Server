@@ -1,8 +1,6 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 dependencies {
-    implementation(project(Dependencies.Projects.INFRA))
-    implementation(project(Dependencies.Projects.DOMAIN))
     implementation(project(Dependencies.Projects.GLOBAL_UTILS))
     implementation(Dependencies.Spring.BOOT_STARTER_WEB)
     implementation(Dependencies.Spring.BOOT_STARTER_SECURITY)

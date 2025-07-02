@@ -24,11 +24,16 @@ class RedisConfig : InfraBaseConfig {
     @Value("\${spring.data.redis.port:6379}")
     private var port: Int = 0
 
+    @Value("\${spring.data.redis.password:#{null}}")
+    private var password: String? = null
+
     @Bean
     fun redisConnectionFactory(): RedisConnectionFactory {
         val redisStandaloneConfiguration = RedisStandaloneConfiguration()
         redisStandaloneConfiguration.hostName = host
         redisStandaloneConfiguration.port = port
+        password?.let { redisStandaloneConfiguration.setPassword(it) }
+
         return LettuceConnectionFactory(redisStandaloneConfiguration)
     }
 
