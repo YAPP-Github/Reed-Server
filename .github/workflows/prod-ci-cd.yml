@@ -2,7 +2,8 @@ name: Prod CI/CD - Build and Deploy
 
 on:
   release:
-    types: [ published ]  # Release가 published 될 때만 실행
+    types:
+      - published  # Release가 published 될 때만 실행
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -96,7 +97,7 @@ jobs:
           port: ${{ secrets.PROD_PORT }}
           script: |
             cd /opt/app
-            export IMAGE_TAG="${{ needs.build-and-push.outputs.tags }}"
+            export IMAGE_TAG="$(echo "${{ needs.build-and-push.outputs.tags }}" | head -n1)"
             export VERSION_TAG="${{ needs.build-and-push.outputs.version }}"
             export RELEASE_VERSION="${{ github.event.release.tag_name }}"
             ./deploy.sh prod
