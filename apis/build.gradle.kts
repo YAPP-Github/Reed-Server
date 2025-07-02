@@ -26,6 +26,7 @@ dependencies {
 
     testImplementation(Dependencies.TestContainers.MYSQL)
     testImplementation(Dependencies.TestContainers.JUNIT_JUPITER)
+    testImplementation(Dependencies.TestContainers.REDIS)
 }
 
 tasks {

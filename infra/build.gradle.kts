@@ -15,6 +15,10 @@ dependencies {
     implementation(Dependencies.Feign.STARTER_OPENFEIGN)
 
     implementation(Dependencies.Flyway.MYSQL)
+
+    testImplementation(Dependencies.TestContainers.MYSQL)
+    testImplementation(Dependencies.TestContainers.JUNIT_JUPITER)
+    testImplementation(Dependencies.TestContainers.REDIS)
 }
 
 tasks {
