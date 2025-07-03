@@ -60,6 +60,24 @@ class GlobalExceptionHandler {
     }
 
     /**
+     * 잘못된 인자 전달 (IllegalArgumentException) 처리
+     */
+    @ExceptionHandler(IllegalArgumentException::class)
+    protected fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+        val commonErrorCode = CommonErrorCode.INVALID_REQUEST
+
+        log.warn { "Illegal argument: ${ex.message}" }
+
+        val error = ErrorResponse.builder()
+            .status(commonErrorCode.getHttpStatus().value())
+            .message(ex.message.orEmpty())
+            .code(commonErrorCode.getCode())
+            .build()
+
+        return ResponseEntity(error, commonErrorCode.getHttpStatus())
+    }
+
+    /**
      * @Valid를 통한 요청 본문(@RequestBody) 검증 실패 처리
      */
     @ExceptionHandler(MethodArgumentNotValidException::class)
