@@ -18,7 +18,7 @@ RUN ./gradlew :${MODULE}:dependencies --no-daemon
 # 4. 소스코드 전체 복사
 COPY . .
 
-# 4. 실제 애플리케이션 빌드
+# 5. 실제 애플리케이션 빌드
 RUN ./gradlew :${MODULE}:bootJar --parallel --no-daemon
 
 # Run stage
