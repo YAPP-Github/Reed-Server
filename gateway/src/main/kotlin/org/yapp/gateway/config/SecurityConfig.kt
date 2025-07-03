@@ -33,7 +33,7 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers("/api/v1/auth/**").permitAll()
-                it.requestMatchers("/api/v1/health").permitAll()
+                it.requestMatchers("/actuator/**").permitAll()
                 it.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 it.requestMatchers("/kakao-login.html/**").permitAll()
                 it.anyRequest().authenticated()
