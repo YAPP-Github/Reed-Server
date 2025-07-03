@@ -40,7 +40,10 @@ object Dependencies {
         const val GENERATOR = "com.github.f4b6a3:uuid-creator:5.3.2"
     }
 
-    object Feign {
-        const val STARTER_OPENFEIGN = "org.springframework.cloud:spring-cloud-starter-openfeign"
+    object RestClient {
+        private const val HTTP_CLIENT5_VERSION = "5.2.1"
+
+        const val HTTP_CLIENT5 = "org.apache.httpcomponents.client5:httpclient5:$HTTP_CLIENT5_VERSION"
+        const val HTTP_CORE5 = "org.apache.httpcomponents.core5:httpcore5:$HTTP_CLIENT5_VERSION"
     }
 }

@@ -6,7 +6,8 @@ dependencies {
     implementation(Dependencies.Spring.BOOT_STARTER_WEB)
     implementation(Dependencies.Spring.BOOT_STARTER_DATA_JPA)
     implementation(Dependencies.Spring.BOOT_STARTER_DATA_REDIS)
-    implementation(Dependencies.Feign.STARTER_OPENFEIGN)
+    implementation(Dependencies.RestClient.HTTP_CLIENT5)
+    implementation(Dependencies.RestClient.HTTP_CORE5)
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
     implementation(Dependencies.Spring.KOTLIN_REFLECT)
 }

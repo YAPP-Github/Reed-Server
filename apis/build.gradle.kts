@@ -17,7 +17,6 @@ dependencies {
     implementation(Dependencies.Auth.JWT_JACKSON)
     implementation(Dependencies.Swagger.SPRINGDOC_OPENAPI_STARTER_WEBMVC_UI)
     implementation(Dependencies.Logging.KOTLIN_LOGGING)
-    implementation(Dependencies.Feign.STARTER_OPENFEIGN)
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
 }
 
