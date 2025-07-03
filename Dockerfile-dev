@@ -5,8 +5,8 @@ WORKDIR /app
 
 # 의존성 캐싱 최적화를 위한 단계별 복사
 # 1. 의존성 관련 파일만 먼저 복사
-COPY build.gradle settings.gradle ./
-COPY ${MODULE}/build.gradle ./${MODULE}/
+COPY build.gradle.kts settings.gradle.kts ./
+COPY ${MODULE}/build.gradle.kts ./${MODULE}/
 
 # 2. 소스코드 없이 의존성만 다운로드
 RUN ./gradlew :${MODULE}:dependencies --no-daemon
@@ -29,6 +29,6 @@ COPY --from=build /app/${MODULE}/build/libs/${MODULE}-*.jar app.jar
 COPY --from=build /app/secret ./secret/
 
 # JVM 실행 설정
-# Xms512m: 초기 힙 메모리 512MB
-# Xmx1g: 최대 힙 메모리 1GB
+# - Xms512m: 초기 힙 메모리 512MB
+# - Xmx1g: 최대 힙 메모리 1GB
 ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-jar", "app.jar"]
