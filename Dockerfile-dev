@@ -4,9 +4,10 @@ ARG MODULE=apis
 WORKDIR /app
 
 # 의존성 캐싱 최적화를 위한 단계별 복사
-# 1. Gradle Wrapper와 의존성 관련 파일만 먼저 복사
+# 1. 의존성 캐싱 최적화를 위해 Gradle Wrapper 및 의존성 관련 파일만 먼저 복사
 COPY build.gradle.kts settings.gradle.kts gradlew gradlew.bat ./
 COPY gradle/wrapper/ ./gradle/wrapper/
+COPY buildSrc/ ./buildSrc/
 COPY ${MODULE}/build.gradle.kts ./${MODULE}/
 
 # 2. Gradle Wrapper 실행 권한 부여
