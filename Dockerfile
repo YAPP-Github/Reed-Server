@@ -5,8 +5,8 @@ WORKDIR /app
 
 # 의존성 캐싱 최적화를 위한 단계별 복사
 # 1. 의존성 관련 파일만 먼저 복사
-COPY build.gradle settings.gradle ./
-COPY ${MODULE}/build.gradle ./${MODULE}/
+COPY build.gradle.kts settings.gradle.kts ./
+COPY ${MODULE}/build.gradle.kts ./${MODULE}/
 
 # 2. 소스코드 없이 의존성만 다운로드
 RUN ./gradlew :${MODULE}:dependencies --no-daemon
