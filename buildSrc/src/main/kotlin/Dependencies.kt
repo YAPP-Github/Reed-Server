@@ -46,4 +46,14 @@ object Dependencies {
         const val HTTP_CLIENT5 = "org.apache.httpcomponents.client5:httpclient5:$HTTP_CLIENT5_VERSION"
         const val HTTP_CORE5 = "org.apache.httpcomponents.core5:httpcore5:$HTTP_CLIENT5_VERSION"
     }
+
+    object TestContainers {
+        const val MYSQL = "org.testcontainers:mysql:1.21.3"
+        const val JUNIT_JUPITER = "org.testcontainers:junit-jupiter:1.21.3"
+        const val REDIS = "com.redis:testcontainers-redis:2.2.2"
+    }
+
+    object Flyway {
+        const val MYSQL = "org.flywaydb:flyway-mysql"
+    }
 }
