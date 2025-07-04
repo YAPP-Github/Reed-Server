@@ -1,6 +1,7 @@
 package org.yapp.infra.external.aladin.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.math.BigDecimal
 
 data class BookItem internal constructor(
     @JsonProperty("title") val title: String?,
@@ -11,8 +12,8 @@ data class BookItem internal constructor(
     @JsonProperty("isbn") val isbn: String?,
     @JsonProperty("isbn13") val isbn13: String?,
     @JsonProperty("itemId") val itemId: Long?,
-    @JsonProperty("priceSales") val priceSales: Double?,
-    @JsonProperty("priceStandard") val priceStandard: Double?,
+    @JsonProperty("priceSales") val priceSales: BigDecimal?,
+    @JsonProperty("priceStandard") val priceStandard: BigDecimal?,
     @JsonProperty("mallType") val mallType: String?,
     @JsonProperty("stockStatus") val stockStatus: String? = null,
     @JsonProperty("mileage") val mileage: Int?,
