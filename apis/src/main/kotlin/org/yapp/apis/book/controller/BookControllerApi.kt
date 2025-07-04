@@ -1,9 +1,7 @@
 package org.yapp.apis.book.controller
 
-import BookSearchResponse // Assuming this is your DTO for search results
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
@@ -13,11 +11,11 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
 import org.yapp.apis.book.dto.response.BookDetailResponse
+import org.yapp.apis.book.dto.response.BookSearchResponse
 
 /**
  * API interface for book controller.
@@ -72,7 +70,7 @@ interface BookControllerApi {
 
     @Operation(
         summary = "도서 상세 조회",
-        description = "특정 도서의 상세 정보를 조회합니다."
+        description = "특정 도서의 상세 정보를 조회합니다. `itemId`는 쿼리 파라미터로 전달됩니다."
     )
     @ApiResponses(
         value = [
@@ -83,7 +81,7 @@ interface BookControllerApi {
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "잘못된 요청 파라미터 (예: 유효하지 않은 itemIdType)"
+                description = "잘못된 요청 파라미터 (예: 유효하지 않은 itemId 또는 itemIdType)"
             ),
             ApiResponse(
                 responseCode = "404",
@@ -91,36 +89,25 @@ interface BookControllerApi {
             )
         ]
     )
-    @GetMapping("/{itemId}")
+    @GetMapping("/detail")
     fun getBookDetail(
+        @Valid
         @Parameter(
-            description = "조회할 도서의 고유 ID (ISBN, ISBN13, 알라딘 ItemId 등).",
-            `in` = ParameterIn.PATH,
-            required = true,
+            description = "도서 상세 조회 요청 객체. 다음 쿼리 파라미터를 포함합니다:<br>" +
+                    "- `itemId` (필수): 조회할 도서의 고유 ID (ISBN, ISBN13, 알라딘 ItemId 등)<br>" +
+                    "- `itemIdType` (선택): `itemId`의 타입 (ISBN, ISBN13, ItemId). 기본값은 ISBN입니다.<br>" +
+                    "- `optResult` (선택): 조회할 부가 정보 목록 (쉼표로 구분). 예시: `BookInfo,Toc,PreviewImg`",
             examples = [
-                ExampleObject(name = "ISBN 예시", value = "8994492040"),
-                ExampleObject(name = "ISBN13 예시", value = "9791162241684")
+                ExampleObject(
+                    name = "ISBN으로 상세 조회",
+                    value = "http://localhost:8080/api/v1/books/detail?itemId=9791162241684&itemIdType=ISBN13"
+                ),
+                ExampleObject(
+                    name = "ISBN 및 부가 정보 포함",
+                    value = "http://localhost:8080/api/v1/books/detail?itemId=8994492040&itemIdType=ISBN&optResult=BookInfo,Toc"
+                )
             ]
         )
-        @PathVariable itemId: String,
-
-        @Parameter(
-            description = "itemId의 타입 (ISBN, ISBN13, ItemId). 기본값은 ISBN입니다.",
-            examples = [
-                ExampleObject(value = "ISBN"),
-                ExampleObject(value = "ISBN13")
-            ]
-        )
-        @RequestParam(defaultValue = "ISBN") itemIdType: String,
-
-        @Parameter(
-            description = "조회할 부가 정보 목록 (쉼표로 구분). 예시: `BookInfo,Toc,PreviewImg`",
-            examples = [
-                ExampleObject(name = "기본 정보만", value = ""),
-                ExampleObject(name = "책소개 및 목차 포함", value = "BookInfo,Toc"),
-                ExampleObject(name = "미리보기 이미지 포함", value = "PreviewImg")
-            ]
-        )
-        @RequestParam(required = false) optResult: List<String>?
+        request: BookDetailRequest
     ): ResponseEntity<BookDetailResponse>
 }

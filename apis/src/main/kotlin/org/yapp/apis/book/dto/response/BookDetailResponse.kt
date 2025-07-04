@@ -1,6 +1,7 @@
 package org.yapp.apis.book.dto.response
 
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
+import java.math.BigDecimal
 
 /**
  * 단일 도서의 상세 정보를 나타내는 DTO.
@@ -16,8 +17,8 @@ data class BookDetailResponse private constructor(
     val isbn: String?,
     val isbn13: String?,
     val itemId: Long?,
-    val priceSales: Double?,
-    val priceStandard: Double?,
+    val priceSales: BigDecimal?,
+    val priceStandard: BigDecimal?,
     val mallType: String?,
     val stockStatus: String?,
     val mileage: Int?,

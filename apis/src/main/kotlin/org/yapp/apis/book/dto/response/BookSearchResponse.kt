@@ -1,4 +1,5 @@
-import org.yapp.domain.book.Book
+package org.yapp.apis.book.dto.response
+
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 import org.yapp.infra.external.aladin.response.BookItem
 
@@ -15,6 +16,8 @@ data class BookSearchResponse private constructor(
     val searchCategoryName: String?,
     val books: List<BookSummaryDto>
 ) {
+
+
     companion object {
         fun from(response: AladinSearchResponse): BookSearchResponse {
             val books = response.item?.mapNotNull { BookSummaryDto.fromAladinItem(it) } ?: emptyList()
@@ -41,28 +44,19 @@ data class BookSearchResponse private constructor(
         val publisher: String?,
         val coverImageUrl: String?,
     ) {
+
         companion object {
+
+            private val unknownTitle = "제목없음"
+
             fun fromAladinItem(item: BookItem): BookSummaryDto? {
                 val isbn = item.isbn ?: item.isbn13 ?: return null
-                val book = Book.create(
-                    title = item.title ?: "제목 없음",
+                return BookSummaryDto(
+                    isbn = isbn,
+                    title = item.title ?: unknownTitle,
                     author = item.author,
                     publisher = item.publisher,
-                    publicationYear = item.pubDate?.substringBefore("-")?.toIntOrNull(),
-                    coverImageUrl = item.cover,
-                    description = item.description,
-                    isbn = isbn
-                )
-                return from(book)
-            }
-
-            fun from(book: Book): BookSummaryDto {
-                return BookSummaryDto(
-                    isbn = book.isbn,
-                    title = book.title,
-                    author = book.author,
-                    publisher = book.publisher,
-                    coverImageUrl = book.coverImageUrl
+                    coverImageUrl = item.cover
                 )
             }
         }

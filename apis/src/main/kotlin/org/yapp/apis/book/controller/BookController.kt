@@ -1,11 +1,14 @@
 package org.yapp.apis.book.controller
 
-import BookSearchResponse
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
 import org.yapp.apis.book.dto.response.BookDetailResponse
+import org.yapp.apis.book.dto.response.BookSearchResponse
 import org.yapp.apis.book.usecase.BookUseCase
 
 
@@ -21,13 +24,11 @@ class BookController(
         return ResponseEntity.ok(response)
     }
 
-    @GetMapping("/{itemId}")
+    @GetMapping("/detail")
     override fun getBookDetail(
-        @PathVariable itemId: String,
-        @RequestParam(defaultValue = "ISBN") itemIdType: String,
-        @RequestParam(required = false) optResult: List<String>?
+        @Valid request: BookDetailRequest
     ): ResponseEntity<BookDetailResponse> {
-        val response = bookUseCase.getBookDetail(itemId, itemIdType, optResult)
+        val response = bookUseCase.getBookDetail(request)
         return ResponseEntity.ok(response)
     }
 }

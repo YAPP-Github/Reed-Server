@@ -7,7 +7,6 @@ dependencies {
     implementation(project(Dependencies.Projects.GATEWAY))
 
     implementation(Dependencies.Spring.BOOT_STARTER_WEB)
-    testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
     implementation(Dependencies.Spring.BOOT_STARTER_DATA_JPA)
     implementation(Dependencies.Spring.BOOT_STARTER_SECURITY)
     implementation(Dependencies.Spring.BOOT_STARTER_VALIDATION)
