@@ -1,0 +1,3 @@
+aladin:
+  api:
+    ttbkey: ${ALADIN_API_KEY}
