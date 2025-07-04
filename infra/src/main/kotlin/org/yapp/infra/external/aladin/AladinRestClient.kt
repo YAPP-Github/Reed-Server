@@ -31,12 +31,10 @@ class AladinRestClient(
 
     fun itemSearch(
         ttbKey: String,
-        query: String,
         params: Map<String, Any>
     ): AladinSearchResponse {
         val uriBuilder = UriComponentsBuilder.fromUriString("/ItemSearch.aspx")
             .queryParam("ttbkey", ttbKey)
-            .queryParam("Query", query)
 
         uriBuilder.addCommonQueryParams(params)
 
@@ -49,15 +47,11 @@ class AladinRestClient(
 
     fun itemLookUp(
         ttbKey: String,
-        itemId: String,
-        itemIdType: String,
         params: Map<String, Any> = emptyMap()
     ): AladinBookDetailResponse {
         val uriBuilder = UriComponentsBuilder.fromUriString("/ItemLookUp.aspx")
             .queryParam("ttbkey", ttbKey)
-            .queryParam("ItemId", itemId)
-            .queryParam("ItemIdType", itemIdType)
-        
+
         uriBuilder.addCommonQueryParams(params)
 
         return client.get()
