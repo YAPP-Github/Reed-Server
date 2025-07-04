@@ -14,13 +14,11 @@ data class BookSearchResponse private constructor(
     val query: String?,
     val searchCategoryId: Int?,
     val searchCategoryName: String?,
-    val books: List<BookSummaryDto>
+    val books: List<BookSummary>
 ) {
-
-
     companion object {
         fun from(response: AladinSearchResponse): BookSearchResponse {
-            val books = response.item?.mapNotNull { BookSummaryDto.fromAladinItem(it) } ?: emptyList()
+            val books = response.item?.mapNotNull { BookSummary.fromAladinItem(it) } ?: emptyList()
             return BookSearchResponse(
                 version = response.version,
                 title = response.title,
@@ -37,21 +35,19 @@ data class BookSearchResponse private constructor(
         }
     }
 
-    data class BookSummaryDto private constructor(
+    data class BookSummary private constructor(
         val isbn: String,
         val title: String,
         val author: String?,
         val publisher: String?,
         val coverImageUrl: String?,
     ) {
-
         companion object {
-
             private val unknownTitle = "제목없음"
 
-            fun fromAladinItem(item: BookItem): BookSummaryDto? {
+            fun fromAladinItem(item: BookItem): BookSummary? {
                 val isbn = item.isbn ?: item.isbn13 ?: return null
-                return BookSummaryDto(
+                return BookSummary(
                     isbn = isbn,
                     title = item.title ?: unknownTitle,
                     author = item.author,
