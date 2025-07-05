@@ -10,13 +10,11 @@ import org.yapp.infra.external.aladin.response.AladinSearchResponse
 @Component
 class AladinApi(
     private val aladinRestClient: AladinRestClient,
-    @Value("\${aladin.api.ttbkey}")
-    private val ttbKey: String
+    @Value("\${aladin.api.ttbkey:#{null}}")
+    private var ttbKey: String? = null
 ) {
-    // AladinBookSearchRequest DTO를 직접 받도록 변경
     fun searchBooks(request: AladinBookSearchRequest): Result<AladinSearchResponse> {
         return runCatching {
-            // DTO의 toMap() 메서드를 호출하여 Map으로 변환
             val aladinApiParams = request.toMap()
             aladinRestClient.itemSearch(ttbKey, aladinApiParams) // Map으로 전달
         }

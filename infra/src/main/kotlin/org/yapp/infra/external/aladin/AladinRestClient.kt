@@ -1,5 +1,6 @@
 package org.yapp.infra.external.aladin
 
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.util.UriComponentsBuilder
@@ -8,11 +9,10 @@ import org.yapp.infra.external.aladin.response.AladinSearchResponse
 
 @Component
 class AladinRestClient(
-    builder: RestClient.Builder
+    @Qualifier("aladinApiRestClient") private val restClient: RestClient
 ) {
-    private val client = builder
-        .baseUrl("http://www.aladin.co.kr/ttb/api")
-        .build()
+
+    private val client = restClient
 
     private val API_VERSION = "20131101"
     private val DEFAULT_OUTPUT_FORMAT = "JS"
@@ -30,7 +30,7 @@ class AladinRestClient(
     }
 
     fun itemSearch(
-        ttbKey: String,
+        ttbKey: String?,
         params: Map<String, Any>
     ): AladinSearchResponse {
         val uriBuilder = UriComponentsBuilder.fromUriString("/ItemSearch.aspx")
@@ -46,7 +46,7 @@ class AladinRestClient(
     }
 
     fun itemLookUp(
-        ttbKey: String,
+        ttbKey: String?,
         params: Map<String, Any> = emptyMap()
     ): AladinBookDetailResponse {
         val uriBuilder = UriComponentsBuilder.fromUriString("/ItemLookUp.aspx")
