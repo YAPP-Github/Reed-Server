@@ -22,7 +22,7 @@ class UserRepositoryImpl(
     }
 
     override fun save(user: User): User {
-        val userEntity = UserEntity.Companion.fromDomain(user)
+        val userEntity = UserEntity.fromDomain(user)
         val savedEntity = jpaUserRepository.save(userEntity)
         return savedEntity.toDomain()
     }
