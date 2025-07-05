@@ -3,6 +3,7 @@ package org.yapp.apis.book.controller
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.yapp.apis.book.dto.request.BookDetailRequest
@@ -19,14 +20,14 @@ class BookController(
 ) : BookControllerApi {
 
     @GetMapping("/search")
-    override fun searchBooks(@Valid request: BookSearchRequest): ResponseEntity<BookSearchResponse> {
+    override fun searchBooks(@Valid @ModelAttribute request: BookSearchRequest): ResponseEntity<BookSearchResponse> {
         val response = bookUseCase.searchBooks(request)
         return ResponseEntity.ok(response)
     }
 
     @GetMapping("/detail")
     override fun getBookDetail(
-        @Valid request: BookDetailRequest
+        @Valid @ModelAttribute request: BookDetailRequest
     ): ResponseEntity<BookDetailResponse> {
         val response = bookUseCase.getBookDetail(request)
         return ResponseEntity.ok(response)
