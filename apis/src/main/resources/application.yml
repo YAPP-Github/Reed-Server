@@ -9,10 +9,12 @@ spring:
         - persistence
         - jwt
         - redis
+        - external
       prod:
         - persistence
         - jwt
         - redis
+        - external
       test:
         - persistence
         - jwt

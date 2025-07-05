@@ -1,12 +1,12 @@
-package org.yapp.infra.user.repository
+package org.yapp.infra.user.repository.impl
 
 import org.springframework.stereotype.Repository
 import org.yapp.domain.auth.ProviderType
 import org.yapp.domain.user.User
 import org.yapp.domain.user.UserRepository
 import org.yapp.infra.user.entity.UserEntity
+import org.yapp.infra.user.repository.JpaUserRepository
 import java.util.*
-
 
 @Repository
 class UserRepositoryImpl(

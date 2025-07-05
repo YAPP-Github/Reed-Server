@@ -5,6 +5,7 @@ import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindException
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -60,6 +61,24 @@ class GlobalExceptionHandler {
     }
 
     /**
+     * 잘못된 인자 전달 (IllegalArgumentException) 처리
+     */
+    @ExceptionHandler(IllegalArgumentException::class)
+    protected fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+        val commonErrorCode = CommonErrorCode.INVALID_REQUEST
+
+        log.warn { "Illegal argument: ${ex.message}" }
+
+        val error = ErrorResponse.builder()
+            .status(commonErrorCode.getHttpStatus().value())
+            .message(ex.message.orEmpty())
+            .code(commonErrorCode.getCode())
+            .build()
+
+        return ResponseEntity(error, commonErrorCode.getHttpStatus())
+    }
+
+    /**
      * @Valid를 통한 요청 본문(@RequestBody) 검증 실패 처리
      */
     @ExceptionHandler(MethodArgumentNotValidException::class)
@@ -75,6 +94,24 @@ class GlobalExceptionHandler {
         val error = ErrorResponse.builder()
             .status(commonErrorCode.getHttpStatus().value())
             .message(fieldErrors)
+            .code(commonErrorCode.getCode())
+            .build()
+
+        return ResponseEntity(error, commonErrorCode.getHttpStatus())
+    }
+
+    /**
+     * 잘못된 HTTP 메서드로 인한 HttpRequestMethodNotSupportedException를 처리합니다.
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
+    protected fun handleHttpRequestMethodNotSupportedException(ex: HttpRequestMethodNotSupportedException): ResponseEntity<ErrorResponse> {
+        val commonErrorCode = CommonErrorCode.METHOD_NOT_ALLOWED
+
+        log.warn { "HTTP method not supported: ${ex.method} for ${ex.supportedHttpMethods?.joinToString()}" }
+
+        val error = ErrorResponse.builder()
+            .status(commonErrorCode.getHttpStatus().value())
+            .message("HTTP method '${ex.method}' not supported for this endpoint. Supported methods: ${ex.supportedHttpMethods?.joinToString()}")
             .code(commonErrorCode.getCode())
             .build()
 

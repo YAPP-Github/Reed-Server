@@ -1,9 +1,10 @@
-package org.yapp.infra.external.redis.repository
+package org.yapp.infra.external.redis.repository.impl
 
 import org.springframework.stereotype.Repository
 import org.yapp.domain.token.RefreshToken
 import org.yapp.domain.token.RefreshTokenRepository
 import org.yapp.infra.external.redis.entity.RefreshTokenEntity
+import org.yapp.infra.external.redis.repository.JpaRefreshTokenRepository
 import java.util.*
 
 
