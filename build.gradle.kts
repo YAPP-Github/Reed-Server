@@ -122,7 +122,6 @@ tasks.register<JacocoReport>("jacocoRootReport") {
 
     dependsOn(subprojects.map { it.tasks.named("test") })
 
-    additionalSourceDirs.setFrom(subprojects.map { it.the<SourceSetContainer>()["main"].allSource.srcDirs })
     sourceDirectories.setFrom(subprojects.map { it.the<SourceSetContainer>()["main"].allSource.srcDirs })
     classDirectories.setFrom(subprojects.map { subproject ->
         subproject.fileTree(subproject.layout.buildDirectory.get().asFile.resolve("classes/kotlin/main")) {
@@ -152,7 +151,7 @@ sonar {
             "sonar.coverage.jacoco.xmlReportPaths",
             "${layout.buildDirectory.get()}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
         )
-        property("sonar.kotlin.coveragePlugin", "jacoco")
+        property("sonar.kotlin.coveragePlugin", Plugins.JACOCO)
         property("sonar.kotlin.version", Versions.KOTLIN)
         property("sonar.exclusions", sonarGlobalExclusions.joinToString(","))
         property("sonar.cpd.exclusions", testExclusionPatterns.joinToString(","))
