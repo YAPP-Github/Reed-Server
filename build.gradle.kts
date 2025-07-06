@@ -105,11 +105,10 @@ configure(subprojects) {
             html.required.set(true)
         }
 
-        classDirectories.setFrom(files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(testExclusionPatterns)
-            }
-        }))
+        val sourceSets = project.the<SourceSetContainer>()
+        classDirectories.setFrom(sourceSets.getByName("main").output.classesDirs.asFileTree.matching {
+            exclude(testExclusionPatterns)
+        })
 
         executionData.setFrom(fileTree(layout.buildDirectory) {
             include("jacoco/*.exec")
@@ -131,8 +130,8 @@ tasks.register<JacocoReport>("jacocoRootReport") {
 
     additionalSourceDirs.setFrom(subprojects.map { it.the<SourceSetContainer>()["main"].allSource.srcDirs })
     sourceDirectories.setFrom(subprojects.map { it.the<SourceSetContainer>()["main"].allSource.srcDirs })
-    classDirectories.setFrom(subprojects.map {
-        it.the<SourceSetContainer>()["main"].output.asFileTree.matching {
+    classDirectories.setFrom(subprojects.map { subproject ->
+        subproject.the<SourceSetContainer>()["main"].output.classesDirs.asFileTree.matching {
             exclude(testExclusionPatterns)
         }
     })
