@@ -133,12 +133,8 @@ tasks.register<JacocoReport>("jacocoRootReport") {
             exclude(testExclusionPatterns)
         }
     })
-    executionData.setFrom(subprojects.mapNotNull { subproject ->
-        val execFile = subproject.tasks.named<JacocoReport>("jacocoTestReport").get().executionData.singleFile
-        execFile.takeIf { file -> file.exists() } ?: run {
-            logger.warn("JaCoCo execution data not found for ${subproject.name}: ${execFile.absolutePath}")
-            null
-        }
+    executionData.from(subprojects.map {
+        it.layout.buildDirectory.file("jacoco/test.exec")
     })
 
     reports {
