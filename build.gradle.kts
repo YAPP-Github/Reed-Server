@@ -137,7 +137,7 @@ tasks.register<JacocoReport>("jacocoRootReport") {
     })
     executionData.from(subprojects.map { subproject ->
         subproject.fileTree(subproject.layout.buildDirectory.dir("jacoco")) {
-            include("*.exec")
+            include("**/*.exec")
         }
     })
 
@@ -159,16 +159,22 @@ configure<SonarExtension> {
             "${layout.buildDirectory.get()}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
         )
 
-        property("sonar.sources", subprojects.joinToString(",") { "${it.projectDir}/src/main" })
-        property("sonar.tests", subprojects.joinToString(",") { "${it.projectDir}/src/test" })
+        property("sonar.sources", subprojects.joinToString(",") { "${it.projectDir}/src/main/kotlin" })
+        property("sonar.tests", subprojects.joinToString(",") { "${it.projectDir}/src/test/kotlin" })
+
         property("sonar.java.binaries", subprojects.joinToString(",") {
             "${it.layout.buildDirectory.get()}/classes/kotlin/main"
         })
+        property("sonar.java.test.binaries", subprojects.joinToString(",") {
+            "${it.layout.buildDirectory.get()}/classes/kotlin/test"
+        })
 
-        property("sonar.kotlin.source.version", Versions.KOTLIN)
+        property("sonar.kotlin.version", Versions.KOTLIN)
         property("sonar.exclusions", sonarGlobalExclusions.joinToString(","))
         property("sonar.cpd.exclusions", testExclusionPatterns.joinToString(","))
         property("sonar.coverage.exclusions", testExclusionPatterns.joinToString(","))
+
+        property("sonar.test.inclusions", "**/*Test.kt:**/*Tests.kt:**/*Spec.kt")
     }
 }
 
