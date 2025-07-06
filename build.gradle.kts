@@ -104,8 +104,7 @@ configure(subprojects) {
             html.required.set(true)
         }
 
-        val sourceSets = project.the<SourceSetContainer>()
-        classDirectories.setFrom(sourceSets.getByName("main").output.classesDirs.asFileTree.matching {
+        classDirectories.setFrom(fileTree(layout.buildDirectory.dir("classes/kotlin/main")) {
             exclude(testExclusionPatterns)
         })
 
@@ -130,7 +129,7 @@ tasks.register<JacocoReport>("jacocoRootReport") {
     additionalSourceDirs.setFrom(subprojects.map { it.the<SourceSetContainer>()["main"].allSource.srcDirs })
     sourceDirectories.setFrom(subprojects.map { it.the<SourceSetContainer>()["main"].allSource.srcDirs })
     classDirectories.setFrom(subprojects.map { subproject ->
-        subproject.the<SourceSetContainer>()["main"].output.classesDirs.asFileTree.matching {
+        subproject.fileTree(subproject.layout.buildDirectory.get().asFile.resolve("classes/kotlin/main")) {
             exclude(testExclusionPatterns)
         }
     })
