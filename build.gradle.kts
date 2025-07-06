@@ -70,7 +70,7 @@ subprojects {
     // Configure Kotlin compiler options
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
-            freeCompilerArgs = listOf(
+            freeCompilerArgs += listOf(
                 "-Xjsr305=strict",
                 "-Xconsistent-data-class-copy-visibility"
             )
