@@ -155,12 +155,7 @@ sonar {
             "sonar.coverage.jacoco.xmlReportPaths",
             "${layout.buildDirectory.get()}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
         )
-
-        // property("sonar.sources", subprojects.joinToString(",") { "${it.projectDir}/src/main/kotlin" })
-        // property("sonar.tests", subprojects.joinToString(",") { "${it.projectDir}/src/test/kotlin" })
-        // property("sonar.java.binaries", subprojects.joinToString(",") { "${it.layout.buildDirectory.get()}/classes/kotlin/main" })
-        // property("sonar.java.test.binaries", subprojects.joinToString(",") { "${it.layout.buildDirectory.get()}/classes/kotlin/test" })
-
+        property("sonar.kotlin.coveragePlugin", "jacoco")
         property("sonar.kotlin.version", Versions.KOTLIN)
         property("sonar.exclusions", sonarGlobalExclusions.joinToString(","))
         property("sonar.cpd.exclusions", testExclusionPatterns.joinToString(","))
