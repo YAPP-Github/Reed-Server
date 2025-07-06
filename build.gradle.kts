@@ -23,16 +23,16 @@ allprojects {
 
 // 테스트하지 않는 코드 패턴 (JaCoCo + SonarQube 커버리지 + CPD 공통)
 val testExclusionPatterns = listOf(
-    "**/*Application*",
+    "**/*Application.kt",
     "**/config/**",
-    "**/*Config*",
+    "**/*Config.kt",
     "**/exception/**",
-    "**/*Exception*",
-    "**/*ErrorCode*/**",
+    "**/*Exception.kt",
+    "**/*ErrorCode.kt",
     "**/dto/**",
-    "**/*Request*",
-    "**/*Response*",
-    "**/*Entity*",
+    "**/*Request.kt",
+    "**/*Response.kt",
+    "**/*Entity.kt",
     "**/annotation/**",
     "**/generated/**"
 )
@@ -40,7 +40,6 @@ val testExclusionPatterns = listOf(
 // SonarQube 전체 분석 제외 패턴 (분석 자체가 의미 없는 파일들)
 val sonarGlobalExclusions = listOf(
     "**/build/**",
-    "**/generated/**",
 )
 
 subprojects {
@@ -173,8 +172,6 @@ configure<SonarExtension> {
         property("sonar.exclusions", sonarGlobalExclusions.joinToString(","))
         property("sonar.cpd.exclusions", testExclusionPatterns.joinToString(","))
         property("sonar.coverage.exclusions", testExclusionPatterns.joinToString(","))
-
-        property("sonar.test.inclusions", "**/*Test.kt:**/*Tests.kt:**/*Spec.kt")
     }
 }
 
