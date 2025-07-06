@@ -1,4 +1,4 @@
-rootProject.name = "multi-module-test"
+rootProject.name = "reed"
 
 include(
     "admin",
