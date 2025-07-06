@@ -9,7 +9,6 @@ plugins {
     kotlin(Plugins.Kotlin.Short.SPRING) version Versions.KOTLIN
     kotlin(Plugins.Kotlin.Short.JPA) version Versions.KOTLIN
     id(Plugins.DETEKT) version Versions.DETEKT
-    id(Plugins.KOVER) version Versions.KOVER
     id(Plugins.JACOCO)
     id(Plugins.SONAR_QUBE) version Versions.SONAR_QUBE
 }
@@ -111,6 +110,10 @@ configure(subprojects) {
                 exclude(testExclusionPatterns)
             }
         }))
+
+        executionData.setFrom(fileTree(layout.buildDirectory) {
+            include("jacoco/*.exec")
+        })
     }
 }
 
@@ -133,8 +136,10 @@ tasks.register<JacocoReport>("jacocoRootReport") {
             exclude(testExclusionPatterns)
         }
     })
-    executionData.from(subprojects.map {
-        it.layout.buildDirectory.file("jacoco/test.exec")
+    executionData.from(subprojects.map { subproject ->
+        subproject.fileTree(subproject.layout.buildDirectory.dir("jacoco")) {
+            include("*.exec")
+        }
     })
 
     reports {
