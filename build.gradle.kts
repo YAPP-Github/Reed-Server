@@ -22,16 +22,16 @@ allprojects {
 
 // 테스트하지 않는 코드 패턴 (JaCoCo + SonarQube 커버리지 + CPD 공통)
 val testExclusionPatterns = listOf(
-    "**/*Application.kt",
+    "**/*Application*",
     "**/config/**",
-    "**/*Config.kt",
+    "**/*Config*",
     "**/exception/**",
-    "**/*Exception.kt",
-    "**/*ErrorCode.kt",
+    "**/*Exception*",
+    "**/*ErrorCode*",
     "**/dto/**",
-    "**/*Request.kt",
-    "**/*Response.kt",
-    "**/*Entity.kt",
+    "**/*Request*",
+    "**/*Response*",
+    "**/*Entity*",
     "**/annotation/**",
     "**/generated/**"
 )
