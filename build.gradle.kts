@@ -1,4 +1,3 @@
-import org.sonarqube.gradle.SonarExtension
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -147,7 +146,7 @@ tasks.register<JacocoReport>("jacocoRootReport") {
 }
 
 // SonarQube 설정을 루트에서 모든 서브모듈에 대해 설정
-configure<SonarExtension> {
+sonar {
     properties {
         property("sonar.projectKey", "YAPP-Github_26th-App-Team-1-BE")
         property("sonar.organization", "yapp-github")
@@ -157,15 +156,10 @@ configure<SonarExtension> {
             "${layout.buildDirectory.get()}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
         )
 
-        property("sonar.sources", subprojects.joinToString(",") { "${it.projectDir}/src/main/kotlin" })
-        property("sonar.tests", subprojects.joinToString(",") { "${it.projectDir}/src/test/kotlin" })
-
-        property("sonar.java.binaries", subprojects.joinToString(",") {
-            "${it.layout.buildDirectory.get()}/classes/kotlin/main"
-        })
-        property("sonar.java.test.binaries", subprojects.joinToString(",") {
-            "${it.layout.buildDirectory.get()}/classes/kotlin/test"
-        })
+        // property("sonar.sources", subprojects.joinToString(",") { "${it.projectDir}/src/main/kotlin" })
+        // property("sonar.tests", subprojects.joinToString(",") { "${it.projectDir}/src/test/kotlin" })
+        // property("sonar.java.binaries", subprojects.joinToString(",") { "${it.layout.buildDirectory.get()}/classes/kotlin/main" })
+        // property("sonar.java.test.binaries", subprojects.joinToString(",") { "${it.layout.buildDirectory.get()}/classes/kotlin/test" })
 
         property("sonar.kotlin.version", Versions.KOTLIN)
         property("sonar.exclusions", sonarGlobalExclusions.joinToString(","))
