@@ -55,10 +55,6 @@ subprojects {
         }
     }
 
-    tasks.withType<Test> {
-        useJUnitPlatform()
-    }
-
     plugins.withId(Plugins.Kotlin.ALLOPEN) {
         extensions.configure<org.jetbrains.kotlin.allopen.gradle.AllOpenExtension> {
             annotation("jakarta.persistence.Entity")
@@ -86,6 +82,7 @@ configure(subprojects) {
     }
 
     tasks.withType<Test> {
+        useJUnitPlatform()
         finalizedBy("jacocoTestReport")
 
         testLogging {
