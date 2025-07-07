@@ -22,7 +22,6 @@ class AladinApiHelper(
             }
             .getOrElse { exception ->
                 log.error("Failed to call Aladin search API for request: '$request'", exception)
-                // TODO: 특정 비즈니스 예외로 맵핑하거나, 공통 예외 처리 계층에서 처리하도록 리팩토링
                 throw IllegalStateException(
                     "Failed to retrieve search results from Aladin API: ${exception.message}",
                     exception
