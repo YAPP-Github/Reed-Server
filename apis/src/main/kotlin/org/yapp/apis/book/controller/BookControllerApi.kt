@@ -10,16 +10,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.*
 import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
+import org.yapp.apis.book.dto.request.UserBookRegisterRequest
 import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.apis.book.dto.response.BookSearchResponse
+import org.yapp.apis.book.dto.response.UserBookResponse
 
-/**
- * API interface for book controller.
- */
+
 @Tag(name = "Books", description = "도서 정보를 조회하는 API")
 @RequestMapping("/api/v1/books")
 interface BookControllerApi {
@@ -110,4 +109,58 @@ interface BookControllerApi {
         )
         request: BookDetailRequest
     ): ResponseEntity<BookDetailResponse>
+
+    @Operation(
+        summary = "서재에 책 등록 또는 상태 업데이트 (Upsert)", // 요약 변경
+        description = "사용자의 서재에 책을 등록하거나, 이미 등록된 책의 상태를 업데이트합니다." // 설명 변경
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201",
+                description = "책이 서재에 성공적으로 등록되었습니다.",
+                content = [Content(schema = Schema(implementation = UserBookResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "200", // 업데이트 시 200 OK 반환 가능
+                description = "책 상태가 성공적으로 업데이트되었습니다.",
+                content = [Content(schema = Schema(implementation = UserBookResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 파라미터"
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "존재하지 않는 책 (ISBN 오류)"
+            )
+        ]
+    )
+    @PostMapping("/upsert") // 경로를 /upsert로 변경
+    fun upsertBookToMyLibrary( // 메서드 이름 변경
+        @RequestHeader("Authorization") authorization: String,
+        @Valid @RequestBody request: UserBookRegisterRequest
+    ): ResponseEntity<UserBookResponse>
+
+    @Operation(
+        summary = "사용자 서재 조회",
+        description = "현재 사용자의 서재에 등록된 모든 책을 조회합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "서재 조회 성공",
+                content = [Content(schema = Schema(implementation = Array<UserBookResponse>::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "사용자를 찾을 수 없습니다."
+            )
+        ]
+    )
+    @GetMapping("/my-library")
+    fun getUserLibraryBooks(
+        @RequestHeader("Authorization") authorization: String
+    ): ResponseEntity<List<UserBookResponse>>
 }
