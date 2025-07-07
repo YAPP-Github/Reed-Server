@@ -22,4 +22,14 @@ data class BookDetailRequest private constructor(
             optResult = this.optResult
         )
     }
+
+    companion object {
+        fun of(isbn: String?, optResult: List<String>? = null): BookDetailRequest {
+            return BookDetailRequest(
+                itemId = isbn,
+                itemIdType = "ISBN",
+                optResult = optResult
+            )
+        }
+    }
 }

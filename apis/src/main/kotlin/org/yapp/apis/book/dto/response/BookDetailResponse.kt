@@ -11,7 +11,7 @@ data class BookDetailResponse private constructor(
     val version: String?,
     val title: String,
     val link: String?,
-    val author: String?,
+    val author: String,
     val pubDate: String?,
     val description: String?,
     val isbn: String?,
@@ -22,15 +22,13 @@ data class BookDetailResponse private constructor(
     val mallType: String?,
     val stockStatus: String?,
     val mileage: Int?,
-    val cover: String?,
+    val cover: String,
     val categoryId: Int?,
     val categoryName: String?,
-    val publisher: String?
+    val publisher: String
 ) {
     companion object {
-        /**
-         * AladinBookDetailResponse와 Book 도메인 객체로부터 BookDetailResponse를 생성합니다.
-         */
+
         fun from(response: AladinBookDetailResponse): BookDetailResponse {
             val bookItem = response.item?.firstOrNull()
                 ?: throw IllegalArgumentException("No book item found in detail response.")
