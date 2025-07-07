@@ -22,16 +22,16 @@ class BookEntity private constructor(
     val title: String,
 
     @Column(length = 255)
-    val author: String? = null,
+    val author: String,
 
     @Column(length = 255)
-    val publisher: String? = null,
+    val publisher: String,
 
     @Column(name = "publication_year")
     val publicationYear: Int? = null,
 
     @Column(name = "cover_image_url", length = 2048)
-    val coverImageUrl: String? = null,
+    val coverImageUrl: String,
 
     @Column(length = 2000)
     val description: String? = null
