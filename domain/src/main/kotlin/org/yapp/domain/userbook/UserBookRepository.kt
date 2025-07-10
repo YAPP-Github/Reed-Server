@@ -1,7 +1,6 @@
-package org.yapp.domain.book
+package org.yapp.domain.userbook
 
-import org.yapp.domain.userbook.UserBook
-import java.util.*
+import java.util.UUID
 
 
 interface UserBookRepository {

@@ -1,6 +1,5 @@
-package org.yapp.apis.auth.exception
+package org.yapp.apis.book.exception
 
-import org.yapp.domain.book.exception.BookErrorCode
 import org.yapp.globalutils.exception.CommonException
 
 class BookException(

@@ -1,11 +1,11 @@
-package org.yapp.domain.book.service
+package org.yapp.domain.service.domain
 
 import org.yapp.domain.book.Book
-import org.yapp.domain.book.BookStatus
-import org.yapp.domain.book.UserBookRepository
+import org.yapp.domain.userbook.BookStatus
+import org.yapp.domain.userbook.UserBookRepository
 import org.yapp.domain.userbook.UserBook
 import org.yapp.globalutils.annotation.DomainService
-import java.util.*
+import java.util.UUID
 
 @DomainService
 class UserBookDomainService(

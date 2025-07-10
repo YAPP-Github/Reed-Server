@@ -1,4 +1,4 @@
-package org.yapp.domain.book.exception
+package org.yapp.apis.book.exception
 
 import org.springframework.http.HttpStatus
 import org.yapp.globalutils.exception.BaseErrorCode

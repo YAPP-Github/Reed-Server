@@ -1,4 +1,4 @@
-package org.yapp.domain.book
+package org.yapp.domain.userbook
 
 enum class BookStatus {
     BEFORE_READING,   // 읽기 전

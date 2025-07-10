@@ -1,7 +1,7 @@
 package org.yapp.apis.book.dto.request
 
 import jakarta.validation.constraints.NotBlank
-import org.yapp.domain.book.BookStatus
+import org.yapp.domain.userbook.BookStatus
 
 
 data class UserBookRegisterRequest private constructor(
