@@ -3,7 +3,7 @@ package org.yapp.infra.user.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
-import org.yapp.domain.book.BookStatus
+import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.common.BaseTimeEntity
 import org.yapp.domain.userbook.UserBook
 import java.sql.Types
@@ -25,23 +25,33 @@ class UserBookEntity(
     @Column(name = "book_isbn", nullable = false)
     val bookIsbn: String,
 
+    coverImageUrl: String,
+    publisher: String,
+    title: String,
+    author: String,
+    status: BookStatus
+) : BaseTimeEntity() {
+
     @Column(name = "cover_image_url", nullable = false, length = 2048)
-    val coverImageUrl: String,
+    var coverImageUrl: String = coverImageUrl
+        protected set
 
     @Column(name = "publisher", nullable = false, length = 300)
-    val publisher: String,
+    var publisher: String = publisher
+        protected set
 
     @Column(nullable = false, length = 255)
-    val title: String,
+    var title: String = title
+        protected set
 
     @Column(length = 255)
-    val author: String,
+    var author: String = author
+        protected set
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    var status: BookStatus,
-
-    ) : BaseTimeEntity() {
+    var status: BookStatus = status
+        protected set
 
     fun toDomain(): UserBook = UserBook.reconstruct(
         id = id,
