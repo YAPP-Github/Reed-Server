@@ -2,13 +2,14 @@ package org.yapp.apis.auth.controller
 
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.usecase.AuthUseCase
-import org.yapp.apis.util.AuthUtils
+import java.util.*
 
 /**
  * Implementation of the authentication controller API.
@@ -33,15 +34,13 @@ class AuthController(
     }
 
     @PostMapping("/signout")
-    override fun signOut(@RequestHeader("Authorization") authorization: String): ResponseEntity<Unit> {
-        val userId = AuthUtils.extractUserIdFromAuthHeader(authorization, authUseCase::getUserIdFromAccessToken)
+    override fun signOut(@AuthenticationPrincipal userId: UUID): ResponseEntity<Unit> {
         authUseCase.signOut(userId)
         return ResponseEntity.noContent().build()
     }
 
     @GetMapping("/me")
-    override fun getUserProfile(@RequestHeader("Authorization") authorization: String): ResponseEntity<UserProfileResponse> {
-        val userId = AuthUtils.extractUserIdFromAuthHeader(authorization, authUseCase::getUserIdFromAccessToken)
+    override fun getUserProfile(@AuthenticationPrincipal userId: UUID): ResponseEntity<UserProfileResponse> {
         val userProfile = authUseCase.getUserProfile(userId)
         return ResponseEntity.ok(userProfile)
     }

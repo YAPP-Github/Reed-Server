@@ -10,13 +10,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
 import org.yapp.apis.book.dto.request.UserBookRegisterRequest
 import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.apis.book.dto.response.BookSearchResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
+import java.util.*
 
 
 @Tag(name = "Books", description = "도서 정보를 조회하는 API")
@@ -136,9 +142,9 @@ interface BookControllerApi {
             )
         ]
     )
-    @PostMapping("/upsert") // 경로를 /upsert로 변경
+    @PutMapping("/upsert") // 경로를 /upsert로 변경
     fun upsertBookToMyLibrary( // 메서드 이름 변경
-        @RequestHeader("Authorization") authorization: String,
+        @AuthenticationPrincipal userId: UUID,
         @Valid @RequestBody request: UserBookRegisterRequest
     ): ResponseEntity<UserBookResponse>
 
@@ -151,7 +157,10 @@ interface BookControllerApi {
             ApiResponse(
                 responseCode = "200",
                 description = "서재 조회 성공",
-                content = [Content(schema = Schema(implementation = Array<UserBookResponse>::class))]
+                content = [Content(
+                    schema = Schema(implementation = UserBookResponse::class),
+                    mediaType = "application/json"
+                )]
             ),
             ApiResponse(
                 responseCode = "404",
@@ -161,6 +170,6 @@ interface BookControllerApi {
     )
     @GetMapping("/my-library")
     fun getUserLibraryBooks(
-        @RequestHeader("Authorization") authorization: String
+        @AuthenticationPrincipal userId: UUID,
     ): ResponseEntity<List<UserBookResponse>>
 }
