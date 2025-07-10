@@ -18,9 +18,4 @@ class BookManagementService(
 
         return bookDomainService.findOrCreateBook(BookCreateRequest.from(request))
     }
-
-    private fun parsePublicationYear(pubDate: String): Int? {
-        return pubDate.takeIf { it.length >= 4 && it.substring(0, 4).all { ch -> ch.isDigit() } }?.substring(0, 4)
-            ?.toIntOrNull()
-    }
 }
