@@ -1,4 +1,4 @@
-package org.yapp.domain.book.service
+package org.yapp.domain.service.domain
 
 import org.yapp.domain.book.Book
 import org.yapp.domain.book.BookRepository
@@ -9,13 +9,10 @@ class BookDomainService(
     private val bookRepository: BookRepository
 ) {
 
-    fun findOrCreateBook(isbn: String, bookFactory: (String) -> Book): Book {
-        return bookRepository.findByIsbn(isbn) ?: run {
-            val newBook = bookFactory(isbn)
-            bookRepository.save(newBook)
-        }
+    fun findOrCreateBook(book: Book): Book {
+        return bookRepository.findByIsbn(book.isbn)
+            ?: bookRepository.save(book)
     }
-    
 
     fun save(book: Book): Book {
         return bookRepository.save(book)

@@ -1,7 +1,6 @@
 package org.yapp.domain.userbook // UserBook 도메인 모델의 올바른 패키지
 
 import org.yapp.domain.book.Book
-import org.yapp.domain.book.BookStatus
 import org.yapp.globalutils.util.UuidGenerator
 import java.time.LocalDateTime
 import java.util.*
@@ -15,15 +14,13 @@ data class UserBook private constructor(
     val publisher: String,
     val title: String,
     val author: String,
-    var status: BookStatus,
-    var createdAt: LocalDateTime,
-    var updatedAt: LocalDateTime,
-    var deletedAt: LocalDateTime? = null,
+    val status: BookStatus,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
+    val deletedAt: LocalDateTime? = null,
 ) {
     fun updateStatus(newStatus: BookStatus): UserBook {
-        this.status = newStatus
-        this.updatedAt = LocalDateTime.now()
-        return this
+        return this.copy(status = newStatus, updatedAt = LocalDateTime.now())
     }
 
 
@@ -58,8 +55,8 @@ data class UserBook private constructor(
             title: String,
             author: String,
             publisher: String,
-            createdAt: LocalDateTime = LocalDateTime.now(),
-            updatedAt: LocalDateTime = LocalDateTime.now(),
+            createdAt: LocalDateTime,
+            updatedAt: LocalDateTime,
             deletedAt: LocalDateTime? = null,
         ): UserBook {
             return UserBook(

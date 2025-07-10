@@ -25,8 +25,8 @@ data class Book private constructor(
             title: String,
             author: String,
             publisher: String,
-            publicationYear: Int? = null,
             coverImageUrl: String,
+            publicationYear: Int? = null,
             description: String? = null
         ): Book {
             val now = LocalDateTime.now()
