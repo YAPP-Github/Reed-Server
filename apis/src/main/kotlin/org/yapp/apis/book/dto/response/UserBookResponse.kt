@@ -1,7 +1,8 @@
 package org.yapp.apis.book.dto.response
 
-import org.yapp.domain.book.BookStatus
+import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 data class UserBookResponse private constructor(
@@ -30,8 +31,8 @@ data class UserBookResponse private constructor(
                 status = userBook.status,
                 coverImageUrl = userBook.coverImageUrl,
                 publisher = userBook.publisher,
-                createdAt = userBook.createdAt.toString(),
-                updatedAt = userBook.updatedAt.toString(),
+                createdAt = userBook.createdAt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                updatedAt = userBook.updatedAt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
             )
         }
     }
