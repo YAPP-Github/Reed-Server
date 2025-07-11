@@ -2,8 +2,6 @@ package org.yapp.apis.book.service
 
 import org.springframework.stereotype.Service
 import org.yapp.apis.book.dto.request.BookCreateRequest
-import org.yapp.apis.book.exception.BookErrorCode
-import org.yapp.apis.book.exception.BookException
 import org.yapp.domain.book.Book
 import org.yapp.domain.service.domain.BookDomainService
 
