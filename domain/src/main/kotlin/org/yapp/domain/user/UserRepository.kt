@@ -17,4 +17,7 @@ interface UserRepository {
     fun findByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): User?
 
     fun save(user: User): User
+    
+    fun existsById(id: UUID): Boolean
+
 }

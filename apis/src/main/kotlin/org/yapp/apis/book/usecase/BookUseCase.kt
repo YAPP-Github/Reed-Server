@@ -31,7 +31,7 @@ class BookUseCase(
 
     @Transactional
     fun upsertBookToMyLibrary(userId: UUID, request: UserBookRegisterRequest): UserBookResponse {
-        userAuthService.findUserById(userId)
+        userAuthService.validateUserExists(userId)
 
         val book = bookManagementService.findOrCreateBookByIsbn(request.validBookIsbn())
         val userBook = userBookService.upsertUserBook(userId, book, request.bookStatus)
@@ -40,7 +40,7 @@ class BookUseCase(
     }
 
     fun getUserLibraryBooks(userId: UUID): List<UserBookResponse> {
-        userAuthService.findUserById(userId)
+        userAuthService.validateUserExists(userId)
 
         return userBookService.findAllUserBooks(userId)
             .map(UserBookResponse::from)

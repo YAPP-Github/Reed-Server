@@ -56,4 +56,10 @@ class UserAuthService(
 
         return userDomainService.create(profile)
     }
+
+    fun validateUserExists(userId: UUID) {
+        if (!userDomainService.existsById(userId)) {
+            throw AuthException(AuthErrorCode.USER_NOT_FOUND, "User not found: $userId")
+        }
+    }
 }

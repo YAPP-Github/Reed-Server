@@ -48,4 +48,8 @@ class UserDomainService(
 
     fun save(user: User): User =
         userRepository.save(user)
+
+    fun existsById(userId: UUID): Boolean {
+        return userRepository.existsById(userId)
+    }
 }

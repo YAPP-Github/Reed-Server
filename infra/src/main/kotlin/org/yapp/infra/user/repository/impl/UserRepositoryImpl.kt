@@ -33,6 +33,10 @@ class UserRepositoryImpl(
         }.toDomain()
     }
 
+    override fun existsById(id: UUID): Boolean {
+        return jpaUserRepository.existsById(id)
+    }
+
     override fun findByProviderTypeAndProviderIdIncludingDeleted(
         providerType: ProviderType, providerId: String
     ): User? {
