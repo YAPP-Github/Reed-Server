@@ -9,7 +9,7 @@ import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.helper.KakaoApiHelper
 import org.yapp.apis.util.NicknameGenerator
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
 /**

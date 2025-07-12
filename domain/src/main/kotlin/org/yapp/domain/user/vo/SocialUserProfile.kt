@@ -1,6 +1,6 @@
 package org.yapp.domain.user.vo
 
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 import org.yapp.globalutils.util.RegexUtils
 
 data class SocialUserProfile private constructor(

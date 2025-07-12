@@ -8,33 +8,25 @@ import java.time.LocalDateTime // Import LocalDateTime
 data class Book private constructor(
     val isbn: String,
     val title: String,
-    val author: String?,
-    val publisher: String?,
+    val author: String,
+    val publisher: String,
     val publicationYear: Int?,
-    val coverImageUrl: String?,
+    val coverImageUrl: String,
     val description: String?,
-    val createdAt: LocalDateTime, // Added createdAt
-    val updatedAt: LocalDateTime, // Added updatedAt
-    val deletedAt: LocalDateTime? = null // Added deletedAt
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
+    val deletedAt: LocalDateTime? = null
 ) {
-    fun restore(): Book {
-        require(this.isDeleted()) { "Book is already active" }
-        return this.copy(
-            deletedAt = null,
-            updatedAt = LocalDateTime.now()
-        )
-    }
 
-    fun isDeleted(): Boolean = deletedAt != null
 
     companion object {
         fun create(
             isbn: String,
             title: String,
-            author: String? = null,
-            publisher: String? = null,
+            author: String,
+            publisher: String,
+            coverImageUrl: String,
             publicationYear: Int? = null,
-            coverImageUrl: String? = null,
             description: String? = null
         ): Book {
             val now = LocalDateTime.now()
@@ -55,10 +47,10 @@ data class Book private constructor(
         fun reconstruct(
             isbn: String,
             title: String,
-            author: String?,
-            publisher: String?,
+            author: String,
+            publisher: String,
             publicationYear: Int?,
-            coverImageUrl: String?,
+            coverImageUrl: String,
             description: String?,
             createdAt: LocalDateTime,
             updatedAt: LocalDateTime,

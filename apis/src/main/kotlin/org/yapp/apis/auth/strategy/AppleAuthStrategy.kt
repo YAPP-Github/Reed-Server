@@ -9,7 +9,7 @@ import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.helper.AppleJwtHelper
 import org.yapp.apis.util.NicknameGenerator
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 
 /**
  * Implementation of AuthStrategy for Apple authentication.

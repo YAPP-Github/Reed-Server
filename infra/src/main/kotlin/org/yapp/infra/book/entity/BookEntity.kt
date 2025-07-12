@@ -16,26 +16,41 @@ import java.sql.Types
 class BookEntity private constructor(
     @Id
     @JdbcTypeCode(Types.VARCHAR)
-    @Column(length = 13, updatable = false, nullable = false) // ISBN/ISBN13 length
+    @Column(length = 13, updatable = false, nullable = false)
     val isbn: String,
+
+    title: String,
+    author: String,
+    publisher: String,
+    publicationYear: Int? = null,
+    coverImageUrl: String,
+    description: String? = null
+
+) : BaseTimeEntity() {
+
     @Column(nullable = false, length = 255)
-    val title: String,
+    var title: String = title
+        protected set
 
     @Column(length = 255)
-    val author: String? = null,
+    var author: String = author
+        protected set
 
     @Column(length = 255)
-    val publisher: String? = null,
+    var publisher: String = publisher
+        protected set
 
     @Column(name = "publication_year")
-    val publicationYear: Int? = null,
+    var publicationYear: Int? = publicationYear
+        protected set
 
     @Column(name = "cover_image_url", length = 2048)
-    val coverImageUrl: String? = null,
+    var coverImageUrl: String = coverImageUrl
+        protected set
 
     @Column(length = 2000)
-    val description: String? = null
-) : BaseTimeEntity() {
+    var description: String? = description
+        protected set
 
     fun toDomain(): Book = Book.reconstruct(
         isbn = isbn,

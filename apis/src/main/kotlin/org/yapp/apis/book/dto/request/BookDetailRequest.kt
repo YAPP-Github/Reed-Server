@@ -15,11 +15,25 @@ data class BookDetailRequest private constructor(
     val itemIdType: String? = "ISBN",
     val optResult: List<String>? = null
 ) {
+
+    fun validIsbn(): String = itemId!!
+
+
     fun toAladinRequest(): AladinBookLookupRequest {
         return AladinBookLookupRequest.create(
             itemId = this.itemId!!,
             itemIdType = this.itemIdType ?: "ISBN",
             optResult = this.optResult
         )
+    }
+
+    companion object {
+        fun of(isbn: String?, optResult: List<String>? = null): BookDetailRequest {
+            return BookDetailRequest(
+                itemId = isbn,
+                itemIdType = "ISBN",
+                optResult = optResult
+            )
+        }
     }
 }

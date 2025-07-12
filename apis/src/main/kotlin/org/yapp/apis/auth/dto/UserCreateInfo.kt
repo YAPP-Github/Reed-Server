@@ -1,6 +1,6 @@
 package org.yapp.apis.auth.dto
 
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 
 data class UserCreateInfo private constructor(
     val email: String?,

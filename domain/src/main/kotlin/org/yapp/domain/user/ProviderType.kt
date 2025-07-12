@@ -1,4 +1,4 @@
-package org.yapp.domain.auth
+package org.yapp.domain.user
 
 /**
  * Enum representing different authentication providers.

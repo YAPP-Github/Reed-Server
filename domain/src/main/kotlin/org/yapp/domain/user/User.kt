@@ -1,6 +1,6 @@
 package org.yapp.domain.user
 
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 import java.time.LocalDateTime
 import java.util.*
 

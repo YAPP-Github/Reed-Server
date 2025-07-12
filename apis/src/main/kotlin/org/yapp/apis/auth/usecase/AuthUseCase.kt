@@ -51,9 +51,4 @@ class AuthUseCase(
             provider = user.providerType
         )
     }
-
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    fun getUserIdFromAccessToken(accessToken: String): UUID {
-        return authTokenHelper.getUserIdFromAccessToken(accessToken)
-    }
 }

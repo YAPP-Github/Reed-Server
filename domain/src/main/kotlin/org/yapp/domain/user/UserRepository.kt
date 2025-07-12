@@ -1,6 +1,6 @@
 package org.yapp.domain.user
 
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 import java.util.*
 
 /**
@@ -17,4 +17,7 @@ interface UserRepository {
     fun findByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): User?
 
     fun save(user: User): User
+
+    fun existsById(id: UUID): Boolean
+
 }
