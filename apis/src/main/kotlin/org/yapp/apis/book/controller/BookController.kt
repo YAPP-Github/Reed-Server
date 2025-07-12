@@ -34,7 +34,7 @@ class BookController(
     override fun getBookDetail(
         @Valid @ModelAttribute request: BookDetailRequest
     ): ResponseEntity<BookDetailResponse> {
-        val response = bookUseCase.getBookDetail(request.validIsbn())
+        val response = bookUseCase.getBookDetail(request)
         return ResponseEntity.ok(response)
     }
 

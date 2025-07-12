@@ -3,17 +3,25 @@ package org.yapp.apis.book.service
 import org.springframework.stereotype.Service
 import org.yapp.apis.book.dto.request.BookCreateRequest
 import org.yapp.domain.book.Book
-import org.yapp.domain.service.domain.BookDomainService
+import org.yapp.domain.book.BookDomainService
 
 @Service
 class BookManagementService(
-    private val bookDomainService: BookDomainService,
-    private val bookQueryService: BookQueryService
+    private val bookDomainService: BookDomainService
 ) {
-    fun findOrCreateBookByIsbn(validIsbn: String): Book {
-        val detail = bookQueryService.getBookDetail(validIsbn)
-        val request = BookCreateRequest.create(detail)
+    fun findOrCreateBook(request: BookCreateRequest): Book {
+        val isbn = request.validIsbn()
 
-        return bookDomainService.findOrCreateBook(BookCreateRequest.from(request))
+        return bookDomainService.findByIsbn(isbn)
+            ?: bookDomainService.save(
+                isbn = isbn,
+                title = request.validTitle(),
+                author = request.validAuthor(),
+                publisher = request.validPublisher(),
+                coverImageUrl = request.coverImageUrl,
+                publicationYear = request.publicationYear,
+                description = request.description
+            )
     }
+
 }

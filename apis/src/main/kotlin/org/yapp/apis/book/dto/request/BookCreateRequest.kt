@@ -32,18 +32,6 @@ data class BookCreateRequest private constructor(
 
     companion object {
 
-        fun from(request: BookCreateRequest): Book {
-            return Book.create(
-                isbn = request.validIsbn(),
-                title = request.validTitle(),
-                author = request.validAuthor(),
-                publisher = request.validPublisher(),
-                publicationYear = request.publicationYear,
-                coverImageUrl = request.coverImageUrl,
-                description = request.description
-            )
-        }
-
         fun create(bookDetail: BookDetailResponse): BookCreateRequest {
             val finalIsbn = bookDetail.isbn ?: bookDetail.isbn13
             ?: throw IllegalArgumentException("ISBN이 존재하지 않습니다.")
