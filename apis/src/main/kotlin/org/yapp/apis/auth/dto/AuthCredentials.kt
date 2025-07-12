@@ -1,6 +1,6 @@
 package org.yapp.apis.auth.dto
 
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 
 sealed class AuthCredentials {
     abstract fun getProviderType(): ProviderType

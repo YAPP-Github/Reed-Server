@@ -1,7 +1,7 @@
 package org.yapp.apis.auth.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 import java.util.*
 
 @Schema(

@@ -5,7 +5,7 @@ import org.yapp.apis.auth.dto.UserCreateInfo
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.util.NicknameGenerator
-import org.yapp.domain.service.domain.UserDomainService
+import org.yapp.domain.user.UserDomainService
 import org.yapp.domain.user.User
 import org.yapp.domain.user.vo.SocialUserProfile
 import java.util.*

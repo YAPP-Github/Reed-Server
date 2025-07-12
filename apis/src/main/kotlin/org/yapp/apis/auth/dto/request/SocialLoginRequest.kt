@@ -7,7 +7,7 @@ import org.yapp.apis.auth.dto.AuthCredentials
 import org.yapp.apis.auth.dto.KakaoAuthCredentials
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 
 @Schema(
     name = "SocialLoginRequest",
