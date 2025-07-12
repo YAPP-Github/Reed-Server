@@ -1,9 +1,6 @@
-package org.yapp.domain.service.domain
+package org.yapp.domain.userbook
 
 import org.yapp.domain.book.Book
-import org.yapp.domain.userbook.BookStatus
-import org.yapp.domain.userbook.UserBookRepository
-import org.yapp.domain.userbook.UserBook
 import org.yapp.globalutils.annotation.DomainService
 import java.util.UUID
 

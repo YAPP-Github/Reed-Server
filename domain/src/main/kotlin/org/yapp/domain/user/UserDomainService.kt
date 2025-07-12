@@ -1,12 +1,9 @@
-package org.yapp.domain.service.domain
+package org.yapp.domain.user
 
-import org.yapp.domain.auth.ProviderType
-import org.yapp.domain.user.User
-import org.yapp.domain.user.UserRepository
 import org.yapp.domain.user.vo.SocialUserProfile
 import org.yapp.globalutils.annotation.DomainService
 import org.yapp.globalutils.util.TimeProvider
-import java.util.*
+import java.util.UUID
 
 @DomainService
 class UserDomainService(

@@ -1,10 +1,8 @@
-package org.yapp.domain.service.redis
+package org.yapp.domain.token
 
-import org.yapp.domain.token.RefreshToken
-import org.yapp.domain.token.RefreshTokenRepository
 import org.yapp.globalutils.annotation.DomainService
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @DomainService
 class TokenDomainRedisService(

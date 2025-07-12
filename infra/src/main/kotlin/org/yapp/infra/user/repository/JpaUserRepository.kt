@@ -2,7 +2,7 @@ package org.yapp.infra.user.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 import org.yapp.infra.user.entity.UserEntity
 import java.util.*
 

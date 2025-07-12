@@ -1,7 +1,7 @@
 package org.yapp.infra.user.repository.impl
 
 import org.springframework.stereotype.Repository
-import org.yapp.domain.auth.ProviderType
+import org.yapp.domain.user.ProviderType
 import org.yapp.domain.user.User
 import org.yapp.domain.user.UserRepository
 import org.yapp.infra.user.entity.UserEntity
