@@ -32,16 +32,26 @@ class SecurityConfig(
             .csrf { it.disable() }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
+            .logout { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .exceptionHandling {
+                it.authenticationEntryPoint(CustomAuthenticationEntryPoint(objectMapper))
+                it.accessDeniedHandler(CustomAccessDeniedHandler(objectMapper))
+            }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/v1/auth/refresh", "/api/v1/auth/signin").permitAll()
+                it.requestMatchers(
+                    "/api/v1/auth/refresh",
+                    "/api/v1/auth/signin",
+                    "/api/v1/health",
+                    "/actuator/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/kakao-login.html/**",
+                    "/api/v1/books/search",
+                    "/api/v1/books/detail"
+                ).permitAll()
                 it.requestMatchers("/api/v1/auth/**").authenticated()
-                it.requestMatchers("/api/v1/books/search", "/api/v1/books/detail").permitAll()
                 it.requestMatchers("/api/v1/books/**").authenticated()
-                it.requestMatchers("/api/v1/health").permitAll()
-                it.requestMatchers("/actuator/**").permitAll()
-                it.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                it.requestMatchers("/kakao-login.html/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
