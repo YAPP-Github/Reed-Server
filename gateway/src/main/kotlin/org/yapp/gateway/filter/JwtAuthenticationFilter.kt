@@ -1,5 +1,6 @@
 package org.yapp.gateway.filter
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -8,13 +9,13 @@ import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
 import org.yapp.gateway.jwt.JwtTokenProvider
+import org.yapp.gateway.jwt.exception.JwtException
+import org.yapp.globalutils.exception.ErrorResponse
 
-/**
- * Filter for JWT authentication.
- */
 @Component
 class JwtAuthenticationFilter(
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val objectMapper: ObjectMapper
 ) : OncePerRequestFilter() {
 
     companion object {
@@ -27,30 +28,43 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token = getJwtFromRequest(request)
+        val token = extractJwtFromRequest(request)
+
+        if (token.isNullOrBlank()) {
+            filterChain.doFilter(request, response)
+            return
+        }
 
         try {
-            if (!token.isNullOrBlank() && jwtTokenProvider.validateToken(token)) {
-                val authentication = jwtTokenProvider.getAuthentication(token)
-                SecurityContextHolder.getContext().authentication = authentication
-            }
-        } catch (e: Exception) {
-            logger.debug("JWT authentication failed: ${e.message}")
+            val authentication = jwtTokenProvider.getAuthentication(token)
+            SecurityContextHolder.getContext().authentication = authentication
+        } catch (e: JwtException) {
+            logger.warn("JWT Authentication Failed: ${e.message}")
+            handleJwtException(response, e)
+            return
         }
+
         filterChain.doFilter(request, response)
     }
 
-    /**
-     * Get the JWT from the request.
-     *
-     * @param request The request to extract the JWT from.
-     * @return The JWT, or null if not found.
-     */
-    private fun getJwtFromRequest(request: HttpServletRequest): String? {
+    private fun extractJwtFromRequest(request: HttpServletRequest): String? {
         val bearerToken = request.getHeader(AUTHORIZATION_HEADER)
+        return bearerToken?.takeIf { StringUtils.hasText(it) && it.startsWith(BEARER_PREFIX) }
+            ?.substring(BEARER_PREFIX.length)
+    }
 
-        return if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            bearerToken.substring(BEARER_PREFIX.length)
-        } else null
+    private fun handleJwtException(response: HttpServletResponse, e: JwtException) {
+        val errorCode = e.errorCode
+
+        val errorResponse = ErrorResponse(
+            status = errorCode.getHttpStatus().value(),
+            code = errorCode.getCode(),
+            message = errorCode.getMessage()
+        )
+
+        response.status = errorCode.getHttpStatus().value()
+        response.contentType = "application/json"
+        response.characterEncoding = "UTF-8"
+        response.writer.write(objectMapper.writeValueAsString(errorResponse))
     }
 }

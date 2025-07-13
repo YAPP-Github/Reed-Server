@@ -1,5 +1,6 @@
 package org.yapp.gateway.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -16,12 +17,13 @@ import org.yapp.gateway.jwt.JwtTokenProvider
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val objectMapper: ObjectMapper
 ) {
 
     @Bean
     fun jwtAuthenticationFilter(): JwtAuthenticationFilter {
-        return JwtAuthenticationFilter(jwtTokenProvider)
+        return JwtAuthenticationFilter(jwtTokenProvider, objectMapper)
     }
 
     @Bean
@@ -32,8 +34,10 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/v1/auth/**").permitAll()
-                it.requestMatchers("/api/v1/books/**").permitAll()
+                it.requestMatchers("/api/v1/auth/refresh", "/api/v1/auth/signin").permitAll()
+                it.requestMatchers("/api/v1/auth/**").authenticated()
+                it.requestMatchers("/api/v1/books/search", "/api/v1/books/detail").permitAll()
+                it.requestMatchers("/api/v1/books/**").authenticated()
                 it.requestMatchers("/api/v1/health").permitAll()
                 it.requestMatchers("/actuator/**").permitAll()
                 it.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
