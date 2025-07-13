@@ -35,14 +35,8 @@ class JwtAuthenticationFilter(
             return
         }
 
-        try {
-            val authentication = jwtTokenProvider.getAuthentication(token)
-            SecurityContextHolder.getContext().authentication = authentication
-        } catch (e: JwtException) {
-            logger.warn("JWT Authentication Failed: ${e.message}")
-            handleJwtException(response, e)
-            return
-        }
+        val authentication = jwtTokenProvider.getAuthentication(token)
+        SecurityContextHolder.getContext().authentication = authentication
 
         filterChain.doFilter(request, response)
     }
@@ -53,18 +47,5 @@ class JwtAuthenticationFilter(
             ?.substring(BEARER_PREFIX.length)
     }
 
-    private fun handleJwtException(response: HttpServletResponse, e: JwtException) {
-        val errorCode = e.errorCode
-
-        val errorResponse = ErrorResponse(
-            status = errorCode.getHttpStatus().value(),
-            code = errorCode.getCode(),
-            message = errorCode.getMessage()
-        )
-
-        response.status = errorCode.getHttpStatus().value()
-        response.contentType = "application/json"
-        response.characterEncoding = "UTF-8"
-        response.writer.write(objectMapper.writeValueAsString(errorResponse))
-    }
+    
 }
