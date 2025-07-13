@@ -22,18 +22,13 @@ data class UserBookVO private constructor(
         fun newInstance(
             userBook: UserBook,
         ): UserBookVO {
-            return UserBookVO(
-                id = userBook.id,
-                userId = userBook.userId,
-                bookIsbn = userBook.bookIsbn,
-                coverImageUrl = userBook.coverImageUrl,
-                publisher = userBook.publisher,
-                title = userBook.title,
-                author = userBook.author,
-                status = userBook.status,
-                createdAt = userBook.createdAt,
-                updatedAt = userBook.updatedAt
-            )
+            return with(userBook) {
+                UserBookVO(
+                    id, userId, bookIsbn, coverImageUrl,
+                    publisher, title, author, status,
+                    createdAt, updatedAt
+                )
+            }
         }
     }
 }
