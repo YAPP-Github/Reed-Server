@@ -26,8 +26,19 @@ class BookUseCase(
     private val bookQueryService: BookQueryService,
     private val bookManagementService: BookManagementService
 ) {
-    fun searchBooks(request: BookSearchRequest): BookSearchResponse {
-        return bookQueryService.searchBooks(request)
+    fun searchBooks(request: BookSearchRequest, userId: UUID): BookSearchResponse {
+        userAuthService.validateUserExists(userId)
+
+        val searchResponse = bookQueryService.searchBooks(request)
+        val isbns = searchResponse.books.map { it.isbn }
+        val userBooks = userBookService.findAllByUserIdAndBookIsbnIn(userId, isbns)
+        val statusMap = userBooks.associateBy({ it.bookIsbn }, { it.status })
+        searchResponse.books.forEach { bookSummary ->
+            statusMap[bookSummary.isbn]?.let { status ->
+                bookSummary.userBookStatus = status
+            }
+        }
+        return searchResponse
     }
 
     fun getBookDetail(bookDetailRequest: BookDetailRequest): BookDetailResponse {

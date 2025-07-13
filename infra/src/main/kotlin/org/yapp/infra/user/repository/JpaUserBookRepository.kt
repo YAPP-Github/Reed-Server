@@ -7,4 +7,6 @@ import java.util.*
 interface JpaUserBookRepository : JpaRepository<UserBookEntity, UUID> {
     fun findByUserIdAndBookIsbn(userId: UUID, bookIsbn: String): UserBookEntity?
     fun findAllByUserId(userId: UUID): List<UserBookEntity>
+    fun findAllByUserIdAndBookIsbnIn(userId: UUID, bookIsbnList: List<String>): List<UserBookEntity>
+
 }

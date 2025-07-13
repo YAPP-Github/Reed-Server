@@ -1,5 +1,6 @@
 package org.yapp.apis.book.dto.response
 
+import org.yapp.domain.userbook.BookStatus
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 import org.yapp.infra.external.aladin.response.BookItem
 
@@ -41,6 +42,7 @@ data class BookSearchResponse private constructor(
         val author: String?,
         val publisher: String?,
         val coverImageUrl: String?,
+        var userBookStatus: BookStatus
     ) {
         companion object {
             private val unknownTitle = "제목없음"
@@ -52,7 +54,8 @@ data class BookSearchResponse private constructor(
                     title = item.title ?: unknownTitle,
                     author = item.author,
                     publisher = item.publisher,
-                    coverImageUrl = item.cover
+                    coverImageUrl = item.cover,
+                    userBookStatus = BookStatus.BEFORE_READING
                 )
             }
         }

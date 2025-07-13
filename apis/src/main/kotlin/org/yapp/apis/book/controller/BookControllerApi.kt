@@ -28,7 +28,10 @@ import java.util.UUID
 @RequestMapping("/api/v1/books")
 interface BookControllerApi {
 
-    @Operation(summary = "도서 검색", description = "키워드를 사용하여 알라딘 도서 정보를 검색합니다.")
+    @Operation(
+        summary = "도서 검색", description = "알라딘 API를 통해 키워드로 도서를 검색합니다.  \n" +
+                " 유저의 도서 상태(읽음, 읽는 중 등)가 함께 표시됩니다.  "
+    )
     @ApiResponses(
         value = [
             ApiResponse(
@@ -44,7 +47,10 @@ interface BookControllerApi {
         ]
     )
     @GetMapping("/search")
-    fun searchBooks(@Valid @Parameter(description = "도서 검색 요청 객체") request: BookSearchRequest): ResponseEntity<BookSearchResponse>
+    fun searchBooks(
+        @AuthenticationPrincipal userId: UUID,
+        @Valid @Parameter(description = "도서 검색 요청 객체") request: BookSearchRequest
+    ): ResponseEntity<BookSearchResponse>
 
     @Operation(summary = "도서 상세 조회", description = "특정 도서의 상세 정보를 조회합니다.")
     @ApiResponses(

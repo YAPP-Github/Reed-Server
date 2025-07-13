@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import org.yapp.apis.book.dto.request.BookCreateRequest
 import org.yapp.domain.book.Book
 import org.yapp.domain.book.BookDomainService
+import java.util.UUID
 
 @Service
 class BookManagementService(
