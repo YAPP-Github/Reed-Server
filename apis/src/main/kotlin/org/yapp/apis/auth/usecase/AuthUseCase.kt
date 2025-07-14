@@ -1,6 +1,5 @@
 package org.yapp.apis.auth.usecase
 
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.auth.dto.AuthCredentials
 import org.yapp.apis.auth.dto.response.TokenPairResponse
@@ -20,20 +19,20 @@ class AuthUseCase(
     private val tokenService: TokenService,
     private val authTokenHelper: AuthTokenHelper
 ) {
-
     @Transactional
     fun signIn(credentials: AuthCredentials): TokenPairResponse {
         val strategy = socialAuthService.resolve(credentials)
         val userInfo = strategy.authenticate(credentials)
         val user = userAuthService.findOrCreateUser(userInfo)
-        return authTokenHelper.generateTokenPair(user.id)
+        return authTokenHelper.generateTokenPair(user.id, user.role)
     }
 
     @Transactional
-    fun refreshToken(refreshToken: String): TokenPairResponse {
+    fun reissueTokenPair(refreshToken: String): TokenPairResponse {
         val userId = authTokenHelper.validateAndGetUserIdFromRefreshToken(refreshToken)
         authTokenHelper.deleteToken(refreshToken)
-        return authTokenHelper.generateTokenPair(userId)
+        val user = userAuthService.findUserById(userId)
+        return authTokenHelper.generateTokenPair(user.id, user.role)
     }
 
     @Transactional

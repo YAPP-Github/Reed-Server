@@ -4,6 +4,7 @@ import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.service.TokenService
 import org.yapp.gateway.jwt.JwtTokenService
 import org.yapp.globalutils.annotation.Helper
+import org.yapp.globalutils.auth.Role
 import java.util.*
 
 @Helper
@@ -11,9 +12,8 @@ class AuthTokenHelper(
     private val tokenService: TokenService,
     private val jwtTokenService: JwtTokenService
 ) {
-
-    fun generateTokenPair(userId: UUID): TokenPairResponse {
-        val accessToken = jwtTokenService.generateAccessToken(userId)
+    fun generateTokenPair(userId: UUID, role: Role): TokenPairResponse {
+        val accessToken = jwtTokenService.generateAccessToken(userId, role)
         val refreshToken = jwtTokenService.generateRefreshToken(userId)
         val expiration = jwtTokenService.getRefreshTokenExpiration()
 
@@ -24,10 +24,6 @@ class AuthTokenHelper(
     fun validateAndGetUserIdFromRefreshToken(refreshToken: String): UUID {
         tokenService.validateRefreshTokenByTokenOrThrow(refreshToken)
         return tokenService.getUserIdFromToken(refreshToken)
-    }
-
-    fun getUserIdFromAccessToken(accessToken: String): UUID {
-        return jwtTokenService.getUserIdFromToken(accessToken)
     }
 
     fun deleteToken(token: String) {

@@ -1,6 +1,6 @@
 package org.yapp.gateway.jwt
 
-import org.yapp.gateway.jwt.exception.JwtException
+import org.yapp.globalutils.auth.Role
 import java.util.*
 
 /**
@@ -12,9 +12,10 @@ interface JwtTokenService {
      * Generate an access token for the given user ID.
      *
      * @param userId The ID of the user.
+     * @param role The Role of the user.
      * @return The generated access token.
      */
-    fun generateAccessToken(userId: UUID): String
+    fun generateAccessToken(userId: UUID, role: Role): String
 
     /**
      * Generate a refresh token for the given user ID.
@@ -23,23 +24,6 @@ interface JwtTokenService {
      * @return The generated refresh token.
      */
     fun generateRefreshToken(userId: UUID): String
-
-    /**
-     * Validate a token.
-     *
-     * @param token The token to validate.
-     * @return True if the token is valid, false otherwise.
-     */
-    fun validateToken(token: String): Boolean
-
-    /**
-     * Get the user ID from a token.
-     *
-     * @param token The token to extract the user ID from.
-     * @return The user ID.
-     * @throws JwtException if the token is invalid.
-     */
-    fun getUserIdFromToken(token: String): UUID
 
     /**
      * Get the refresh token expiration time in seconds.

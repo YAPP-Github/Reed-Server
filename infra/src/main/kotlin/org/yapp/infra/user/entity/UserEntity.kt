@@ -5,6 +5,7 @@ import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
 import org.yapp.domain.user.ProviderType
 import org.yapp.domain.common.BaseTimeEntity
+import org.yapp.globalutils.auth.Role
 import org.yapp.domain.user.User
 import java.sql.Types
 import java.util.*
@@ -22,6 +23,7 @@ class UserEntity private constructor(
     val email: String,
 
     nickname: String,
+
     profileImageUrl: String? = null,
 
     @Enumerated(EnumType.STRING)
@@ -29,7 +31,9 @@ class UserEntity private constructor(
     val providerType: ProviderType,
 
     @Column(name = "provider_id", nullable = false, length = 100)
-    val providerId: String
+    val providerId: String,
+
+    role: Role
 ) : BaseTimeEntity() {
 
     @Column(nullable = false, length = 100)
@@ -40,6 +44,11 @@ class UserEntity private constructor(
     var profileImageUrl: String? = profileImageUrl
         protected set
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    var role: Role = role
+        protected set
+
     fun toDomain(): User = User.reconstruct(
         id = id,
         email = email,
@@ -47,6 +56,7 @@ class UserEntity private constructor(
         profileImageUrl = profileImageUrl,
         providerType = providerType,
         providerId = providerId,
+        role = role,
         createdAt = createdAt,
         updatedAt = updatedAt,
         deletedAt = deletedAt
@@ -54,12 +64,13 @@ class UserEntity private constructor(
 
     companion object {
         fun fromDomain(user: User): UserEntity = UserEntity(
-            id = user.id, // 도메인 모델의 id가 non-null이므로 안전
+            id = user.id,
             email = user.email,
             nickname = user.nickname,
             profileImageUrl = user.profileImageUrl,
             providerType = user.providerType,
-            providerId = user.providerId
+            providerId = user.providerId,
+            role = user.role
         ).apply {
             this.createdAt = user.createdAt
             this.updatedAt = user.updatedAt
