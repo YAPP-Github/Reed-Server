@@ -2,9 +2,7 @@ package org.yapp.apis.auth.strategy
 
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
-import org.yapp.apis.auth.dto.AppleAuthCredentials
-import org.yapp.apis.auth.dto.AuthCredentials
-import org.yapp.apis.auth.dto.UserCreateInfo
+import org.yapp.apis.auth.dto.response.UserCreateInfoResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.helper.AppleJwtHelper
@@ -23,7 +21,7 @@ class AppleAuthStrategy(
 
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 
-    override fun authenticate(credentials: AuthCredentials): UserCreateInfo {
+    override fun authenticate(credentials: AuthCredentials): UserCreateInfoResponse {
         return try {
             val appleCredentials = validateCredentials(credentials)
             val payload = appleJwtHelper.parseIdToken(appleCredentials.idToken)
@@ -45,8 +43,8 @@ class AppleAuthStrategy(
             )
     }
 
-    private fun createUserInfo(payload: AppleJwtHelper.AppleIdTokenPayload): UserCreateInfo {
-        return UserCreateInfo.of(
+    private fun createUserInfo(payload: AppleJwtHelper.AppleIdTokenPayload): UserCreateInfoResponse {
+        return UserCreateInfoResponse.of(
             email = payload.email,
             nickname = NicknameGenerator.generate(),
             profileImageUrl = null, // Apple doesn't provide profile image
