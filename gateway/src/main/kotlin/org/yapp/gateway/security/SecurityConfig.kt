@@ -22,13 +22,12 @@ class SecurityConfig(
         private val WHITELIST_URLS = arrayOf(
             "/api/v1/auth/refresh",
             "/api/v1/auth/signin",
-            "/api/v1/health",
             "/actuator/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/kakao-login.html/**",
-            "/api/v1/books/search",
-            "/api/v1/books/detail"
+            "/error",
+            "/"
         )
     }
 
