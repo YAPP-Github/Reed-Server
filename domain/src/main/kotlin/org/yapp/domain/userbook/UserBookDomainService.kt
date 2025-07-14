@@ -16,6 +16,7 @@ class UserBookDomainService(
         bookAuthor: String,
         bookPublisher: String,
         bookCoverImageUrl: String,
+        status: BookStatus
     ): UserBookVO {
         val userBook = userBookRepository.findByUserIdAndBookIsbn(userId, bookIsbn)
             ?.apply { updateStatus(status) }
