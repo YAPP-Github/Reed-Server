@@ -26,6 +26,10 @@ data class GenerateTokenPairRequest private constructor(
     )
     val role: Role? = null
 ) {
+
+    fun validUserId(): UUID = userId!!
+    fun validRole(): Role = role!!
+
     companion object {
         fun from(response: CreateUserResponse): GenerateTokenPairRequest {
             return GenerateTokenPairRequest(
