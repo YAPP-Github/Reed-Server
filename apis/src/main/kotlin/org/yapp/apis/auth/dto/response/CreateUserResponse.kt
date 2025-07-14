@@ -10,10 +10,16 @@ import java.util.*
     description = "Response DTO returned after successful user registration"
 )
 data class CreateUserResponse private constructor(
-    @Schema(description = "사용자 ID", example = "a1b2c3d4-e5f6-7890-1234-56789abcdef0")
+    @Schema(
+        description = "사용자 ID",
+        example = "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
+    )
     val id: UUID,
 
-    @Schema(description = "사용자 역할", example = "USER")
+    @Schema(
+        description = "사용자 역할",
+        example = "USER"
+    )
     val role: Role
 ) {
     companion object {

@@ -21,8 +21,7 @@ data class AuthResponse private constructor(
     val refreshToken: String
 ) {
     companion object {
-        fun fromTokenPair(
-            tokenPairResponse: TokenPairResponse)
+        fun fromTokenPair(tokenPairResponse: TokenPairResponse)
         : AuthResponse {
             return AuthResponse(
                 accessToken = tokenPairResponse.accessToken,

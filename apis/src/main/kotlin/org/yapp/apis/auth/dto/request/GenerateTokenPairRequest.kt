@@ -12,18 +12,18 @@ import java.util.*
     description = "Request DTO to generate a new pair of access and refresh tokens"
 )
 data class GenerateTokenPairRequest private constructor(
-    @field:NotBlank(message = "userId must not be null")
     @Schema(
         description = "User ID",
         example = "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
     )
+    @field:NotBlank(message = "userId must not be null")
     val userId: UUID? = null,
 
-    @field:NotBlank(message = "role must not be null")
     @Schema(
         description = "User role",
         example = "USER"
     )
+    @field:NotBlank(message = "role must not be null")
     val role: Role? = null
 ) {
 

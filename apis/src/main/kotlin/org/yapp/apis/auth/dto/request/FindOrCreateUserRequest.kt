@@ -27,19 +27,22 @@ data class FindOrCreateUserRequest private constructor(
         description = "사용자 프로필 이미지 URL",
         example = "https://example.com/image.jpg",
         nullable = true
-    ) val profileImageUrl: String? = null,
+    )
+    val profileImageUrl: String? = null,
 
-    @field:NotBlank(message = "providerType은 필수입니다.")
     @Schema(
         description = "소셜 로그인 제공자",
         example = "KAKAO"
-    ) val providerType: ProviderType? = null,
+    )
+    @field:NotBlank(message = "providerType은 필수입니다.")
+    val providerType: ProviderType? = null,
 
-    @field:NotBlank(message = "providerId는 필수입니다.")
     @Schema(
         description = "소셜 제공자에서 발급한 식별자",
         example = "12345678901234567890"
-    ) val providerId: String? = null
+    )
+    @field:NotBlank(message = "providerId는 필수입니다.")
+    val providerId: String? = null
 ) {
     fun getOrDefaultEmail(): String {
         return email?.takeIf { it.isNotBlank() } ?: "${validProviderId()}@${validProviderType().name.lowercase()}.local"

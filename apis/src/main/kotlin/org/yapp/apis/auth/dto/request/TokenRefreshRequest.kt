@@ -8,13 +8,12 @@ import jakarta.validation.constraints.NotBlank
     description = "DTO for requesting an access token using a refresh token"
 )
 data class TokenRefreshRequest private constructor(
-
-    @field:NotBlank(message = "Refresh token is required")
     @Schema(
         description = "Valid refresh token issued during previous authentication",
         example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
         required = true
     )
+    @field:NotBlank(message = "Refresh token is required")
     val refreshToken: String? = null
 ) {
     fun validRefreshToken(): String = refreshToken!!
