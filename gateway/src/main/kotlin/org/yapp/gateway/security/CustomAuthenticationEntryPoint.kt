@@ -1,4 +1,4 @@
-package org.yapp.gateway.config
+package org.yapp.gateway.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletRequest
@@ -15,43 +15,33 @@ class CustomAuthenticationEntryPoint(
     private val objectMapper: ObjectMapper
 ) : AuthenticationEntryPoint {
 
-    private val log = LoggerFactory.getLogger(CustomAuthenticationEntryPoint::class.java)
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,
         authException: AuthenticationException
     ) {
-        log.error("Not Authenticated Request", authException)
-        log.error("Request Uri : {}", request.requestURI)
-
-        handleAuthenticationException(response)
+        log.warn("Not Authenticated Request - uri: ${request.requestURI}", authException)
+        sendErrorResponse(response)
     }
 
-    private fun handleAuthenticationException(response: HttpServletResponse) {
+    private fun sendErrorResponse(response: HttpServletResponse) {
         val errorCode = CommonErrorCode.UNAUTHORIZED
 
-        val errorResponse = ErrorResponse(
-            status = errorCode.getHttpStatus().value(),
-            code = errorCode.getCode(),
-            message = errorCode.getMessage()
-        )
-
-        val responseBody = try {
-            objectMapper.writeValueAsString(errorResponse)
-        } catch (e: IOException) {
-            log.error("Failed to serialize authentication error response", e)
-            return
-        }
+        val errorResponse = ErrorResponse.builder()
+            .status(errorCode.getHttpStatus().value())
+            .code(errorCode.getCode())
+            .message(errorCode.getMessage())
+            .build()
 
         try {
             response.status = errorCode.getHttpStatus().value()
             response.contentType = MediaType.APPLICATION_JSON_VALUE
             response.characterEncoding = "UTF-8"
-            response.writer.write(responseBody)
+            response.writer.write(objectMapper.writeValueAsString(errorResponse))
         } catch (e: IOException) {
-            log.error("Failed to write authentication error response", e)
+            log.error("Failed to write error response", e)
         }
     }
-
 }
