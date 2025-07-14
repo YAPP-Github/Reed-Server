@@ -16,12 +16,6 @@ object Dependencies {
         const val MYSQL_CONNECTOR = "com.mysql:mysql-connector-j"
     }
 
-    object Auth {
-        const val JWT = "io.jsonwebtoken:jjwt-api:0.11.5"
-        const val JWT_IMPL = "io.jsonwebtoken:jjwt-impl:0.11.5"
-        const val JWT_JACKSON = "io.jsonwebtoken:jjwt-jackson:0.11.5"
-    }
-
     object Swagger {
         const val SPRINGDOC_OPENAPI_STARTER_WEBMVC_UI = "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0"
     }
