@@ -1,6 +1,6 @@
 package org.yapp.domain.user
 
-import org.yapp.domain.user.ProviderType
+import org.yapp.globalutils.auth.Role
 import java.time.LocalDateTime
 import java.util.*
 
@@ -13,6 +13,7 @@ import java.util.*
  * @property profileImageUrl The URL of the user's profile image.
  * @property providerType The type of authentication provider.
  * @property providerId The ID from the authentication provider.
+ * @property role The roles of the user (e.g., USER, ADMIN).
  * @property createdAt The timestamp when the user was created.
  * @property updatedAt The timestamp when the user was last updated.
  * @property deletedAt The timestamp when the user was soft-deleted, or null if the user is not deleted.
@@ -24,6 +25,7 @@ data class User private constructor(
     val profileImageUrl: String?,
     val providerType: ProviderType,
     val providerId: String,
+    val role: Role,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val deletedAt: LocalDateTime? = null
@@ -37,8 +39,6 @@ data class User private constructor(
         )
     }
 
-    fun isDeleted(): Boolean = deletedAt != null
-
     companion object {
         fun create(
             email: String,
@@ -46,6 +46,7 @@ data class User private constructor(
             profileImageUrl: String?,
             providerType: ProviderType,
             providerId: String,
+            role: Role,
             createdAt: LocalDateTime,
             updatedAt: LocalDateTime,
             deletedAt: LocalDateTime? = null
@@ -57,6 +58,7 @@ data class User private constructor(
                 profileImageUrl = profileImageUrl,
                 providerType = providerType,
                 providerId = providerId,
+                role = role,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
                 deletedAt = deletedAt
@@ -70,6 +72,7 @@ data class User private constructor(
             profileImageUrl: String?,
             providerType: ProviderType,
             providerId: String,
+            role: Role,
             createdAt: LocalDateTime,
             updatedAt: LocalDateTime,
             deletedAt: LocalDateTime? = null
@@ -81,10 +84,13 @@ data class User private constructor(
                 profileImageUrl = profileImageUrl,
                 providerType = providerType,
                 providerId = providerId,
+                role = role,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
                 deletedAt = deletedAt
             )
         }
     }
+
+    private fun isDeleted(): Boolean = deletedAt != null
 }
