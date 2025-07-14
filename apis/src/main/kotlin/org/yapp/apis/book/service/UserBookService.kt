@@ -6,6 +6,7 @@ import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.domain.book.Book
 import org.yapp.domain.userbook.UserBookDomainService
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.domain.userbook.vo.UserBookVO
 import java.util.*
 
 @Service
@@ -21,9 +22,14 @@ class UserBookService(
                 upsertUserBookRequest.bookAuthor,
                 upsertUserBookRequest.bookTitle,
                 upsertUserBookRequest.bookCoverImageUrl,
+                upsertUserBookRequest.status
             )
         )
 
-    fun findAllUserBooks(userId: UUID): List<UserBookResponse> =
-        userBookDomainService.findAllUserBooks(userId).map { UserBookResponse.from(it) }
+    fun findAllUserBooks(userId: UUID): List<UserBookResponse> {
+        val userBooks: List<UserBookVO> = userBookDomainService.findAllUserBooks(userId)
+        return userBooks.map { userBook: UserBookVO ->
+            UserBookResponse.from(userBook)
+        }
+    }
 }

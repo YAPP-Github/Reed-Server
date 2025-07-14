@@ -10,7 +10,6 @@ data class BookCreateResponse private constructor(
     val coverImageUrl: String
 ) {
     companion object {
-        
         fun from(bookVO: BookVO): BookCreateResponse {
             return BookCreateResponse(
                 isbn = bookVO.isbn,
