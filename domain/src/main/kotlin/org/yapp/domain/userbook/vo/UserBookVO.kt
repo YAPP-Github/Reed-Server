@@ -17,6 +17,16 @@ data class UserBookVO private constructor(
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 ) {
+    init {
+        require(bookIsbn.isNotBlank()) { "도서 ISBN은 비어 있을 수 없습니다." }
+        require(coverImageUrl.isNotBlank()) { "표지 이미지 URL은 비어 있을 수 없습니다." }
+        require(publisher.isNotBlank()) { "출판사는 비어 있을 수 없습니다." }
+        require(title.isNotBlank()) { "도서 제목은 비어 있을 수 없습니다." }
+        require(author.isNotBlank()) { "저자는 비어 있을 수 없습니다." }
+        require(createdAt.isBefore(updatedAt) || createdAt == updatedAt) {
+            "생성일(createdAt)은 수정일(updatedAt)보다 이후일 수 없습니다."
+        }
+    }
 
     companion object {
         fun newInstance(

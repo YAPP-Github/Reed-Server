@@ -11,10 +11,14 @@ data class BookVO private constructor(
     val publicationYear: Int?,
     val description: String?
 ) {
+    init {
+        require(isbn.isNotBlank()) { "ISBN은 비어 있을 수 없습니다." }
+        require(title.isNotBlank()) { "제목은 비어 있을 수 없습니다." }
+        require(author.isNotBlank()) { "저자는 비어 있을 수 없습니다." }
+        publicationYear?.let { require(it > 0) { "출판 연도는 0보다 커야 합니다." } }
+    }
+
     companion object {
-        /**
-         * ✨ BookVO를 생성하는 팩토리 메서드
-         */
         fun newInstance(
             book: Book
         ): BookVO {
