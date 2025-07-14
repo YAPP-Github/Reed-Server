@@ -46,6 +46,31 @@ data class User private constructor(
             profileImageUrl: String?,
             providerType: ProviderType,
             providerId: String,
+            createdAt: LocalDateTime,
+            updatedAt: LocalDateTime,
+            deletedAt: LocalDateTime? = null
+        ): User {
+            return User(
+                id = UUID.randomUUID(),
+                email = email,
+                nickname = nickname,
+                profileImageUrl = profileImageUrl,
+                providerType = providerType,
+                providerId = providerId,
+                role = Role.USER,
+                createdAt = createdAt,
+                updatedAt = updatedAt,
+                deletedAt = deletedAt
+            )
+        }
+
+        // 추후 다른 역할 부여 시 사용
+        fun createWithRole(
+            email: String,
+            nickname: String,
+            profileImageUrl: String?,
+            providerType: ProviderType,
+            providerId: String,
             role: Role,
             createdAt: LocalDateTime,
             updatedAt: LocalDateTime,
