@@ -18,6 +18,20 @@ class SecurityConfig(
     private val jwtAuthenticationConverter: JwtAuthenticationConverter,
     private val objectMapper: ObjectMapper
 ) {
+    companion object {
+        private val WHITELIST_URLS = arrayOf(
+            "/api/v1/auth/refresh",
+            "/api/v1/auth/signin",
+            "/api/v1/health",
+            "/actuator/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/kakao-login.html/**",
+            "/api/v1/books/search",
+            "/api/v1/books/detail"
+        )
+    }
+
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }.formLogin { it.disable() }.httpBasic { it.disable() }.logout { it.disable() }
@@ -31,17 +45,7 @@ class SecurityConfig(
                 }
             }
             .authorizeHttpRequests {
-                it.requestMatchers(
-                    "/api/v1/auth/refresh",
-                    "/api/v1/auth/signin",
-                    "/api/v1/health",
-                    "/actuator/**",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/kakao-login.html/**",
-                    "/api/v1/books/search",
-                    "/api/v1/books/detail"
-                ).permitAll()
+                it.requestMatchers(*WHITELIST_URLS).permitAll()
                 it.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 it.requestMatchers("/api/v1/user/**").hasAnyRole("USER", "ADMIN")
                 it.requestMatchers("/api/v1/auth/**").authenticated()
