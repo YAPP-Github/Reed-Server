@@ -24,7 +24,7 @@ class BookUseCase(
 
     @Qualifier(BookQueryServiceQualifier.ALADIN)
     private val bookQueryService: BookQueryService,
-    
+
     private val userAuthService: UserAuthService,
     private val userBookService: UserBookService,
     private val bookManagementService: BookManagementService
@@ -43,14 +43,10 @@ class BookUseCase(
 
         val bookDetailResponse = bookQueryService.getBookDetail(BookDetailRequest.of(request.validBookIsbn()))
 
-        val bookCreateResponse = bookManagementService.findOrCreateBook(BookCreateRequest.create(bookDetailResponse))
+        val bookCreateResponse = bookManagementService.findOrCreateBook(BookCreateRequest.from(bookDetailResponse))
         val upsertUserBookRequest = UpsertUserBookRequest.of(
             userId = userId,
-            bookIsbn = bookCreateResponse.isbn,
-            bookTitle = bookCreateResponse.title,
-            bookAuthor = bookCreateResponse.author,
-            bookPublisher = bookCreateResponse.publisher,
-            bookCoverImageUrl = bookCreateResponse.coverImageUrl,
+            bookCreateResponse,
             status = request.bookStatus
         )
         val userBookResponse = userBookService.upsertUserBook(upsertUserBookRequest)
