@@ -8,6 +8,7 @@ object Dependencies {
         const val BOOT_STARTER_ACTUATOR = "org.springframework.boot:spring-boot-starter-actuator"
         const val BOOT_STARTER_TEST = "org.springframework.boot:spring-boot-starter-test"
         const val BOOT_STARTER_DATA_REDIS = "org.springframework.boot:spring-boot-starter-data-redis"
+        const val BOOT_STARTER_OAUTH2_RESOURCE_SERVER = "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
         const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect"
     }
 
