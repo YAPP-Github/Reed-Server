@@ -22,14 +22,13 @@ class AuthController(
 
     @PostMapping("/signin")
     override fun signIn(@RequestBody @Valid request: SocialLoginRequest): ResponseEntity<AuthResponse> {
-        val credentials = SocialLoginRequest.toCredentials(request)
-        val tokenPair = authUseCase.signIn(credentials)
+        val tokenPair = authUseCase.signIn(request)
         return ResponseEntity.ok(AuthResponse.fromTokenPair(tokenPair))
     }
 
     @PostMapping("/refresh")
     override fun refreshToken(@RequestBody @Valid request: TokenRefreshRequest): ResponseEntity<AuthResponse> {
-        val tokenPair = authUseCase.reissueTokenPair(request.validRefreshToken())
+        val tokenPair = authUseCase.reissueTokenPair(request)
         return ResponseEntity.ok(AuthResponse.fromTokenPair(tokenPair))
     }
 
