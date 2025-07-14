@@ -2,6 +2,7 @@ package org.yapp.domain.user
 
 import org.yapp.domain.user.vo.SocialUserProfile
 import org.yapp.globalutils.annotation.DomainService
+import org.yapp.globalutils.auth.Role
 import org.yapp.globalutils.util.TimeProvider
 import java.util.UUID
 
@@ -34,6 +35,7 @@ class UserDomainService(
             profileImageUrl = profile.profileImageUrl,
             providerType = profile.providerType,
             providerId = profile.providerId,
+            role = Role.USER,
             createdAt = now,
             updatedAt = now
         )
