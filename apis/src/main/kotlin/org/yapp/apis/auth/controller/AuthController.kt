@@ -29,7 +29,7 @@ class AuthController(
 
     @PostMapping("/refresh")
     override fun refreshToken(@RequestBody @Valid request: TokenRefreshRequest): ResponseEntity<AuthResponse> {
-        val tokenPair = authUseCase.refreshToken(request.validRefreshToken())
+        val tokenPair = authUseCase.reissueTokenPair(request.validRefreshToken())
         return ResponseEntity.ok(AuthResponse.fromTokenPair(tokenPair))
     }
 
