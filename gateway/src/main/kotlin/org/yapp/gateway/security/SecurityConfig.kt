@@ -1,6 +1,5 @@
 package org.yapp.gateway.security
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -16,7 +15,8 @@ import org.springframework.security.web.SecurityFilterChain
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtAuthenticationConverter: JwtAuthenticationConverter,
-    private val objectMapper: ObjectMapper
+    private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
+    private val customAccessDeniedHandler: CustomAccessDeniedHandler
 ) {
     companion object {
         private val WHITELIST_URLS = arrayOf(
@@ -35,9 +35,10 @@ class SecurityConfig(
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }.formLogin { it.disable() }.httpBasic { it.disable() }.logout { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }.exceptionHandling {
-                it.authenticationEntryPoint(CustomAuthenticationEntryPoint(objectMapper))
-                it.accessDeniedHandler(CustomAccessDeniedHandler(objectMapper))
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .exceptionHandling {
+                it.authenticationEntryPoint(customAuthenticationEntryPoint)
+                it.accessDeniedHandler(customAccessDeniedHandler)
             }
             .oauth2ResourceServer { oauth2 ->
                 oauth2.jwt { jwt ->
