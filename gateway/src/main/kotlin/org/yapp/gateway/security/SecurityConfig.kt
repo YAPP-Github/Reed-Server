@@ -1,4 +1,4 @@
-package org.yapp.gateway.config
+package org.yapp.gateway.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
@@ -6,10 +6,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.yapp.gateway.filter.JwtAuthenticationFilter
-import org.yapp.gateway.jwt.JwtTokenProvider
 
 /**
  * Security configuration for the gateway.
@@ -17,26 +15,20 @@ import org.yapp.gateway.jwt.JwtTokenProvider
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val jwtAuthenticationConverter: JwtAuthenticationConverter,
     private val objectMapper: ObjectMapper
 ) {
-
-    @Bean
-    fun jwtAuthenticationFilter(): JwtAuthenticationFilter {
-        return JwtAuthenticationFilter(jwtTokenProvider, objectMapper)
-    }
-
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http
-            .csrf { it.disable() }
-            .formLogin { it.disable() }
-            .httpBasic { it.disable() }
-            .logout { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .exceptionHandling {
+        http.csrf { it.disable() }.formLogin { it.disable() }.httpBasic { it.disable() }.logout { it.disable() }
+            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }.exceptionHandling {
                 it.authenticationEntryPoint(CustomAuthenticationEntryPoint(objectMapper))
                 it.accessDeniedHandler(CustomAccessDeniedHandler(objectMapper))
+            }
+            .oauth2ResourceServer { oauth2 ->
+                oauth2.jwt { jwt ->
+                    jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)
+                }
             }
             .authorizeHttpRequests {
                 it.requestMatchers(
@@ -50,11 +42,12 @@ class SecurityConfig(
                     "/api/v1/books/search",
                     "/api/v1/books/detail"
                 ).permitAll()
+                it.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                it.requestMatchers("/api/v1/user/**").hasAnyRole("USER", "ADMIN")
                 it.requestMatchers("/api/v1/auth/**").authenticated()
                 it.requestMatchers("/api/v1/books/**").authenticated()
                 it.anyRequest().authenticated()
             }
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }
