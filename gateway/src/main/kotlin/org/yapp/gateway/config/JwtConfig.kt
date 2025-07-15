@@ -8,11 +8,14 @@ import com.nimbusds.jose.proc.SecurityContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.core.convert.converter.Converter
+import org.springframework.security.authentication.AbstractAuthenticationToken
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm
 import org.springframework.security.oauth2.jwt.*
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.yapp.gateway.constants.JwtConstants
+import java.util.UUID
 import javax.crypto.spec.SecretKeySpec
 
 @Configuration
@@ -23,6 +26,7 @@ class JwtConfig(
     companion object {
         private val SIGNATURE_ALGORITHM = MacAlgorithm.HS256
         private const val PRINCIPAL_CLAIM = "sub"
+        private const val NO_AUTHORITY_PREFIX = ""
     }
 
     /**
@@ -65,19 +69,24 @@ class JwtConfig(
     }
 
     /**
-     * 유효성이 검증된 JWT를 Spring Security의 `Authentication` 객체로 변환하는 `JwtAuthenticationConverter`를 등록합니다.
-     * JWT의 'roles' 클레임을 애플리케이션의 권한 정보(`GrantedAuthority`)로 매핑하고, 'sub' 클레임을 사용자의 주체(Principal)로 설정합니다.
+     * 유효한 JWT를 Spring Security의 `Authentication` 객체로 변환하는 `JwtAuthenticationConverter` 빈을 설정합니다.
      *
-     * @return 생성된 `JwtAuthenticationConverter` 객체
+     * - JWT의 `roles` 클레임을 추출하여 `GrantedAuthority` 리스트로 변환합니다.
+     * - 기본적으로 붙는 권한 접두어(`SCOPE_`)를 제거하기 위해 빈 문자열로 설정합니다.
+     * - JWT의 `sub` 클레임(문자열 형태의 UUID)을 `UUID` 타입으로 변환하여 인증 주체(Principal)로 사용합니다.
+     *
+     * @return JWT를 `UsernamePasswordAuthenticationToken` 으로 변환하는 Converter
      */
     @Bean
-    fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
-        val converter = JwtAuthenticationConverter()
-        converter.setJwtGrantedAuthoritiesConverter { jwt ->
-            val roles = jwt.getClaimAsStringList(JwtConstants.ROLES_CLAIM) ?: emptyList()
-            roles.map { role -> SimpleGrantedAuthority(role) }
+    fun jwtAuthenticationConverter(): Converter<Jwt, out AbstractAuthenticationToken> {
+        val authoritiesConverter = JwtGrantedAuthoritiesConverter()
+        authoritiesConverter.setAuthoritiesClaimName(JwtConstants.ROLES_CLAIM)
+        authoritiesConverter.setAuthorityPrefix(NO_AUTHORITY_PREFIX)
+
+        return Converter<Jwt, AbstractAuthenticationToken> { jwt ->
+            val authorities = authoritiesConverter.convert(jwt)
+            val principal = UUID.fromString(jwt.getClaimAsString(PRINCIPAL_CLAIM))
+            UsernamePasswordAuthenticationToken(principal, null, authorities)
         }
-        converter.setPrincipalClaimName(PRINCIPAL_CLAIM)
-        return converter
     }
 }
