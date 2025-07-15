@@ -1,6 +1,7 @@
 package org.yapp.domain.user
 
 import org.yapp.globalutils.auth.Role
+import org.yapp.globalutils.util.UuidGenerator
 import java.time.LocalDateTime
 import java.util.*
 
@@ -51,7 +52,7 @@ data class User private constructor(
             deletedAt: LocalDateTime? = null
         ): User {
             return User(
-                id = UUID.randomUUID(),
+                id = UuidGenerator.create(),
                 email = email,
                 nickname = nickname,
                 profileImageUrl = profileImageUrl,
@@ -77,7 +78,7 @@ data class User private constructor(
             deletedAt: LocalDateTime? = null
         ): User {
             return User(
-                id = UUID.randomUUID(),
+                id = UuidGenerator.create(),
                 email = email,
                 nickname = nickname,
                 profileImageUrl = profileImageUrl,
