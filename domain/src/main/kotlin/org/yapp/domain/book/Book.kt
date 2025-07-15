@@ -17,8 +17,6 @@ data class Book private constructor(
     val updatedAt: LocalDateTime,
     val deletedAt: LocalDateTime? = null
 ) {
-
-
     companion object {
         fun create(
             isbn: String,
