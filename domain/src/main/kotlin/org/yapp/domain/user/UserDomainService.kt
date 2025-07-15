@@ -41,7 +41,7 @@ class UserDomainService(
         return userRepository.existsByEmail(email)
     }
 
-    fun create(
+    fun createNewUser(
         email: String,
         nickname: String,
         profileImageUrl: String?,

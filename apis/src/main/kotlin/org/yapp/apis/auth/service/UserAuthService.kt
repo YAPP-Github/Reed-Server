@@ -58,7 +58,7 @@ class UserAuthService(
             throw AuthException(AuthErrorCode.EMAIL_ALREADY_IN_USE, "Email already in use")
         }
 
-        return userDomainService.create(
+        return userDomainService.createNewUser(
             email = email,
             nickname = nickname,
             profileImageUrl = findOrCreateUserRequest.profileImageUrl,
