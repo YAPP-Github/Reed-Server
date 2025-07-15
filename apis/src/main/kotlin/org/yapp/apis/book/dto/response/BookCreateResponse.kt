@@ -1,6 +1,6 @@
 package org.yapp.apis.book.dto.response
 
-import org.yapp.domain.book.vo.BookVO
+import org.yapp.domain.book.vo.BookInfoVO
 
 data class BookCreateResponse private constructor(
     val isbn: String,
@@ -10,9 +10,9 @@ data class BookCreateResponse private constructor(
     val coverImageUrl: String
 ) {
     companion object {
-        fun from(bookVO: BookVO): BookCreateResponse {
+        fun from(bookVO: BookInfoVO): BookCreateResponse {
             return BookCreateResponse(
-                isbn = bookVO.isbn,
+                isbn = bookVO.isbn.value,
                 title = bookVO.title,
                 author = bookVO.author,
                 publisher = bookVO.publisher,

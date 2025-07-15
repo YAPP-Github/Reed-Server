@@ -2,8 +2,8 @@ package org.yapp.domain.book.vo
 
 import org.yapp.domain.book.Book
 
-data class BookVO private constructor(
-    val isbn: String,
+data class BookInfoVO private constructor(
+    val isbn: Book.Isbn,
     val title: String,
     val author: String,
     val publisher: String,
@@ -12,7 +12,6 @@ data class BookVO private constructor(
     val description: String?
 ) {
     init {
-        require(isbn.isNotBlank()) { "ISBN은 비어 있을 수 없습니다." }
         require(title.isNotBlank()) { "제목은 비어 있을 수 없습니다." }
         require(author.isNotBlank()) { "저자는 비어 있을 수 없습니다." }
         publicationYear?.let { require(it > 0) { "출판 연도는 0보다 커야 합니다." } }
@@ -21,8 +20,8 @@ data class BookVO private constructor(
     companion object {
         fun newInstance(
             book: Book
-        ): BookVO {
-            return BookVO(
+        ): BookInfoVO {
+            return BookInfoVO(
                 book.isbn,
                 book.title,
                 book.author,
