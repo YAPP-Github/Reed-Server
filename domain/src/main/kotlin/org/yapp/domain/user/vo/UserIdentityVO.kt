@@ -2,10 +2,9 @@ package org.yapp.domain.user.vo
 
 import org.yapp.domain.user.User
 import org.yapp.globalutils.auth.Role
-import java.util.UUID
 
 data class UserIdentityVO(
-    val id: UUID,
+    val id: User.Id,
     val role: Role
 ) {
     companion object {

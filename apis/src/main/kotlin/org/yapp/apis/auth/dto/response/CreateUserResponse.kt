@@ -25,7 +25,7 @@ data class CreateUserResponse private constructor(
     companion object {
         fun from(identity: UserIdentityVO): CreateUserResponse {
             return CreateUserResponse(
-                id = identity.id,
+                id = identity.id.value,
                 role = identity.role
             )
         }

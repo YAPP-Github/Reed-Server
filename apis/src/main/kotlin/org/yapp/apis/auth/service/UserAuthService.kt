@@ -43,7 +43,7 @@ class UserAuthService(
             findOrCreateUserRequest.validProviderId()
         )?.let { deletedUserIdentity ->
             return CreateUserResponse.from(
-                userDomainService.restoreDeletedUser(deletedUserIdentity.id)
+                userDomainService.restoreDeletedUser(deletedUserIdentity.id.value)
             )
         }
 

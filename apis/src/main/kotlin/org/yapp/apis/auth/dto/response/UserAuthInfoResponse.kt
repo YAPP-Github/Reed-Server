@@ -25,7 +25,7 @@ data class UserAuthInfoResponse private constructor(
     companion object {
         fun from(identity: UserIdentityVO): UserAuthInfoResponse {
             return UserAuthInfoResponse(
-                id = identity.id,
+                id = identity.id.value,
                 role = identity.role
             )
         }

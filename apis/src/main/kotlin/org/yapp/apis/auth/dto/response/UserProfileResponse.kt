@@ -38,8 +38,8 @@ data class UserProfileResponse(
     companion object {
         fun from(userProfileVO: UserProfileVO): UserProfileResponse {
             return UserProfileResponse(
-                id = userProfileVO.id,
-                email = userProfileVO.email,
+                id = userProfileVO.id.value,
+                email = userProfileVO.email.value,
                 nickname = userProfileVO.nickname,
                 provider = userProfileVO.provider
             )
