@@ -23,9 +23,9 @@ class RefreshTokenEntity private constructor(
     val createdAt: LocalDateTime
 ) {
     fun toDomain(): RefreshToken = RefreshToken.reconstruct(
-        id = RefreshToken.Id.newInstance(id),
-        token = RefreshToken.Token.newInstance(token),
-        userId = RefreshToken.UserId.newInstance(userId),
+        id = RefreshToken.Id.newInstance(this.id),
+        token = RefreshToken.Token.newInstance(this.token),
+        userId = RefreshToken.UserId.newInstance(this.userId),
         expiresAt = expiresAt,
         createdAt = createdAt
     )
