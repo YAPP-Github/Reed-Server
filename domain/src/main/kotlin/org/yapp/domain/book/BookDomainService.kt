@@ -1,13 +1,14 @@
 package org.yapp.domain.book
 
+import org.yapp.domain.book.vo.BookVO
 import org.yapp.globalutils.annotation.DomainService
 
 @DomainService
 class BookDomainService(
     private val bookRepository: BookRepository
 ) {
-    fun findByIsbn(isbn: String): Book? {
-        return bookRepository.findByIsbn(isbn)
+    fun findByIsbn(isbn: String): BookVO? {
+        return bookRepository.findByIsbn(isbn)?.let { BookVO.newInstance(it) }
     }
 
     fun save(
@@ -18,12 +19,8 @@ class BookDomainService(
         coverImageUrl: String,
         publicationYear: Int? = null,
         description: String? = null
-    ): Book {
-        findByIsbn(isbn)?.let {
-            return it
-        }
-
-        val book = Book.create(
+    ): BookVO {
+        val book = bookRepository.findByIsbn(isbn) ?: Book.create(
             isbn = isbn,
             title = title,
             author = author,
@@ -33,6 +30,7 @@ class BookDomainService(
             description = description
         )
 
-        return bookRepository.save(book)
+        val savedBook = bookRepository.save(book)
+        return BookVO.newInstance(savedBook)
     }
 }

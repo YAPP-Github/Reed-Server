@@ -27,18 +27,22 @@ data class UserBook private constructor(
     companion object {
         fun create(
             userId: UUID,
-            book: Book,
+            coverImageUrl: String,
+            bookIsbn: String,
+            publisher: String,
+            title: String,
+            author: String,
             initialStatus: BookStatus = BookStatus.BEFORE_READING
         ): UserBook {
             val now = LocalDateTime.now()
             return UserBook(
                 id = UuidGenerator.create(),
-                coverImageUrl = book.coverImageUrl,
-                publisher = book.publisher,
-                title = book.title,
-                author = book.author,
+                coverImageUrl = coverImageUrl,
+                publisher = publisher,
+                title = title,
+                author = author,
                 userId = userId,
-                bookIsbn = book.isbn,
+                bookIsbn = bookIsbn,
                 status = initialStatus,
                 createdAt = now,
                 updatedAt = now,
