@@ -5,6 +5,5 @@ import org.yapp.globalutils.exception.CommonException
 class UserNotFoundException (
     errorCode: UserErrorCode,
     message: String? = null
-) : CommonException(errorCode, message) {
-}
+) : CommonException(errorCode, message)
 
