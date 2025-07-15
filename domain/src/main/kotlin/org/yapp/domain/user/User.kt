@@ -118,9 +118,13 @@ data class User private constructor(
         }
     }
 
+    private fun isDeleted(): Boolean = deletedAt != null
+
     @JvmInline
     value class Id(val value: UUID) {
-        companion object { fun newInstance(value: UUID) = Id(value) }
+        companion object {
+            fun newInstance(value: UUID) = Id(value)
+        }
     }
 
     @JvmInline
@@ -143,6 +147,4 @@ data class User private constructor(
             }
         }
     }
-
-    private fun isDeleted(): Boolean = deletedAt != null
 }
