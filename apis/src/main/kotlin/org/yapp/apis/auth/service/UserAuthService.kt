@@ -2,6 +2,7 @@ package org.yapp.apis.auth.service
 
 import org.springframework.stereotype.Service
 import org.yapp.apis.auth.dto.request.FindOrCreateUserRequest
+import org.yapp.apis.auth.dto.request.FindUserIdentityRequest
 import org.yapp.apis.auth.dto.response.CreateUserResponse
 import org.yapp.apis.auth.dto.response.UserAuthInfoResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
@@ -26,8 +27,8 @@ class UserAuthService(
         }
     }
 
-    fun findUserIdentityByUserId(userId: UUID): UserAuthInfoResponse {
-        val userIdentity = userDomainService.findUserIdentityById(userId)
+    fun findUserIdentityByUserId(findUserIdentityRequest: FindUserIdentityRequest): UserAuthInfoResponse {
+        val userIdentity = userDomainService.findUserIdentityById(findUserIdentityRequest.validUserId())
         return UserAuthInfoResponse.from(userIdentity)
     }
 
