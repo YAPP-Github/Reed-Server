@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank
 import org.yapp.apis.auth.dto.response.CreateUserResponse
 import org.yapp.apis.auth.dto.response.UserAuthInfoResponse
 import org.yapp.globalutils.auth.Role
-import java.util.*
+import java.util.UUID
 
 @Schema(
     name = "GenerateTokenPairRequest",

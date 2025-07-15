@@ -4,7 +4,7 @@ import org.yapp.domain.user.User
 import org.yapp.globalutils.auth.Role
 import java.util.UUID
 
-data class UserIdentity(
+data class UserIdentityVO(
     val id: UUID,
     val role: Role
 ) {
@@ -14,9 +14,9 @@ data class UserIdentity(
     }
 
     companion object {
-        fun newInstance(user: User?): UserIdentity {
+        fun newInstance(user: User?): UserIdentityVO {
             requireNotNull(user) { "User must not be null." }
-            return UserIdentity(
+            return UserIdentityVO(
                 id = user.id,
                 role = user.role
             )

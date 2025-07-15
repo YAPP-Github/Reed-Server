@@ -8,7 +8,7 @@ import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.domain.user.UserDomainService
-import org.yapp.domain.user.vo.UserIdentity
+import org.yapp.domain.user.vo.UserIdentityVO
 import java.util.*
 
 @Service
@@ -50,7 +50,7 @@ class UserAuthService(
         return CreateUserResponse.from(createdUser)
     }
 
-    private fun createNewUser(findOrCreateUserRequest: FindOrCreateUserRequest): UserIdentity {
+    private fun createNewUser(findOrCreateUserRequest: FindOrCreateUserRequest): UserIdentityVO {
         val email = findOrCreateUserRequest.getOrDefaultEmail()
         val nickname = findOrCreateUserRequest.getOrDefaultNickname()
 

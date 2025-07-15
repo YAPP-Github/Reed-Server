@@ -2,8 +2,8 @@ package org.yapp.apis.auth.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
 import org.yapp.domain.user.ProviderType
-import org.yapp.domain.user.vo.UserProfile
-import java.util.*
+import org.yapp.domain.user.vo.UserProfileVO
+import java.util.UUID
 
 @Schema(
     name = "UserProfileResponse",
@@ -36,12 +36,12 @@ data class UserProfileResponse(
     val provider: ProviderType
 ) {
     companion object {
-        fun from(userProfile: UserProfile): UserProfileResponse {
+        fun from(userProfileVO: UserProfileVO): UserProfileResponse {
             return UserProfileResponse(
-                id = userProfile.id,
-                email = userProfile.email,
-                nickname = userProfile.nickname,
-                provider = userProfile.provider
+                id = userProfileVO.id,
+                email = userProfileVO.email,
+                nickname = userProfileVO.nickname,
+                provider = userProfileVO.provider
             )
         }
     }

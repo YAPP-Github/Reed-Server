@@ -1,9 +1,9 @@
 package org.yapp.apis.auth.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
-import org.yapp.domain.user.vo.UserIdentity
+import org.yapp.domain.user.vo.UserIdentityVO
 import org.yapp.globalutils.auth.Role
-import java.util.*
+import java.util.UUID
 
 @Schema(
     name = "UserAuthInfoResponse",
@@ -23,7 +23,7 @@ data class UserAuthInfoResponse private constructor(
     val role: Role
 ) {
     companion object {
-        fun from(identity: UserIdentity): UserAuthInfoResponse {
+        fun from(identity: UserIdentityVO): UserAuthInfoResponse {
             return UserAuthInfoResponse(
                 id = identity.id,
                 role = identity.role
