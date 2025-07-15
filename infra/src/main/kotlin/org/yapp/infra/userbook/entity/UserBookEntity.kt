@@ -1,4 +1,4 @@
-package org.yapp.infra.user.entity
+package org.yapp.infra.userbook.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
