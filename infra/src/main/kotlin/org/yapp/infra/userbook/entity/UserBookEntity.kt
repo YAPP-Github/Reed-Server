@@ -3,8 +3,8 @@ package org.yapp.infra.userbook.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
-import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.common.BaseTimeEntity
+import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
 import java.sql.Types
 import java.util.*
@@ -54,18 +54,37 @@ class UserBookEntity(
         protected set
 
     fun toDomain(): UserBook = UserBook.reconstruct(
-        id = id,
-        userId = userId,
-        bookIsbn = bookIsbn,
-        status = status,
-        coverImageUrl = coverImageUrl,
-        publisher = publisher,
-        title = title,
-        author = author,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-        deletedAt = deletedAt
+        id = UserBook.Id.newInstance(this.id),
+        userId = UserBook.UserId.newInstance(this.userId),
+        bookIsbn = UserBook.BookIsbn.newInstance(this.bookIsbn),
+        coverImageUrl = this.coverImageUrl,
+        publisher = this.publisher,
+        title = this.title,
+        author = this.author,
+        status = this.status,
+        createdAt = this.createdAt,
+        updatedAt = this.updatedAt,
+        deletedAt = this.deletedAt
     )
+
+    companion object {
+        fun fromDomain(userBook: UserBook): UserBookEntity {
+            return UserBookEntity(
+                id = userBook.id.value,
+                userId = userBook.userId.value,
+                bookIsbn = userBook.bookIsbn.value,
+                coverImageUrl = userBook.coverImageUrl,
+                publisher = userBook.publisher,
+                title = userBook.title,
+                author = userBook.author,
+                status = userBook.status,
+            ).apply {
+                this.createdAt = userBook.createdAt
+                this.updatedAt = userBook.updatedAt
+                this.deletedAt = userBook.deletedAt
+            }
+        }
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -74,23 +93,4 @@ class UserBookEntity(
     }
 
     override fun hashCode(): Int = id.hashCode()
-
-    companion object {
-        fun fromDomain(userBook: UserBook): UserBookEntity {
-            return UserBookEntity(
-                id = userBook.id,
-                userId = userBook.userId,
-                bookIsbn = userBook.bookIsbn,
-                status = userBook.status,
-                coverImageUrl = userBook.coverImageUrl,
-                publisher = userBook.publisher,
-                title = userBook.title,
-                author = userBook.author,
-            ).apply {
-                this.createdAt = userBook.createdAt
-                this.updatedAt = userBook.updatedAt
-                this.deletedAt = userBook.deletedAt
-            }
-        }
-    }
 }
