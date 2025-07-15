@@ -29,6 +29,7 @@ data class BookDetailResponse private constructor(
 ) {
     companion object {
 
+
         fun from(response: AladinBookDetailResponse): BookDetailResponse {
             val bookItem = response.item?.firstOrNull()
                 ?: throw IllegalArgumentException("No book item found in detail response.")
