@@ -52,12 +52,12 @@ class UserEntity private constructor(
         protected set
 
     fun toDomain(): User = User.reconstruct(
-        id = id,
-        email = email,
+        id = User.Id.newInstance(this.id),
+        email = User.Email.newInstance(this.email),
         nickname = nickname,
         profileImageUrl = profileImageUrl,
         providerType = providerType,
-        providerId = providerId,
+        providerId = User.ProviderId.newInstance(this.providerId),
         role = role,
         createdAt = createdAt,
         updatedAt = updatedAt,
@@ -66,12 +66,12 @@ class UserEntity private constructor(
 
     companion object {
         fun fromDomain(user: User): UserEntity = UserEntity(
-            id = user.id,
-            email = user.email,
+            id = user.id.value,
+            email = user.email.value,
             nickname = user.nickname,
             profileImageUrl = user.profileImageUrl,
             providerType = user.providerType,
-            providerId = user.providerId,
+            providerId = user.providerId.value,
             role = user.role
         ).apply {
             this.createdAt = user.createdAt

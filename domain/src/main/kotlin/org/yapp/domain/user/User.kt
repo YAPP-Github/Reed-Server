@@ -20,12 +20,12 @@ import java.util.*
  * @property deletedAt The timestamp when the user was soft-deleted, or null if the user is not deleted.
  */
 data class User private constructor(
-    val id: UUID,
-    val email: String,
+    val id: Id,
+    val email: Email,
     val nickname: String,
     val profileImageUrl: String?,
     val providerType: ProviderType,
-    val providerId: String,
+    val providerId: ProviderId,
     val role: Role,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
@@ -52,12 +52,12 @@ data class User private constructor(
             deletedAt: LocalDateTime? = null
         ): User {
             return User(
-                id = UuidGenerator.create(),
-                email = email,
+                id = Id.newInstance(UuidGenerator.create()),
+                email = Email.newInstance(email),
                 nickname = nickname,
                 profileImageUrl = profileImageUrl,
                 providerType = providerType,
-                providerId = providerId,
+                providerId = ProviderId.newInstance(providerId),
                 role = Role.USER,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
@@ -78,12 +78,12 @@ data class User private constructor(
             deletedAt: LocalDateTime? = null
         ): User {
             return User(
-                id = UuidGenerator.create(),
-                email = email,
+                id = Id.newInstance(UuidGenerator.create()),
+                email = Email.newInstance(email),
                 nickname = nickname,
                 profileImageUrl = profileImageUrl,
                 providerType = providerType,
-                providerId = providerId,
+                providerId = ProviderId.newInstance(providerId),
                 role = role,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
@@ -92,12 +92,12 @@ data class User private constructor(
         }
 
         fun reconstruct(
-            id: UUID,
-            email: String,
+            id: Id,
+            email: Email,
             nickname: String,
             profileImageUrl: String?,
             providerType: ProviderType,
-            providerId: String,
+            providerId: ProviderId,
             role: Role,
             createdAt: LocalDateTime,
             updatedAt: LocalDateTime,
@@ -115,6 +115,32 @@ data class User private constructor(
                 updatedAt = updatedAt,
                 deletedAt = deletedAt
             )
+        }
+    }
+
+    @JvmInline
+    value class Id(val value: UUID) {
+        companion object { fun newInstance(value: UUID) = Id(value) }
+    }
+
+    @JvmInline
+    value class Email(val value: String) {
+        companion object {
+            private val EMAIL_REGEX = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$".toRegex()
+            fun newInstance(value: String): Email {
+                require(value.matches(EMAIL_REGEX)) { "올바른 이메일 형식이 아닙니다." }
+                return Email(value)
+            }
+        }
+    }
+
+    @JvmInline
+    value class ProviderId(val value: String) {
+        companion object {
+            fun newInstance(value: String): ProviderId {
+                require(value.isNotBlank()) { "Provider ID는 필수입니다." }
+                return ProviderId(value)
+            }
         }
     }
 
