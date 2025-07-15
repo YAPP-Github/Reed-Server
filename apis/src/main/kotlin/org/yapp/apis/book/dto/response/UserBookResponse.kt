@@ -17,15 +17,14 @@ data class UserBookResponse private constructor(
     val createdAt: String,
     val updatedAt: String,
 ) {
-
     companion object {
         fun from(
             userBook: UserBookInfoVO,
         ): UserBookResponse {
             return UserBookResponse(
-                userBookId = userBook.id,
-                userId = userBook.userId,
-                bookIsbn = userBook.bookIsbn,
+                userBookId = userBook.id.value,
+                userId = userBook.userId.value,
+                bookIsbn = userBook.bookIsbn.value,
                 bookTitle = userBook.title,
                 bookAuthor = userBook.author,
                 status = userBook.status,
