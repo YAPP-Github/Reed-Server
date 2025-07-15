@@ -6,7 +6,7 @@ import org.yapp.domain.user.vo.UserIdentityVO
 import org.yapp.domain.user.vo.UserProfileVO
 import org.yapp.globalutils.annotation.DomainService
 import org.yapp.globalutils.util.TimeProvider
-import java.util.*
+import java.util.UUID
 
 @DomainService
 class UserDomainService(
@@ -34,11 +34,11 @@ class UserDomainService(
     }
 
     fun existsActiveUserByIdAndDeletedAtIsNull(userId: UUID): Boolean {
-        return userRepository.existsByIdAndDeletedAtIsNull(userId)
+        return userRepository.existsById(userId)
     }
 
     fun existsActiveUserByEmailAndDeletedAtIsNull(email: String): Boolean {
-        return userRepository.existsByEmailAndDeletedAtIsNull(email)
+        return userRepository.existsByEmail(email)
     }
 
     fun create(

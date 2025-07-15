@@ -1,6 +1,5 @@
 package org.yapp.domain.user
 
-import org.yapp.domain.user.ProviderType
 import java.util.*
 
 /**
@@ -16,7 +15,7 @@ interface UserRepository {
 
     fun save(user: User): User
 
-    fun existsByIdAndDeletedAtIsNull(userId: UUID): Boolean
+    fun existsById(userId: UUID): Boolean
 
-    fun existsByEmailAndDeletedAtIsNull(email: String): Boolean
+    fun existsByEmail(email: String): Boolean
 }

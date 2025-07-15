@@ -27,12 +27,12 @@ class UserRepositoryImpl(
         return jpaUserRepository.findById(id).orElse(null)?.toDomain()
     }
 
-    override fun existsByEmailAndDeletedAtIsNull(email: String): Boolean {
-        return jpaUserRepository.existsByEmailAndDeletedAtIsNull(email)
+    override fun existsById(userId: UUID): Boolean {
+        return jpaUserRepository.existsById(userId)
     }
 
-    override fun existsByIdAndDeletedAtIsNull(userId: UUID): Boolean {
-        return jpaUserRepository.existsByIdAndDeletedAtIsNull(userId)
+    override fun existsByEmail(email: String): Boolean {
+        return jpaUserRepository.existsByEmail(email)
     }
 
     override fun findByProviderTypeAndProviderIdIncludingDeleted(

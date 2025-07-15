@@ -3,16 +3,18 @@ package org.yapp.infra.user.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
-import org.yapp.domain.user.ProviderType
+import org.hibernate.annotations.SQLRestriction
 import org.yapp.domain.common.BaseTimeEntity
-import org.yapp.globalutils.auth.Role
+import org.yapp.domain.user.ProviderType
 import org.yapp.domain.user.User
+import org.yapp.globalutils.auth.Role
 import java.sql.Types
 import java.util.*
 
 @Entity
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE users SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 class UserEntity private constructor(
     @Id
     @JdbcTypeCode(Types.VARCHAR)
