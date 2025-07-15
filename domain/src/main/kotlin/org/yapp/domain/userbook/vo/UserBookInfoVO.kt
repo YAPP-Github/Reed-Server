@@ -5,7 +5,7 @@ import org.yapp.domain.userbook.UserBook
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class UserBookVO private constructor(
+data class UserBookInfoVO private constructor(
     val id: UUID,
     val userId: UUID,
     val bookIsbn: String,
@@ -31,8 +31,8 @@ data class UserBookVO private constructor(
     companion object {
         fun newInstance(
             userBook: UserBook,
-        ): UserBookVO {
-            return UserBookVO(
+        ): UserBookInfoVO {
+            return UserBookInfoVO(
                 id = userBook.id,
                 userId = userBook.userId,
                 bookIsbn = userBook.bookIsbn,

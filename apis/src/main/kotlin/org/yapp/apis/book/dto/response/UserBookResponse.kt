@@ -1,7 +1,7 @@
 package org.yapp.apis.book.dto.response
 
 import org.yapp.domain.userbook.BookStatus
-import org.yapp.domain.userbook.vo.UserBookVO
+import org.yapp.domain.userbook.vo.UserBookInfoVO
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
@@ -20,7 +20,7 @@ data class UserBookResponse private constructor(
 
     companion object {
         fun from(
-            userBook: UserBookVO,
+            userBook: UserBookInfoVO,
         ): UserBookResponse {
             return UserBookResponse(
                 userBookId = userBook.id,
