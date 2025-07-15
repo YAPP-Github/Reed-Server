@@ -6,7 +6,7 @@ import java.time.LocalDateTime // Import LocalDateTime
  * Represents a book in the domain model.
  */
 data class Book private constructor(
-    val isbn: String,
+    val isbn: Isbn,
     val title: String,
     val author: String,
     val publisher: String,
@@ -31,7 +31,7 @@ data class Book private constructor(
         ): Book {
             val now = LocalDateTime.now()
             return Book(
-                isbn = isbn,
+                isbn = Isbn.newInstance(isbn),
                 title = title,
                 author = author,
                 publisher = publisher,
@@ -45,7 +45,7 @@ data class Book private constructor(
         }
 
         fun reconstruct(
-            isbn: String,
+            isbn: Isbn,
             title: String,
             author: String,
             publisher: String,
@@ -68,6 +68,16 @@ data class Book private constructor(
                 updatedAt = updatedAt,
                 deletedAt = deletedAt
             )
+        }
+    }
+
+    @JvmInline
+    value class Isbn(val value: String) {
+        companion object {
+            fun newInstance(value: String): Isbn {
+                require(value.matches(Regex("^(\\d{10}|\\d{13})$"))) { "ISBN은 10자리 또는 13자리 숫자여야 합니다." }
+                return Isbn(value)
+            }
         }
     }
 }
