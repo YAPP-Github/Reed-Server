@@ -33,8 +33,8 @@ class UserDomainService(
             ?.let { UserIdentityVO.newInstance(it) }
     }
 
-    fun existsActiveUserByIdAndDeletedAtIsNull(userId: UUID): Boolean {
-        return userRepository.existsById(userId)
+    fun existsActiveUserByIdAndDeletedAtIsNull(id: UUID): Boolean {
+        return userRepository.existsById(id)
     }
 
     fun existsActiveUserByEmailAndDeletedAtIsNull(email: String): Boolean {

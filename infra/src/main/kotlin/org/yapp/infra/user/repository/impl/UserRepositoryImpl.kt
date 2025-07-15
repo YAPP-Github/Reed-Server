@@ -1,5 +1,6 @@
 package org.yapp.infra.user.repository.impl
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import org.yapp.domain.user.ProviderType
 import org.yapp.domain.user.User
@@ -24,11 +25,11 @@ class UserRepositoryImpl(
     }
 
     override fun findById(id: UUID): User? {
-        return jpaUserRepository.findById(id).orElse(null)?.toDomain()
+        return jpaUserRepository.findByIdOrNull(id)?.toDomain()
     }
 
-    override fun existsById(userId: UUID): Boolean {
-        return jpaUserRepository.existsById(userId)
+    override fun existsById(id: UUID): Boolean {
+        return jpaUserRepository.existsById(id)
     }
 
     override fun existsByEmail(email: String): Boolean {

@@ -8,7 +8,6 @@ import java.util.UUID
 class TokenDomainRedisService(
     private val refreshTokenRepository: RefreshTokenRepository
 ) {
-
     fun saveRefreshToken(userId: UUID, refreshToken: String, expiration: Long) {
         val expiresAt = LocalDateTime.now().plusSeconds(expiration)
         val token = RefreshToken.create(

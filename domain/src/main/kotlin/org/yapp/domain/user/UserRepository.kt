@@ -15,7 +15,7 @@ interface UserRepository {
 
     fun save(user: User): User
 
-    fun existsById(userId: UUID): Boolean
+    fun existsById(id: UUID): Boolean
 
     fun existsByEmail(email: String): Boolean
 }
