@@ -11,12 +11,12 @@ import org.yapp.infra.book.repository.JpaBookRepository
 class BookRepositoryImpl(
     private val jpaBookRepository: JpaBookRepository
 ) : BookRepository {
-    override fun findById(isbn: String): Book? {
-        return jpaBookRepository.findByIdOrNull(isbn)?.toDomain()
+    override fun findById(id: String): Book? {
+        return jpaBookRepository.findByIdOrNull(id)?.toDomain()
     }
 
-    override fun existsById(isbn: String): Boolean {
-        return jpaBookRepository.existsById(isbn)
+    override fun existsById(id: String): Boolean {
+        return jpaBookRepository.existsById(id)
     }
 
     override fun save(book: Book): Book {

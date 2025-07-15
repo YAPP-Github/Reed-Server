@@ -13,15 +13,6 @@ class BookManagementService(
         val isbn = request.validIsbn()
 
         val bookVO = bookDomainService.findByIsbn(isbn)
-            ?: bookDomainService.save(
-                isbn = isbn,
-                title = request.validTitle(),
-                author = request.validAuthor(),
-                publisher = request.validPublisher(),
-                coverImageUrl = request.coverImageUrl,
-                publicationYear = request.publicationYear,
-                description = request.description
-            )
         return BookCreateResponse.from(bookVO)
     }
 
