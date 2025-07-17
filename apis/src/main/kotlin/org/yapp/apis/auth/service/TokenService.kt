@@ -1,39 +1,41 @@
 package org.yapp.apis.auth.service
 
 import org.springframework.stereotype.Service
-import org.yapp.apis.auth.exception.AuthErrorCode
-import org.yapp.apis.auth.exception.AuthException
+import org.yapp.apis.auth.dto.request.TokenGenerateRequest
+import org.yapp.apis.auth.dto.request.TokenRefreshRequest
+import org.yapp.apis.auth.dto.response.RefreshTokenResponse
+import org.yapp.apis.auth.dto.response.UserIdResponse
 import org.yapp.domain.token.TokenDomainRedisService
-import org.yapp.domain.token.RefreshToken
 import java.util.*
 
 @Service
 class TokenService(
     private val tokenDomainRedisService: TokenDomainRedisService,
 ) {
-
-    fun deleteByToken(token: String) {
+    fun deleteRefreshTokenByToken(token: String) {
         tokenDomainRedisService.deleteRefreshTokenByToken(token)
     }
 
-    fun save(userId: UUID, refreshToken: String, expiration: Long) {
-        tokenDomainRedisService.saveRefreshToken(userId, refreshToken, expiration)
+    fun saveRefreshToken(tokenGenerateRequest: TokenGenerateRequest): RefreshTokenResponse {
+        val token = tokenDomainRedisService.saveRefreshToken(
+            tokenGenerateRequest.validUserId(),
+            tokenGenerateRequest.validRefreshToken(),
+            tokenGenerateRequest.validExpiration()
+        )
+        return RefreshTokenResponse.from(token)
     }
 
-    fun getRefreshTokenByUserId(userId: UUID): RefreshToken {
-        return tokenDomainRedisService.getRefreshTokenByUserId(userId)
-            ?: throw AuthException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND)
+    fun getRefreshTokenByUserId(userId: UUID): RefreshTokenResponse {
+        val token = tokenDomainRedisService.getRefreshTokenByUserId(userId)
+        return RefreshTokenResponse.from(token)
     }
 
-    fun validateRefreshTokenByTokenOrThrow(refreshToken: String) {
-        val exists = tokenDomainRedisService.validateRefreshTokenByToken(refreshToken)
-        if (!exists) {
-            throw AuthException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND)
-        }
+    fun validateRefreshToken(refreshToken: String) {
+        tokenDomainRedisService.validateRefreshTokenByToken(refreshToken)
     }
 
-    fun getUserIdFromToken(refreshToken: String): UUID {
-        return tokenDomainRedisService.getUserIdFromToken(refreshToken)
-            ?: throw AuthException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND)
+    fun getUserIdByToken(tokenRefreshRequest: TokenRefreshRequest): UserIdResponse {
+        val userId = tokenDomainRedisService.getUserIdByToken(tokenRefreshRequest.validRefreshToken())
+        return UserIdResponse.from(userId)
     }
 }

@@ -3,15 +3,18 @@ package org.yapp.infra.user.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
-import org.yapp.domain.user.ProviderType
+import org.hibernate.annotations.SQLRestriction
 import org.yapp.domain.common.BaseTimeEntity
+import org.yapp.domain.user.ProviderType
 import org.yapp.domain.user.User
+import org.yapp.globalutils.auth.Role
 import java.sql.Types
 import java.util.*
 
 @Entity
 @Table(name = "users")
 @SQLDelete(sql = "UPDATE users SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 class UserEntity private constructor(
     @Id
     @JdbcTypeCode(Types.VARCHAR)
@@ -22,6 +25,7 @@ class UserEntity private constructor(
     val email: String,
 
     nickname: String,
+
     profileImageUrl: String? = null,
 
     @Enumerated(EnumType.STRING)
@@ -29,7 +33,9 @@ class UserEntity private constructor(
     val providerType: ProviderType,
 
     @Column(name = "provider_id", nullable = false, length = 100)
-    val providerId: String
+    val providerId: String,
+
+    role: Role
 ) : BaseTimeEntity() {
 
     @Column(nullable = false, length = 100)
@@ -40,13 +46,19 @@ class UserEntity private constructor(
     var profileImageUrl: String? = profileImageUrl
         protected set
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    var role: Role = role
+        protected set
+
     fun toDomain(): User = User.reconstruct(
-        id = id,
-        email = email,
+        id = User.Id.newInstance(this.id),
+        email = User.Email.newInstance(this.email),
         nickname = nickname,
         profileImageUrl = profileImageUrl,
         providerType = providerType,
-        providerId = providerId,
+        providerId = User.ProviderId.newInstance(this.providerId),
+        role = role,
         createdAt = createdAt,
         updatedAt = updatedAt,
         deletedAt = deletedAt
@@ -54,12 +66,13 @@ class UserEntity private constructor(
 
     companion object {
         fun fromDomain(user: User): UserEntity = UserEntity(
-            id = user.id, // 도메인 모델의 id가 non-null이므로 안전
-            email = user.email,
+            id = user.id.value,
+            email = user.email.value,
             nickname = user.nickname,
             profileImageUrl = user.profileImageUrl,
             providerType = user.providerType,
-            providerId = user.providerId
+            providerId = user.providerId.value,
+            role = user.role
         ).apply {
             this.createdAt = user.createdAt
             this.updatedAt = user.updatedAt

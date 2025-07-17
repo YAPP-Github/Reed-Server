@@ -3,7 +3,6 @@ package org.yapp.apis.book.dto.request
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import org.yapp.apis.book.dto.response.BookDetailResponse
-import org.yapp.domain.book.Book
 
 data class BookCreateRequest private constructor(
     @field:NotBlank(message = "ISBN은 필수입니다.")
@@ -32,7 +31,7 @@ data class BookCreateRequest private constructor(
 
     companion object {
 
-        fun create(bookDetail: BookDetailResponse): BookCreateRequest {
+        fun from(bookDetail: BookDetailResponse): BookCreateRequest {
             val finalIsbn = bookDetail.isbn ?: bookDetail.isbn13
             ?: throw IllegalArgumentException("ISBN이 존재하지 않습니다.")
 

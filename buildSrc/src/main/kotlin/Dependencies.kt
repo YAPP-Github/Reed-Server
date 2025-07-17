@@ -8,17 +8,12 @@ object Dependencies {
         const val BOOT_STARTER_ACTUATOR = "org.springframework.boot:spring-boot-starter-actuator"
         const val BOOT_STARTER_TEST = "org.springframework.boot:spring-boot-starter-test"
         const val BOOT_STARTER_DATA_REDIS = "org.springframework.boot:spring-boot-starter-data-redis"
+        const val BOOT_STARTER_OAUTH2_RESOURCE_SERVER = "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
         const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect"
     }
 
     object Database {
         const val MYSQL_CONNECTOR = "com.mysql:mysql-connector-j"
-    }
-
-    object Auth {
-        const val JWT = "io.jsonwebtoken:jjwt-api:0.11.5"
-        const val JWT_IMPL = "io.jsonwebtoken:jjwt-impl:0.11.5"
-        const val JWT_JACKSON = "io.jsonwebtoken:jjwt-jackson:0.11.5"
     }
 
     object Swagger {

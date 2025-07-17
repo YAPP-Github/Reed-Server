@@ -1,10 +1,10 @@
-package org.yapp.infra.user.repository.impl
+package org.yapp.infra.userbook.repository.impl
 
 import org.springframework.stereotype.Repository
 import org.yapp.domain.userbook.UserBookRepository
 import org.yapp.domain.userbook.UserBook
-import org.yapp.infra.user.entity.UserBookEntity
-import org.yapp.infra.user.repository.JpaUserBookRepository
+import org.yapp.infra.userbook.entity.UserBookEntity
+import org.yapp.infra.userbook.repository.JpaUserBookRepository
 import java.util.*
 
 @Repository

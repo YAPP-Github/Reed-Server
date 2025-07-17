@@ -2,9 +2,7 @@ package org.yapp.apis.auth.strategy
 
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
-import org.yapp.apis.auth.dto.AuthCredentials
-import org.yapp.apis.auth.dto.KakaoAuthCredentials
-import org.yapp.apis.auth.dto.UserCreateInfo
+import org.yapp.apis.auth.dto.response.UserCreateInfoResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.helper.KakaoApiHelper
@@ -24,7 +22,7 @@ class KakaoAuthStrategy(
 
     override fun getProviderType(): ProviderType = ProviderType.KAKAO
 
-    override fun authenticate(credentials: AuthCredentials): UserCreateInfo {
+    override fun authenticate(credentials: AuthCredentials): UserCreateInfoResponse {
         return try {
             val kakaoCredentials = validateCredentials(credentials)
             val kakaoUser = kakaoApiHelper.getUserInfo(kakaoCredentials.accessToken)
@@ -46,8 +44,8 @@ class KakaoAuthStrategy(
             )
     }
 
-    private fun createUserInfo(kakaoUser: KakaoUserInfo): UserCreateInfo {
-        return UserCreateInfo.of(
+    private fun createUserInfo(kakaoUser: KakaoUserInfo): UserCreateInfoResponse {
+        return UserCreateInfoResponse.of(
             email = kakaoUser.email ?: ("kakao_${kakaoUser.id}@kakao.com"),
             nickname = NicknameGenerator.generate(),
             profileImageUrl = kakaoUser.profileImageUrl,

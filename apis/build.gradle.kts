@@ -14,10 +14,6 @@ dependencies {
 
     implementation(Dependencies.Database.MYSQL_CONNECTOR)
 
-    implementation(Dependencies.Auth.JWT)
-    implementation(Dependencies.Auth.JWT_IMPL)
-    implementation(Dependencies.Auth.JWT_JACKSON)
-
     implementation(Dependencies.Swagger.SPRINGDOC_OPENAPI_STARTER_WEBMVC_UI)
 
     implementation(Dependencies.Logging.KOTLIN_LOGGING)

@@ -1,6 +1,9 @@
 package org.yapp.domain.user
 
-import org.yapp.domain.user.vo.SocialUserProfile
+import org.yapp.domain.user.exception.UserErrorCode
+import org.yapp.domain.user.exception.UserNotFoundException
+import org.yapp.domain.user.vo.UserIdentityVO
+import org.yapp.domain.user.vo.UserProfileVO
 import org.yapp.globalutils.annotation.DomainService
 import org.yapp.globalutils.util.TimeProvider
 import java.util.UUID
@@ -10,43 +13,60 @@ class UserDomainService(
     private val userRepository: UserRepository,
     private val timeProvider: TimeProvider
 ) {
+    fun findUserProfileById(id: UUID): UserProfileVO {
+        val user = userRepository.findById(id) ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+        return UserProfileVO.newInstance(user)
+    }
 
-    fun findById(id: UUID): User? =
-        userRepository.findById(id)
+    fun findUserIdentityById(id: UUID): UserIdentityVO {
+        val user = userRepository.findById(id) ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+        return UserIdentityVO.newInstance(user)
+    }
 
-    fun findByEmail(email: String): User? =
-        userRepository.findByEmail(email)
+    fun findUserByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): UserIdentityVO? {
+        return userRepository.findByProviderTypeAndProviderId(providerType, providerId)
+            ?.let { UserIdentityVO.newInstance(it) }
+    }
 
-    fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): User? =
-        userRepository.findByProviderTypeAndProviderId(providerType, providerId)
+    fun findUserByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): UserIdentityVO? {
+        return userRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType, providerId)
+            ?.let { UserIdentityVO.newInstance(it) }
+    }
 
-    fun findByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): User? =
-        userRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType, providerId)
+    fun existsActiveUserByIdAndDeletedAtIsNull(id: UUID): Boolean {
+        return userRepository.existsById(id)
+    }
 
-    fun existsActiveByEmail(email: String): Boolean =
-        findByEmail(email) != null
+    fun existsActiveUserByEmailAndDeletedAtIsNull(email: String): Boolean {
+        return userRepository.existsByEmail(email)
+    }
 
-    fun create(profile: SocialUserProfile): User {
+    fun createNewUser(
+        email: String,
+        nickname: String,
+        profileImageUrl: String?,
+        providerType: ProviderType,
+        providerId: String
+    ): UserIdentityVO {
         val now = timeProvider.now()
         val user = User.create(
-            email = profile.email,
-            nickname = profile.nickname,
-            profileImageUrl = profile.profileImageUrl,
-            providerType = profile.providerType,
-            providerId = profile.providerId,
+            email = email,
+            nickname = nickname,
+            profileImageUrl = profileImageUrl,
+            providerType = providerType,
+            providerId = providerId,
             createdAt = now,
             updatedAt = now
         )
-        return save(user)
+        val savedUser = userRepository.save(user)
+        return UserIdentityVO.newInstance(savedUser)
     }
 
-    fun restoreDeletedUser(deletedUser: User): User =
-        save(deletedUser.restore())
+    fun restoreDeletedUser(userId: UUID): UserIdentityVO {
+        val deletedUser = userRepository.findById(userId)
+            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
 
-    fun save(user: User): User =
-        userRepository.save(user)
-
-    fun existsById(userId: UUID): Boolean {
-        return userRepository.existsById(userId)
+        val restoredUser = userRepository.save(deletedUser.restore())
+        return UserIdentityVO.newInstance(restoredUser)
     }
 }

@@ -1,7 +1,6 @@
 package org.yapp.domain.userbook
 
 import org.yapp.domain.book.Book
-import org.yapp.domain.userbook.vo.UserBookVO
 import org.yapp.globalutils.annotation.DomainService
 import java.util.UUID
 
@@ -23,13 +22,5 @@ class UserBookDomainService(
 
     fun findAllUserBooks(userId: UUID): List<UserBook> {
         return userBookRepository.findAllByUserId(userId)
-    }
-
-    fun findAllByUserIdAndBookIsbnIn(userId: UUID, isbns: List<String>): List<UserBookVO> {
-        if (isbns.isEmpty()) {
-            return emptyList()
-        }
-        return userBookRepository.findAllByUserIdAndBookIsbnIn(userId, isbns)
-            .map { UserBookVO.newInstance(it) }
     }
 }

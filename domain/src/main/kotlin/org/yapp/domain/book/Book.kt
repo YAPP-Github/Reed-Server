@@ -1,12 +1,13 @@
 package org.yapp.domain.book
 
-import java.time.LocalDateTime // Import LocalDateTime
+import org.yapp.globalutils.validator.IsbnValidator
+import java.time.LocalDateTime
 
 /**
  * Represents a book in the domain model.
  */
 data class Book private constructor(
-    val isbn: String,
+    val isbn: Isbn,
     val title: String,
     val author: String,
     val publisher: String,
@@ -17,8 +18,6 @@ data class Book private constructor(
     val updatedAt: LocalDateTime,
     val deletedAt: LocalDateTime? = null
 ) {
-
-
     companion object {
         fun create(
             isbn: String,
@@ -31,7 +30,7 @@ data class Book private constructor(
         ): Book {
             val now = LocalDateTime.now()
             return Book(
-                isbn = isbn,
+                isbn = Isbn.newInstance(isbn),
                 title = title,
                 author = author,
                 publisher = publisher,
@@ -45,7 +44,7 @@ data class Book private constructor(
         }
 
         fun reconstruct(
-            isbn: String,
+            isbn: Isbn,
             title: String,
             author: String,
             publisher: String,
@@ -68,6 +67,16 @@ data class Book private constructor(
                 updatedAt = updatedAt,
                 deletedAt = deletedAt
             )
+        }
+    }
+
+    @JvmInline
+    value class Isbn(val value: String) {
+        companion object {
+            fun newInstance(value: String): Isbn {
+                require(IsbnValidator.isValidIsbn(value)) { "ISBN must be a 10 or 13-digit number." }
+                return Isbn(value)
+            }
         }
     }
 }

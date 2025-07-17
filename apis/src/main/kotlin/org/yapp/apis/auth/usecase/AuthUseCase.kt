@@ -1,8 +1,7 @@
 package org.yapp.apis.auth.usecase
 
-import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import org.yapp.apis.auth.dto.AuthCredentials
+import org.yapp.apis.auth.dto.request.*
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.helper.AuthTokenHelper
@@ -20,35 +19,39 @@ class AuthUseCase(
     private val tokenService: TokenService,
     private val authTokenHelper: AuthTokenHelper
 ) {
-
     @Transactional
-    fun signIn(credentials: AuthCredentials): TokenPairResponse {
+    fun signIn(socialLoginRequest: SocialLoginRequest): TokenPairResponse {
+        val credentials = SocialLoginRequest.toCredentials(socialLoginRequest)
         val strategy = socialAuthService.resolve(credentials)
-        val userInfo = strategy.authenticate(credentials)
-        val user = userAuthService.findOrCreateUser(userInfo)
-        return authTokenHelper.generateTokenPair(user.id)
+
+        val userCreateInfoResponse = strategy.authenticate(credentials)
+        val findOrCreateUserRequest = FindOrCreateUserRequest.from(userCreateInfoResponse)
+        val createUserResponse = userAuthService.findOrCreateUser(findOrCreateUserRequest)
+        val generateTokenPairRequest = GenerateTokenPairRequest.from(createUserResponse)
+
+        return authTokenHelper.generateTokenPair(generateTokenPairRequest)
     }
 
     @Transactional
-    fun refreshToken(refreshToken: String): TokenPairResponse {
-        val userId = authTokenHelper.validateAndGetUserIdFromRefreshToken(refreshToken)
-        authTokenHelper.deleteToken(refreshToken)
-        return authTokenHelper.generateTokenPair(userId)
+    fun reissueTokenPair(tokenRefreshRequest: TokenRefreshRequest): TokenPairResponse {
+        val userIdResponse = authTokenHelper.validateAndGetUserIdFromRefreshToken(tokenRefreshRequest)
+        authTokenHelper.deleteTokenForReissue(tokenRefreshRequest)
+
+        val findUserIdentityRequest = FindUserIdentityRequest.from(userIdResponse)
+        val userAuthInfoResponse = userAuthService.findUserIdentityByUserId(findUserIdentityRequest)
+        val generateTokenPairRequest = GenerateTokenPairRequest.from(userAuthInfoResponse)
+
+        return authTokenHelper.generateTokenPair(generateTokenPairRequest)
     }
 
     @Transactional
     fun signOut(userId: UUID) {
-        val refreshToken = tokenService.getRefreshTokenByUserId(userId)
-        authTokenHelper.deleteToken(refreshToken.token)
+        val refreshTokenResponse = tokenService.getRefreshTokenByUserId(userId)
+        val deleteTokenRequest = DeleteTokenRequest.from(refreshTokenResponse)
+        authTokenHelper.deleteTokenForSignOut(deleteTokenRequest)
     }
 
     fun getUserProfile(userId: UUID): UserProfileResponse {
-        val user = userAuthService.findUserById(userId)
-        return UserProfileResponse.of(
-            id = user.id,
-            email = user.email,
-            nickname = user.nickname,
-            provider = user.providerType
-        )
+        return userAuthService.findUserProfileByUserId(userId)
     }
 }

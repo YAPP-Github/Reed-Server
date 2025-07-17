@@ -13,7 +13,7 @@ interface JpaUserRepository : JpaRepository<UserEntity, UUID> {
 
     fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): UserEntity?
 
-    fun findByEmail(email: String): UserEntity?
+    fun existsByEmail(email: String): Boolean
 
     @Query("SELECT u FROM UserEntity u WHERE u.providerType = :providerType AND u.providerId = :providerId")
     fun findByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): UserEntity?
