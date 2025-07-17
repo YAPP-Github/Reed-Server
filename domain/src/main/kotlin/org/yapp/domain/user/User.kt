@@ -1,6 +1,8 @@
 package org.yapp.domain.user
 
 import org.yapp.globalutils.auth.Role
+import org.yapp.globalutils.util.UuidGenerator
+import org.yapp.globalutils.validator.EmailValidator
 import java.time.LocalDateTime
 import java.util.*
 
@@ -19,12 +21,12 @@ import java.util.*
  * @property deletedAt The timestamp when the user was soft-deleted, or null if the user is not deleted.
  */
 data class User private constructor(
-    val id: UUID,
-    val email: String,
+    val id: Id,
+    val email: Email,
     val nickname: String,
     val profileImageUrl: String?,
     val providerType: ProviderType,
-    val providerId: String,
+    val providerId: ProviderId,
     val role: Role,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
@@ -46,18 +48,43 @@ data class User private constructor(
             profileImageUrl: String?,
             providerType: ProviderType,
             providerId: String,
+            createdAt: LocalDateTime,
+            updatedAt: LocalDateTime,
+            deletedAt: LocalDateTime? = null
+        ): User {
+            return User(
+                id = Id.newInstance(UuidGenerator.create()),
+                email = Email.newInstance(email),
+                nickname = nickname,
+                profileImageUrl = profileImageUrl,
+                providerType = providerType,
+                providerId = ProviderId.newInstance(providerId),
+                role = Role.USER,
+                createdAt = createdAt,
+                updatedAt = updatedAt,
+                deletedAt = deletedAt
+            )
+        }
+
+        // 추후 다른 역할 부여 시 사용
+        fun createWithRole(
+            email: String,
+            nickname: String,
+            profileImageUrl: String?,
+            providerType: ProviderType,
+            providerId: String,
             role: Role,
             createdAt: LocalDateTime,
             updatedAt: LocalDateTime,
             deletedAt: LocalDateTime? = null
         ): User {
             return User(
-                id = UUID.randomUUID(),
-                email = email,
+                id = Id.newInstance(UuidGenerator.create()),
+                email = Email.newInstance(email),
                 nickname = nickname,
                 profileImageUrl = profileImageUrl,
                 providerType = providerType,
-                providerId = providerId,
+                providerId = ProviderId.newInstance(providerId),
                 role = role,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
@@ -66,12 +93,12 @@ data class User private constructor(
         }
 
         fun reconstruct(
-            id: UUID,
-            email: String,
+            id: Id,
+            email: Email,
             nickname: String,
             profileImageUrl: String?,
             providerType: ProviderType,
-            providerId: String,
+            providerId: ProviderId,
             role: Role,
             createdAt: LocalDateTime,
             updatedAt: LocalDateTime,
@@ -93,4 +120,31 @@ data class User private constructor(
     }
 
     private fun isDeleted(): Boolean = deletedAt != null
+
+    @JvmInline
+    value class Id(val value: UUID) {
+        companion object {
+            fun newInstance(value: UUID) = Id(value)
+        }
+    }
+
+    @JvmInline
+    value class Email(val value: String) {
+        companion object {
+            fun newInstance(value: String): Email {
+                require(EmailValidator.isValidEmail(value)) { "This is not a valid email format." }
+                return Email(value)
+            }
+        }
+    }
+
+    @JvmInline
+    value class ProviderId(val value: String) {
+        companion object {
+            fun newInstance(value: String): ProviderId {
+                require(value.isNotBlank()) { "Provider ID는 필수입니다." }
+                return ProviderId(value)
+            }
+        }
+    }
 }

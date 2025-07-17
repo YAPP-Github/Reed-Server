@@ -53,7 +53,7 @@ class BookEntity private constructor(
         protected set
 
     fun toDomain(): Book = Book.reconstruct(
-        isbn = isbn,
+        isbn = Book.Isbn.newInstance(this.isbn),
         title = title,
         author = author,
         publisher = publisher,
@@ -67,7 +67,7 @@ class BookEntity private constructor(
 
     companion object {
         fun fromDomain(book: Book): BookEntity = BookEntity(
-            isbn = book.isbn,
+            isbn = book.isbn.value,
             title = book.title,
             author = book.author,
             publisher = book.publisher,

@@ -1,7 +1,6 @@
 package org.yapp.domain.userbook
 
-import org.yapp.domain.book.Book
-import org.yapp.domain.userbook.vo.UserBookVO
+import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.globalutils.annotation.DomainService
 import java.util.UUID
 
@@ -17,7 +16,7 @@ class UserBookDomainService(
         bookPublisher: String,
         bookCoverImageUrl: String,
         status: BookStatus
-    ): UserBookVO {
+    ): UserBookInfoVO {
         val userBook = userBookRepository.findByUserIdAndBookIsbn(userId, bookIsbn)
             ?.apply { updateStatus(status) }
             ?: UserBook.create(
@@ -30,11 +29,11 @@ class UserBookDomainService(
             )
 
         val savedUserBook = userBookRepository.save(userBook)
-        return UserBookVO.newInstance(savedUserBook)
+        return UserBookInfoVO.newInstance(savedUserBook)
     }
 
-    fun findAllUserBooks(userId: UUID): List<UserBookVO> {
+    fun findAllUserBooks(userId: UUID): List<UserBookInfoVO> {
         return userBookRepository.findAllByUserId(userId)
-            .map(UserBookVO::newInstance)
+            .map(UserBookInfoVO::newInstance)
     }
 }

@@ -1,6 +1,5 @@
 package org.yapp.domain.user
 
-import org.yapp.domain.user.ProviderType
 import java.util.*
 
 /**
@@ -8,9 +7,7 @@ import java.util.*
  */
 interface UserRepository {
 
-    fun findById(id: UUID): User
-
-    fun findByEmail(email: String): User?
+    fun findById(id: UUID): User?
 
     fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): User?
 
@@ -20,4 +17,5 @@ interface UserRepository {
 
     fun existsById(id: UUID): Boolean
 
+    fun existsByEmail(email: String): Boolean
 }

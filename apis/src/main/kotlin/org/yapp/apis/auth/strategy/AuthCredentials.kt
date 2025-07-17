@@ -1,4 +1,4 @@
-package org.yapp.apis.auth.dto
+package org.yapp.apis.auth.strategy
 
 import org.yapp.domain.user.ProviderType
 

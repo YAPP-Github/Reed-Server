@@ -8,12 +8,11 @@ import org.yapp.globalutils.util.UuidGenerator
 import java.time.LocalDateTime
 import java.util.*
 
-
 @RedisHash(
     value = "refreshToken",
     timeToLive = 1209600
 )
-data class RefreshTokenEntity private constructor(
+class RefreshTokenEntity private constructor(
     @Id
     val id: UUID,
     @Indexed
@@ -23,22 +22,20 @@ data class RefreshTokenEntity private constructor(
     val expiresAt: LocalDateTime,
     val createdAt: LocalDateTime
 ) {
-
     fun toDomain(): RefreshToken = RefreshToken.reconstruct(
-        id = id,
-        token = token,
-        userId = userId,
+        id = RefreshToken.Id.newInstance(this.id),
+        token = RefreshToken.Token.newInstance(this.token),
+        userId = RefreshToken.UserId.newInstance(this.userId),
         expiresAt = expiresAt,
         createdAt = createdAt
     )
 
     companion object {
-
         fun fromDomain(refreshToken: RefreshToken): RefreshTokenEntity {
             return RefreshTokenEntity(
-                id = refreshToken.id ?: UuidGenerator.create(),
-                token = refreshToken.token,
-                userId = refreshToken.userId,
+                id = refreshToken.id?.value ?: UuidGenerator.create(),
+                token = refreshToken.token.value,
+                userId = refreshToken.userId.value,
                 expiresAt = refreshToken.expiresAt,
                 createdAt = refreshToken.createdAt
             )

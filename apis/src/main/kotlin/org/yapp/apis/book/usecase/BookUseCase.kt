@@ -42,7 +42,6 @@ class BookUseCase(
         userAuthService.validateUserExists(userId)
 
         val bookDetailResponse = bookQueryService.getBookDetail(BookDetailRequest.of(request.validBookIsbn()))
-
         val bookCreateResponse = bookManagementService.findOrCreateBook(BookCreateRequest.from(bookDetailResponse))
         val upsertUserBookRequest = UpsertUserBookRequest.of(
             userId = userId,
@@ -53,7 +52,6 @@ class BookUseCase(
 
         return userBookResponse
     }
-
 
     fun getUserLibraryBooks(userId: UUID): List<UserBookResponse> {
         userAuthService.validateUserExists(userId)

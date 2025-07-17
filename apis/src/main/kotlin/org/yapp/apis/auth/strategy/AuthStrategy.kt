@@ -1,7 +1,6 @@
 package org.yapp.apis.auth.strategy
 
-import org.yapp.apis.auth.dto.AuthCredentials
-import org.yapp.apis.auth.dto.UserCreateInfo
+import org.yapp.apis.auth.dto.response.UserCreateInfoResponse
 import org.yapp.domain.user.ProviderType
 
 /**
@@ -12,5 +11,5 @@ interface AuthStrategy {
 
     fun getProviderType(): ProviderType
 
-    fun authenticate(credentials: AuthCredentials): UserCreateInfo
+    fun authenticate(credentials: AuthCredentials): UserCreateInfoResponse
 }

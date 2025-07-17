@@ -12,16 +12,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.globalutils.exception.ErrorResponse
-import java.util.UUID
+import java.util.*
 
 @Tag(name = "Authentication", description = "Authentication API")
-@RequestMapping("/api/v1/auth")
 interface AuthControllerApi {
 
     @Operation(
