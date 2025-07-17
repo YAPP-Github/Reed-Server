@@ -2,6 +2,7 @@ package org.yapp.apis.book.usecase
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
+import org.yapp.apis.auth.dto.request.UserBooksByIsbnsRequest
 import org.yapp.apis.auth.service.UserAuthService
 import org.yapp.apis.book.dto.request.BookCreateRequest
 import org.yapp.apis.book.dto.request.BookDetailRequest
@@ -34,11 +35,12 @@ class BookUseCase(
 
         val searchResponse = bookQueryService.searchBooks(request)
         val isbns = searchResponse.books.map { it.isbn }
-        val userBooks = userBookService.findAllByUserIdAndBookIsbnIn(userId, isbns)
-        val statusMap = userBooks.associateBy({ it.bookIsbn }, { it.status })
+
+        val userBooksReponse = userBookService.findAllByUserIdAndBookIsbnIn(UserBooksByIsbnsRequest.of(userId, isbns))
+        val statusMap = userBooksReponse.associateBy({ it.bookIsbn }, { it.status })
         searchResponse.books.forEach { bookSummary ->
             statusMap[bookSummary.isbn]?.let { status ->
-                bookSummary.userBookStatus = status
+                bookSummary.updateStatus(status)
             }
         }
         return searchResponse

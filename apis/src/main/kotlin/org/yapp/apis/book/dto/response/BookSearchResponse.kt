@@ -1,8 +1,10 @@
 package org.yapp.apis.book.dto.response
 
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.domain.userbook.UserBook
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 import org.yapp.infra.external.aladin.response.BookItem
+import java.time.LocalDateTime
 
 data class BookSearchResponse private constructor(
     val version: String?,
@@ -42,10 +44,15 @@ data class BookSearchResponse private constructor(
         val author: String?,
         val publisher: String?,
         val coverImageUrl: String?,
-        var userBookStatus: BookStatus
+        val userBookStatus: BookStatus
     ) {
+        fun updateStatus(newStatus: BookStatus): BookSummary {
+            return this.copy(userBookStatus = newStatus)
+        }
+
         companion object {
             private val unknownTitle = "제목없음"
+
 
             fun fromAladinItem(item: BookItem): BookSummary? {
                 val isbn = item.isbn ?: item.isbn13 ?: return null
