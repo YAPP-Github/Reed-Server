@@ -1,11 +1,13 @@
 package org.yapp.apis.book.service
 
 import org.springframework.stereotype.Service
-import org.yapp.apis.book.dto.request.UpsertUserBookRequest
+import org.yapp.apis.auth.dto.request.UserBooksByIsbnsRequest
 import org.yapp.apis.book.dto.response.UserBookResponse
+import org.yapp.apis.book.dto.request.UpsertUserBookRequest
 import org.yapp.domain.userbook.UserBookDomainService
 import org.yapp.domain.userbook.vo.UserBookInfoVO
-import java.util.*
+import java.util.UUID
+
 
 @Service
 class UserBookService(
@@ -30,4 +32,15 @@ class UserBookService(
             UserBookResponse.from(userBook)
         }
     }
+
+    fun findAllByUserIdAndBookIsbnIn(userBooksByIsbnsRequest: UserBooksByIsbnsRequest): List<UserBookResponse> {
+        return userBookDomainService
+            .findAllByUserIdAndBookIsbnIn(
+                userBooksByIsbnsRequest.validUserId(),
+                userBooksByIsbnsRequest.validIsbns(),
+            )
+            .map { UserBookResponse.from(it) }
+    }
+
 }
+

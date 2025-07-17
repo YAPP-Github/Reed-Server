@@ -2,6 +2,7 @@ package org.yapp.apis.book.usecase
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
+import org.yapp.apis.auth.dto.request.UserBooksByIsbnsRequest
 import org.yapp.apis.auth.service.UserAuthService
 import org.yapp.apis.book.dto.request.BookCreateRequest
 import org.yapp.apis.book.dto.request.BookDetailRequest
@@ -29,8 +30,20 @@ class BookUseCase(
     private val userBookService: UserBookService,
     private val bookManagementService: BookManagementService
 ) {
-    fun searchBooks(request: BookSearchRequest): BookSearchResponse {
-        return bookQueryService.searchBooks(request)
+    fun searchBooks(request: BookSearchRequest, userId: UUID): BookSearchResponse {
+        userAuthService.validateUserExists(userId)
+
+        val searchResponse = bookQueryService.searchBooks(request)
+        val isbns = searchResponse.books.map { it.isbn }
+
+        val userBooksReponse = userBookService.findAllByUserIdAndBookIsbnIn(UserBooksByIsbnsRequest.of(userId, isbns))
+        val statusMap = userBooksReponse.associateBy({ it.bookIsbn }, { it.status })
+        searchResponse.books.forEach { bookSummary ->
+            statusMap[bookSummary.isbn]?.let { status ->
+                bookSummary.updateStatus(status)
+            }
+        }
+        return searchResponse
     }
 
     fun getBookDetail(bookDetailRequest: BookDetailRequest): BookDetailResponse {

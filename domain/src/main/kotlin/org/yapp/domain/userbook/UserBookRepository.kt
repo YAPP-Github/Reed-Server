@@ -10,4 +10,7 @@ interface UserBookRepository {
     fun save(userBook: UserBook): UserBook
 
     fun findAllByUserId(userId: UUID): List<UserBook>
+
+    fun findAllByUserIdAndBookIsbnIn(userId: UUID, bookIsbns: List<String>): List<UserBook>
+
 }

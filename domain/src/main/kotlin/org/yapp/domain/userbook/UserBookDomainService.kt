@@ -36,4 +36,12 @@ class UserBookDomainService(
         return userBookRepository.findAllByUserId(userId)
             .map(UserBookInfoVO::newInstance)
     }
+
+    fun findAllByUserIdAndBookIsbnIn(userId: UUID, isbns: List<String>): List<UserBookInfoVO> {
+        if (isbns.isEmpty()) {
+            return emptyList()
+        }
+        return userBookRepository.findAllByUserIdAndBookIsbnIn(userId, isbns)
+            .map { UserBookInfoVO.newInstance(it) }
+    }
 }
