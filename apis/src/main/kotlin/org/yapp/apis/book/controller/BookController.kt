@@ -25,13 +25,17 @@ class BookController(
 ) : BookControllerApi {
 
     @GetMapping("/search")
-    override fun searchBooks(@Valid @ModelAttribute request: BookSearchRequest): ResponseEntity<BookSearchResponse> {
-        val response = bookUseCase.searchBooks(request)
+    override fun searchBooks(
+        @AuthenticationPrincipal userId: UUID,
+        @Valid @ModelAttribute request: BookSearchRequest
+    ): ResponseEntity<BookSearchResponse> {
+        val response = bookUseCase.searchBooks(request, userId)
         return ResponseEntity.ok(response)
     }
 
     @GetMapping("/detail")
     override fun getBookDetail(
+        @AuthenticationPrincipal userId: UUID,
         @Valid @ModelAttribute request: BookDetailRequest
     ): ResponseEntity<BookDetailResponse> {
         val response = bookUseCase.getBookDetail(request)

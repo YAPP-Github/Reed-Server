@@ -73,7 +73,10 @@ interface BookControllerApi {
         ]
     )
     @GetMapping("/detail")
-    fun getBookDetail(@Valid @Parameter(description = "도서 상세 조회 요청 객체") request: BookDetailRequest): ResponseEntity<BookDetailResponse>
+    fun getBookDetail(
+        @AuthenticationPrincipal userId: UUID,
+        @Valid @Parameter(description = "도서 상세 조회 요청 객체") request: BookDetailRequest
+    ): ResponseEntity<BookDetailResponse>
 
     @Operation(summary = "서재에 책 등록 또는 상태 업데이트 (Upsert)", description = "사용자의 서재에 책을 등록하거나, 이미 등록된 책의 상태를 업데이트합니다.")
     @ApiResponses(
