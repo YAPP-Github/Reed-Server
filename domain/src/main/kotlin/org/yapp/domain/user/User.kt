@@ -2,6 +2,7 @@ package org.yapp.domain.user
 
 import org.yapp.globalutils.auth.Role
 import org.yapp.globalutils.util.UuidGenerator
+import org.yapp.globalutils.validator.EmailValidator
 import java.time.LocalDateTime
 import java.util.*
 
@@ -130,9 +131,8 @@ data class User private constructor(
     @JvmInline
     value class Email(val value: String) {
         companion object {
-            private val EMAIL_REGEX = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$".toRegex()
             fun newInstance(value: String): Email {
-                require(value.matches(EMAIL_REGEX)) { "올바른 이메일 형식이 아닙니다." }
+                require(EmailValidator.isValidEmail(value)) { "This is not a valid email format." }
                 return Email(value)
             }
         }

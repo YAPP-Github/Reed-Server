@@ -1,6 +1,7 @@
 package org.yapp.domain.userbook
 
 import org.yapp.globalutils.util.UuidGenerator
+import org.yapp.globalutils.validator.IsbnValidator
 import java.time.LocalDateTime
 import java.util.*
 
@@ -93,7 +94,7 @@ data class UserBook private constructor(
     value class BookIsbn(val value: String) {
         companion object {
             fun newInstance(value: String): BookIsbn {
-                require(value.matches(Regex("^(\\d{10}|\\d{13})$"))) { "ISBN은 10자리 또는 13자리 숫자여야 합니다." }
+                require(IsbnValidator.isValidIsbn(value)) { "ISBN must be a 10 or 13-digit number." }
                 return BookIsbn(value)
             }
         }

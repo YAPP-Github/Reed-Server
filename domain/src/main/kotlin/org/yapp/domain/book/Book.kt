@@ -1,6 +1,7 @@
 package org.yapp.domain.book
 
-import java.time.LocalDateTime // Import LocalDateTime
+import org.yapp.globalutils.validator.IsbnValidator
+import java.time.LocalDateTime
 
 /**
  * Represents a book in the domain model.
@@ -73,7 +74,7 @@ data class Book private constructor(
     value class Isbn(val value: String) {
         companion object {
             fun newInstance(value: String): Isbn {
-                require(value.matches(Regex("^(\\d{10}|\\d{13})$"))) { "ISBN은 10자리 또는 13자리 숫자여야 합니다." }
+                require(IsbnValidator.isValidIsbn(value)) { "ISBN must be a 10 or 13-digit number." }
                 return Isbn(value)
             }
         }
