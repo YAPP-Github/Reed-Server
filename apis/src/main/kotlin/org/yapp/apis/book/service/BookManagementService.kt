@@ -10,10 +10,16 @@ class BookManagementService(
     private val bookDomainService: BookDomainService
 ) {
     fun findOrCreateBook(request: BookCreateRequest): BookCreateResponse {
-        val isbn = request.validIsbn()
-
-        val bookVO = bookDomainService.findByIsbn(isbn)
-        return BookCreateResponse.from(bookVO)
+        val bookInfoVO = bookDomainService.findOrCreate(
+            request.validIsbn(),
+            request.validTitle(),
+            request.validAuthor(),
+            request.validAuthor(),
+            request.coverImageUrl,
+            request.publicationYear,
+            request.description
+        )
+        return BookCreateResponse.from(bookInfoVO)
     }
 
 }

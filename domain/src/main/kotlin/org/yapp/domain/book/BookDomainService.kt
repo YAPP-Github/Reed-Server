@@ -15,6 +15,36 @@ class BookDomainService(
         return BookInfoVO.newInstance(book)
     }
 
+    fun findOrCreate(
+        isbn: String,
+        title: String,
+        author: String,
+        publisher: String,
+        coverImageUrl: String,
+        publicationYear: Int? = null,
+        description: String? = null
+    ): BookInfoVO {
+        return findByIsbnOrNull(isbn) ?: run {
+            val newBook = Book.create(
+                isbn = isbn,
+                title = title,
+                author = author,
+                publisher = publisher,
+                coverImageUrl = coverImageUrl,
+                publicationYear = publicationYear,
+                description = description
+            )
+            val savedBook = bookRepository.save(newBook)
+            BookInfoVO.newInstance(savedBook)
+        }
+    }
+
+    private fun findByIsbnOrNull(isbn: String): BookInfoVO? {
+        val book = bookRepository.findById(isbn)
+        return book?.let { BookInfoVO.newInstance(it) }
+    }
+
+
     fun save(
         isbn: String,
         title: String,
