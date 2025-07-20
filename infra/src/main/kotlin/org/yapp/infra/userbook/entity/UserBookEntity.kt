@@ -3,7 +3,7 @@ package org.yapp.infra.userbook.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
-import org.yapp.domain.common.BaseTimeEntity
+import org.yapp.infra.common.BaseTimeEntity
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
 import java.sql.Types
@@ -78,11 +78,7 @@ class UserBookEntity(
                 title = userBook.title,
                 author = userBook.author,
                 status = userBook.status,
-            ).apply {
-                this.createdAt = userBook.createdAt
-                this.updatedAt = userBook.updatedAt
-                this.deletedAt = userBook.deletedAt
-            }
+            )
         }
     }
 

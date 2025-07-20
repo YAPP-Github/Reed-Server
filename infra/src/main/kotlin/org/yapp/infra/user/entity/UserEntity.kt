@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
-import org.yapp.domain.common.BaseTimeEntity
+import org.yapp.infra.common.BaseTimeEntity
 import org.yapp.domain.user.ProviderType
 import org.yapp.domain.user.User
 import org.yapp.globalutils.auth.Role
@@ -73,11 +73,7 @@ class UserEntity private constructor(
             providerType = user.providerType,
             providerId = user.providerId.value,
             role = user.role
-        ).apply {
-            this.createdAt = user.createdAt
-            this.updatedAt = user.updatedAt
-            this.deletedAt = user.deletedAt
-        }
+        )
     }
 
     override fun equals(other: Any?): Boolean {

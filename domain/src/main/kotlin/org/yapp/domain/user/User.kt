@@ -28,16 +28,15 @@ data class User private constructor(
     val providerType: ProviderType,
     val providerId: ProviderId,
     val role: Role,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val createdAt: LocalDateTime? = null,
+    val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null
 ) {
 
     fun restore(): User {
         require(this.isDeleted()) { "User is already active" }
         return this.copy(
-            deletedAt = null,
-            updatedAt = LocalDateTime.now()
+            deletedAt = null
         )
     }
 
@@ -47,10 +46,7 @@ data class User private constructor(
             nickname: String,
             profileImageUrl: String?,
             providerType: ProviderType,
-            providerId: String,
-            createdAt: LocalDateTime,
-            updatedAt: LocalDateTime,
-            deletedAt: LocalDateTime? = null
+            providerId: String
         ): User {
             return User(
                 id = Id.newInstance(UuidGenerator.create()),
@@ -59,10 +55,7 @@ data class User private constructor(
                 profileImageUrl = profileImageUrl,
                 providerType = providerType,
                 providerId = ProviderId.newInstance(providerId),
-                role = Role.USER,
-                createdAt = createdAt,
-                updatedAt = updatedAt,
-                deletedAt = deletedAt
+                role = Role.USER
             )
         }
 
@@ -73,10 +66,7 @@ data class User private constructor(
             profileImageUrl: String?,
             providerType: ProviderType,
             providerId: String,
-            role: Role,
-            createdAt: LocalDateTime,
-            updatedAt: LocalDateTime,
-            deletedAt: LocalDateTime? = null
+            role: Role
         ): User {
             return User(
                 id = Id.newInstance(UuidGenerator.create()),
@@ -85,10 +75,7 @@ data class User private constructor(
                 profileImageUrl = profileImageUrl,
                 providerType = providerType,
                 providerId = ProviderId.newInstance(providerId),
-                role = role,
-                createdAt = createdAt,
-                updatedAt = updatedAt,
-                deletedAt = deletedAt
+                role = role
             )
         }
 
@@ -100,8 +87,8 @@ data class User private constructor(
             providerType: ProviderType,
             providerId: ProviderId,
             role: Role,
-            createdAt: LocalDateTime,
-            updatedAt: LocalDateTime,
+            createdAt: LocalDateTime? = null,
+            updatedAt: LocalDateTime? = null,
             deletedAt: LocalDateTime? = null
         ): User {
             return User(

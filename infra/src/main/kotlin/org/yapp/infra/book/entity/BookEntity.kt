@@ -7,7 +7,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
 import org.yapp.domain.book.Book
-import org.yapp.domain.common.BaseTimeEntity
+import org.yapp.infra.common.BaseTimeEntity
 import java.sql.Types
 
 @Entity
@@ -74,11 +74,7 @@ class BookEntity private constructor(
             publicationYear = book.publicationYear,
             coverImageUrl = book.coverImageUrl,
             description = book.description
-        ).apply {
-            this.createdAt = book.createdAt
-            this.updatedAt = book.updatedAt
-            this.deletedAt = book.deletedAt
-        }
+        )
     }
 
     override fun equals(other: Any?): Boolean {

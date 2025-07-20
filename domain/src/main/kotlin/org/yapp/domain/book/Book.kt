@@ -14,8 +14,8 @@ data class Book private constructor(
     val publicationYear: Int?,
     val coverImageUrl: String,
     val description: String?,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val createdAt: LocalDateTime? = null,
+    val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null
 ) {
     companion object {
@@ -28,7 +28,6 @@ data class Book private constructor(
             publicationYear: Int? = null,
             description: String? = null
         ): Book {
-            val now = LocalDateTime.now()
             return Book(
                 isbn = Isbn.newInstance(isbn),
                 title = title,
@@ -37,9 +36,6 @@ data class Book private constructor(
                 publicationYear = publicationYear,
                 coverImageUrl = coverImageUrl,
                 description = description,
-                createdAt = now,
-                updatedAt = now,
-                deletedAt = null
             )
         }
 
@@ -51,8 +47,8 @@ data class Book private constructor(
             publicationYear: Int?,
             coverImageUrl: String,
             description: String?,
-            createdAt: LocalDateTime,
-            updatedAt: LocalDateTime,
+            createdAt: LocalDateTime? = null,
+            updatedAt: LocalDateTime? = null,
             deletedAt: LocalDateTime? = null
         ): Book {
             return Book(
