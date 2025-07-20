@@ -1,6 +1,10 @@
 package org.yapp.apis.book.controller
 
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
@@ -8,14 +12,17 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
 import org.yapp.apis.book.dto.request.UserBookRegisterRequest
 import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.apis.book.dto.response.BookSearchResponse
+import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.usecase.BookUseCase
+import org.yapp.domain.userbook.BookStatus
 import java.util.UUID
 
 @RestController
@@ -53,10 +60,14 @@ class BookController(
 
     @GetMapping("/my-library")
     override fun getUserLibraryBooks(
-        @AuthenticationPrincipal userId: UUID
-    ): ResponseEntity<List<UserBookResponse>> {
-
-        val response = bookUseCase.getUserLibraryBooks(userId)
+        @AuthenticationPrincipal userId: UUID,
+        @RequestParam(required = false) status: BookStatus?,
+        @RequestParam(required = false) sort: String?,
+        @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
+        pageable: Pageable
+    ): ResponseEntity<UserBookPageResponse> {
+        val response = bookUseCase.getUserLibraryBooks(userId, status, sort, pageable)
         return ResponseEntity.ok(response)
     }
+
 }
