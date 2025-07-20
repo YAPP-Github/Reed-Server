@@ -8,7 +8,8 @@ object Dependencies {
         const val BOOT_STARTER_ACTUATOR = "org.springframework.boot:spring-boot-starter-actuator"
         const val BOOT_STARTER_TEST = "org.springframework.boot:spring-boot-starter-test"
         const val BOOT_STARTER_DATA_REDIS = "org.springframework.boot:spring-boot-starter-data-redis"
-        const val BOOT_STARTER_OAUTH2_RESOURCE_SERVER = "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+        const val BOOT_STARTER_OAUTH2_RESOURCE_SERVER =
+            "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
         const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect"
     }
 
@@ -50,5 +51,10 @@ object Dependencies {
 
     object Flyway {
         const val MYSQL = "org.flywaydb:flyway-mysql"
+    }
+
+    object QueryDsl {
+        const val JPA = "com.querydsl:querydsl-jpa:5.0.0:jakarta"
+        const val APT = "com.querydsl:querydsl-apt:5.0.0:jakarta"
     }
 }
