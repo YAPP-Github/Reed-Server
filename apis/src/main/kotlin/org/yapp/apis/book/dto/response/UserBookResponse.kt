@@ -2,6 +2,7 @@ package org.yapp.apis.book.dto.response
 
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.vo.UserBookInfoVO
+import org.yapp.globalutils.validator.BookDataValidator
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
@@ -26,10 +27,10 @@ data class UserBookResponse private constructor(
                 userId = userBook.userId.value,
                 bookIsbn = userBook.bookIsbn.value,
                 bookTitle = userBook.title,
-                bookAuthor = userBook.author,
+                bookAuthor = BookDataValidator.removeParenthesesFromAuthor(userBook.author),
                 status = userBook.status,
                 coverImageUrl = userBook.coverImageUrl,
-                publisher = userBook.publisher,
+                publisher = BookDataValidator.removeParenthesesFromPublisher(userBook.publisher),
                 createdAt = userBook.createdAt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 updatedAt = userBook.updatedAt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
             )
