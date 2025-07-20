@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.yapp.infra.userbook.entity.UserBookEntity
 import java.util.*
 
-interface JpaUserBookRepository : JpaRepository<UserBookEntity, UUID> {
+interface JpaUserBookRepository : JpaRepository<UserBookEntity, UUID>, JpaUserBookQuerydslRepository {
     fun findByUserIdAndBookIsbn(userId: UUID, bookIsbn: String): UserBookEntity?
     fun findAllByUserId(userId: UUID): List<UserBookEntity>
     fun findAllByUserIdAndBookIsbnIn(userId: UUID, bookIsbnList: List<String>): List<UserBookEntity>
