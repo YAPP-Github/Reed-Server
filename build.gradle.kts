@@ -76,11 +76,8 @@ subprojects {
 }
 
 // QueryDSL 설정
-val querydslDir = "$buildDir/generated/querydsl"
+val querydslDir = "${layout.buildDirectory.get()}/generated/querydsl"
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = Versions.JAVA_VERSION
-}
 
 sourceSets {
     main {
