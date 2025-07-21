@@ -58,16 +58,12 @@ class UserBookDomainService(
             .map { UserBookInfoVO.newInstance(it) }
     }
 
-
     fun getUserBookStatusCounts(userId: UUID): UserBookStatusCountsVO {
-        val statusCounts = mapOf(
-            BookStatus.BEFORE_READING to countUserBooksByStatus(userId, BookStatus.BEFORE_READING),
-            BookStatus.READING to countUserBooksByStatus(userId, BookStatus.READING),
-            BookStatus.COMPLETED to countUserBooksByStatus(userId, BookStatus.COMPLETED)
-        )
+        val statusCounts = BookStatus.entries.associateWith { status ->
+            countUserBooksByStatus(userId, status)
+        }
         return UserBookStatusCountsVO.newInstance(statusCounts)
     }
-
 
     private fun countUserBooksByStatus(userId: UUID, status: BookStatus): Long {
         return userBookRepository.countUserBooksByStatus(userId, status)

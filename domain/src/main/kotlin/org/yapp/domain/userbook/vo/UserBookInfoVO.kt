@@ -39,8 +39,8 @@ data class UserBookInfoVO private constructor(
                 title = userBook.title,
                 author = userBook.author,
                 status = userBook.status,
-                createdAt = userBook.createdAt!!,
-                updatedAt = userBook.updatedAt!!
+                createdAt = userBook.createdAt ?: throw IllegalStateException("createdAt은 null일 수 없습니다."),
+                updatedAt = userBook.updatedAt ?: throw IllegalStateException("updatedAt은 null일 수 없습니다.")
             )
         }
     }
