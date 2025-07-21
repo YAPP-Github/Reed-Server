@@ -25,25 +25,20 @@ class JpaUserBookQuerydslRepositoryImpl(
         sort: String?,
         pageable: Pageable
     ): Page<UserBookEntity> {
-        val query = queryFactory
+        val baseQuery = queryFactory
             .selectFrom(userBook)
             .where(
                 userBook.userId.eq(userId),
                 statusEq(status)
             )
-            .orderBy(*createOrderSpecifier(sort))
+
+        val results = baseQuery
+            .orderBy(createOrderSpecifier(sort)) // 가변 인자 제거
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
+            .fetch()
 
-        val results = query.fetch()
-        val total = queryFactory
-            .select(userBook.count())
-            .from(userBook)
-            .where(
-                userBook.userId.eq(userId),
-                statusEq(status)
-            )
-            .fetchOne() ?: 0L
+        val total = baseQuery.fetchCount()
 
         return PageImpl(results, pageable, total)
     }
@@ -66,13 +61,13 @@ class JpaUserBookQuerydslRepositoryImpl(
         return status?.let { userBook.status.eq(it) }
     }
 
-    private fun createOrderSpecifier(sort: String?): Array<OrderSpecifier<*>> {
+    private fun createOrderSpecifier(sort: String?): OrderSpecifier<*> {
         return when (sort) {
-            "title_asc" -> arrayOf(OrderSpecifier(Order.ASC, userBook.title))
-            "title_desc" -> arrayOf(OrderSpecifier(Order.DESC, userBook.title))
-            "date_asc" -> arrayOf(OrderSpecifier(Order.ASC, userBook.createdAt))
-            "date_desc" -> arrayOf(OrderSpecifier(Order.DESC, userBook.createdAt))
-            else -> arrayOf(OrderSpecifier(Order.DESC, userBook.createdAt)) // 기본 정렬
+            "title_asc" -> userBook.title.asc()
+            "title_desc" -> userBook.title.desc()
+            "date_asc" -> userBook.createdAt.asc()
+            "date_desc" -> userBook.createdAt.desc()
+            else -> userBook.createdAt.desc()
         }
     }
 }
