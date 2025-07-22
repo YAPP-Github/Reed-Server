@@ -1,18 +1,19 @@
 package org.yapp.infra.userbook.repository.impl
 
-import com.querydsl.core.types.Order
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.stereotype.Repository
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.infra.userbook.entity.QUserBookEntity
 import org.yapp.infra.userbook.entity.UserBookEntity
 import org.yapp.infra.userbook.repository.JpaUserBookQuerydslRepository
-import java.util.UUID
+import java.util.*
 
+@Repository
 class JpaUserBookQuerydslRepositoryImpl(
     private val queryFactory: JPAQueryFactory
 ) : JpaUserBookQuerydslRepository {

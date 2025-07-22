@@ -12,7 +12,6 @@ import org.springframework.web.client.RestClient
 import org.yapp.infra.InfraBaseConfig
 
 @Configuration
-
 class RestClientConfig : InfraBaseConfig {
 
     @Bean
