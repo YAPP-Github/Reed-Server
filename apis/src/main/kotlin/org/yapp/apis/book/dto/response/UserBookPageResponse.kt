@@ -19,7 +19,7 @@ data class UserBookPageResponse private constructor(
     val completedCount: Long
 ) {
     companion object {
-        fun from(
+        fun of(
             books: Page<UserBookResponse>,
             beforeReadingCount: Long,
             readingCount: Long,
