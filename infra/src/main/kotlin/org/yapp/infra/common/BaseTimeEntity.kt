@@ -1,4 +1,4 @@
-package org.yapp.domain.common
+package org.yapp.infra.common
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners

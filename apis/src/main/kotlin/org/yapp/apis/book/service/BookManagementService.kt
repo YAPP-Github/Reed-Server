@@ -14,7 +14,7 @@ class BookManagementService(
             request.validIsbn(),
             request.validTitle(),
             request.validAuthor(),
-            request.validAuthor(),
+            request.validPublisher(),
             request.coverImageUrl,
             request.publicationYear,
             request.description

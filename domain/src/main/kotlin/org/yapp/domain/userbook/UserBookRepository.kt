@@ -1,5 +1,7 @@
 package org.yapp.domain.userbook
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import java.util.UUID
 
 
@@ -12,5 +14,14 @@ interface UserBookRepository {
     fun findAllByUserId(userId: UUID): List<UserBook>
 
     fun findAllByUserIdAndBookIsbnIn(userId: UUID, bookIsbns: List<String>): List<UserBook>
+
+    fun findUserBooksByDynamicCondition(
+        userId: UUID,
+        status: BookStatus?,
+        sort: String?,
+        pageable: Pageable
+    ): Page<UserBook>
+
+    fun countUserBooksByStatus(userId: UUID, status: BookStatus): Long
 
 }

@@ -28,7 +28,10 @@ class UserDomainService(
             ?.let { UserIdentityVO.newInstance(it) }
     }
 
-    fun findUserByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): UserIdentityVO? {
+    fun findUserByProviderTypeAndProviderIdIncludingDeleted(
+        providerType: ProviderType,
+        providerId: String
+    ): UserIdentityVO? {
         return userRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType, providerId)
             ?.let { UserIdentityVO.newInstance(it) }
     }
@@ -48,15 +51,12 @@ class UserDomainService(
         providerType: ProviderType,
         providerId: String
     ): UserIdentityVO {
-        val now = timeProvider.now()
         val user = User.create(
             email = email,
             nickname = nickname,
             profileImageUrl = profileImageUrl,
             providerType = providerType,
-            providerId = providerId,
-            createdAt = now,
-            updatedAt = now
+            providerId = providerId
         )
         val savedUser = userRepository.save(user)
         return UserIdentityVO.newInstance(savedUser)

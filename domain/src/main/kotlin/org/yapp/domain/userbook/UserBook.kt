@@ -14,12 +14,12 @@ data class UserBook private constructor(
     val title: String,
     val author: String,
     val status: BookStatus,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
+    val createdAt: LocalDateTime? = null,
+    val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
     fun updateStatus(newStatus: BookStatus): UserBook {
-        return this.copy(status = newStatus, updatedAt = LocalDateTime.now())
+        return this.copy(status = newStatus)
     }
 
     companion object {
@@ -30,9 +30,8 @@ data class UserBook private constructor(
             publisher: String,
             title: String,
             author: String,
-            initialStatus: BookStatus = BookStatus.BEFORE_READING
+            status: BookStatus
         ): UserBook {
-            val now = LocalDateTime.now()
             return UserBook(
                 id = Id.newInstance(UuidGenerator.create()),
                 userId = UserId.newInstance(userId),
@@ -41,9 +40,7 @@ data class UserBook private constructor(
                 publisher = publisher,
                 title = title,
                 author = author,
-                status = initialStatus,
-                createdAt = now,
-                updatedAt = now
+                status = status,
             )
         }
 
@@ -56,9 +53,9 @@ data class UserBook private constructor(
             title: String,
             author: String,
             status: BookStatus,
-            createdAt: LocalDateTime,
-            updatedAt: LocalDateTime,
-            deletedAt: LocalDateTime?
+            createdAt: LocalDateTime? = null,
+            updatedAt: LocalDateTime? = null,
+            deletedAt: LocalDateTime? = null
         ): UserBook {
             return UserBook(
                 id = id,

@@ -75,6 +75,26 @@ subprojects {
     }
 }
 
+// QueryDSL 설정
+val querydslDir = "${layout.buildDirectory.get()}/generated/querydsl"
+
+
+sourceSets {
+    main {
+        kotlin {
+            srcDir(querydslDir)
+        }
+    }
+}
+
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs>().configureEach {
+    doFirst {
+        delete(querydslDir)
+    }
+}
+
+
 // 루트 프로젝트에서 모든 JaCoCo 설정 관리
 configure(subprojects) {
     jacoco {
