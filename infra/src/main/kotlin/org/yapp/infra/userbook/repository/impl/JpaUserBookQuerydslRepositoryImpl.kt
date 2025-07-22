@@ -33,12 +33,19 @@ class JpaUserBookQuerydslRepositoryImpl(
             )
 
         val results = baseQuery
-            .orderBy(createOrderSpecifier(sort)) // 가변 인자 제거
+            .orderBy(createOrderSpecifier(sort))
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch()
 
-        val total = baseQuery.fetchCount()
+        val total = queryFactory
+                    .select(userBook.count())
+                    .from(userBook)
+                    .where(
+                                userBook.userId.eq(userId),
+                        statusEq(status)
+                    )
+                    .fetchOne() ?: 0L
 
         return PageImpl(results, pageable, total)
     }
