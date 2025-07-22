@@ -21,7 +21,8 @@ class UserBookRepositoryImpl(
     }
 
     override fun save(userBook: UserBook): UserBook {
-        return jpaUserBookRepository.save(UserBookEntity.fromDomain(userBook)).toDomain()
+        val savedEntity = jpaUserBookRepository.save(UserBookEntity.fromDomain(userBook))
+        return savedEntity.toDomain()
     }
 
     override fun findAllByUserId(userId: UUID): List<UserBook> {
