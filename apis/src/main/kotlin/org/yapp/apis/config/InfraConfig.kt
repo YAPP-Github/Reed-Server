@@ -11,7 +11,8 @@ import org.yapp.infra.InfraBaseConfigGroup
         InfraBaseConfigGroup.ASYNC,
         InfraBaseConfigGroup.REDIS,
         InfraBaseConfigGroup.REST_CLIENT,
-        InfraBaseConfigGroup.QUERY_DSL
+        InfraBaseConfigGroup.QUERY_DSL,
+        InfraBaseConfigGroup.PAGE,
     ]
 )
 class InfraConfig
