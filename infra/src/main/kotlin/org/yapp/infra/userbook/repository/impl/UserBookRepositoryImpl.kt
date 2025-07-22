@@ -21,7 +21,7 @@ class UserBookRepositoryImpl(
     }
 
     override fun save(userBook: UserBook): UserBook {
-        val savedEntity = jpaUserBookRepository.save(UserBookEntity.fromDomain(userBook))
+        val savedEntity = jpaUserBookRepository.saveAndFlush(UserBookEntity.fromDomain(userBook))
         return savedEntity.toDomain()
     }
 

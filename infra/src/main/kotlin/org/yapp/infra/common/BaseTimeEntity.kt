@@ -15,10 +15,12 @@ abstract class BaseTimeEntity {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     lateinit var createdAt: LocalDateTime
+        protected set
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     lateinit var updatedAt: LocalDateTime
+        protected set
 
     @Column(name = "deleted_at")
     var deletedAt: LocalDateTime? = null

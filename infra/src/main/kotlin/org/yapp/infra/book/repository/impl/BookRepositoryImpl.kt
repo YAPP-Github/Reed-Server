@@ -20,8 +20,7 @@ class BookRepositoryImpl(
     }
 
     override fun save(book: Book): Book {
-        val bookEntity = BookEntity.fromDomain(book)
-        val savedEntity = jpaBookRepository.save(bookEntity)
+        val savedEntity = jpaBookRepository.saveAndFlush(BookEntity.fromDomain(book))
         return savedEntity.toDomain()
     }
 }
