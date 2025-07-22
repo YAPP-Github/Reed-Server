@@ -122,7 +122,7 @@ interface BookControllerApi {
             ApiResponse(
                 responseCode = "200",
                 description = "서재 조회 성공",
-                content = [Content(schema = Schema(implementation = UserBookResponse::class))]
+                content = [Content(schema = Schema(implementation = UserBookPageResponse::class))]
             ),
             ApiResponse(
                 responseCode = "400",
