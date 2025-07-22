@@ -11,8 +11,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
+import org.yapp.apis.auth.dto.request.TermsAgreementRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
@@ -105,4 +107,25 @@ interface AuthControllerApi {
     )
     @GetMapping("/me")
     fun getUserProfile(@AuthenticationPrincipal userId: UUID): ResponseEntity<UserProfileResponse>
+
+    @Operation(summary = "Update terms agreement", description = "Updates the user's terms agreement status")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Terms agreement status updated successfully",
+                content = [Content(schema = Schema(implementation = UserProfileResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "User not found",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @PutMapping("/terms-agreement")
+    fun updateTermsAgreement(
+        @AuthenticationPrincipal userId: UUID,
+        @Valid @RequestBody request: TermsAgreementRequest
+    ): ResponseEntity<UserProfileResponse>
 }

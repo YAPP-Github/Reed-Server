@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
+import org.yapp.apis.auth.dto.request.TermsAgreementRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
@@ -41,6 +42,15 @@ class AuthController(
     @GetMapping("/me")
     override fun getUserProfile(@AuthenticationPrincipal userId: UUID): ResponseEntity<UserProfileResponse> {
         val userProfile = authUseCase.getUserProfile(userId)
+        return ResponseEntity.ok(userProfile)
+    }
+
+    @PutMapping("/terms-agreement")
+    override fun updateTermsAgreement(
+        @AuthenticationPrincipal userId: UUID,
+        @Valid @RequestBody request: TermsAgreementRequest
+    ): ResponseEntity<UserProfileResponse> {
+        val userProfile = authUseCase.updateTermsAgreement(userId, request.validTermsAgreed())
         return ResponseEntity.ok(userProfile)
     }
 }
