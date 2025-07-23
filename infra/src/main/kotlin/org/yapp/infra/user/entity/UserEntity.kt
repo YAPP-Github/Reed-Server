@@ -35,7 +35,9 @@ class UserEntity private constructor(
     @Column(name = "provider_id", nullable = false, length = 100)
     val providerId: String,
 
-    role: Role
+    role: Role,
+
+    termsAgreed: Boolean = false
 ) : BaseTimeEntity() {
 
     @Column(nullable = false, length = 100)
@@ -51,6 +53,10 @@ class UserEntity private constructor(
     var role: Role = role
         protected set
 
+    @Column(name = "terms_agreed", nullable = false)
+    var termsAgreed: Boolean = termsAgreed
+        protected set
+
     fun toDomain(): User = User.reconstruct(
         id = User.Id.newInstance(this.id),
         email = User.Email.newInstance(this.email),
@@ -59,6 +65,7 @@ class UserEntity private constructor(
         providerType = providerType,
         providerId = User.ProviderId.newInstance(this.providerId),
         role = role,
+        termsAgreed = termsAgreed,
         createdAt = createdAt,
         updatedAt = updatedAt,
         deletedAt = deletedAt
@@ -72,7 +79,8 @@ class UserEntity private constructor(
             profileImageUrl = user.profileImageUrl,
             providerType = user.providerType,
             providerId = user.providerId.value,
-            role = user.role
+            role = user.role,
+            termsAgreed = user.termsAgreed
         )
     }
 
