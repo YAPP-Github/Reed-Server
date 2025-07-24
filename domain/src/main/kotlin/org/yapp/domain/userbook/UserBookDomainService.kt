@@ -35,11 +35,6 @@ class UserBookDomainService(
         return UserBookInfoVO.newInstance(savedUserBook)
     }
 
-    fun findAllUserBooks(userId: UUID): List<UserBookInfoVO> {
-        return userBookRepository.findAllByUserId(userId)
-            .map(UserBookInfoVO::newInstance)
-    }
-
     fun findUserBooksByDynamicCondition(
         userId: UUID,
         status: BookStatus?,
@@ -67,5 +62,9 @@ class UserBookDomainService(
 
     private fun countUserBooksByStatus(userId: UUID, status: BookStatus): Long {
         return userBookRepository.countUserBooksByStatus(userId, status)
+    }
+
+    fun findByIdAndUserId(userBookId: UUID, userId: UUID): UserBook? {
+        return userBookRepository.findByIdAndUserId(userBookId, userId)
     }
 }
