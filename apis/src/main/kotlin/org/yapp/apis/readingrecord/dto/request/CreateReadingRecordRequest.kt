@@ -1,0 +1,51 @@
+package org.yapp.apis.readingrecord.dto.request
+
+import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
+
+
+@Schema(description = "독서 기록 생성 요청")
+data class CreateReadingRecordRequest private constructor(
+    @field:Min(1, message = "페이지 번호는 1 이상이어야 합니다.")
+    @field:Max(9999, message = "페이지 번호는 9999 이하여야 합니다.")
+    @Schema(description = "현재 읽은 페이지 번호", example = "42", required = true)
+    val pageNumber: Int? = null,
+
+    @field:NotBlank(message = "기억에 남는 문장은 필수입니다.")
+    @field:Size(max = 1000, message = "기억에 남는 문장은 1000자를 초과할 수 없습니다.")
+    @Schema(description = "기억에 남는 문장", example = "이것은 기억에 남는 문장입니다.", required = true)
+    val quote: String? = null,
+
+    @field:NotBlank(message = "감상평은 필수입니다.")
+    @field:Size(max = 1000, message = "감상평은 1000자를 초과할 수 없습니다.")
+    @Schema(description = "감상평", example = "이 책은 매우 인상적이었습니다.", required = true)
+    val review: String? = null,
+
+    @field:Size(max = 3, message = "감정 태그는 최대 3개까지 가능합니다.")
+    @Schema(description = "감정 태그 목록 (최대 3개)", example = "[\"감동적\", \"슬픔\", \"희망\"]", required = true)
+    val emotionTags: List<@Size(max = 10, message = "감정 태그는 10자를 초과할 수 없습니다.") String>? = null
+) {
+    fun validPageNumber(): Int = pageNumber!!
+    fun validQuote(): String = quote!!
+    fun validReview(): String = review!!
+    fun validEmotionTags(): List<String> = emotionTags!!
+
+    companion object {
+        fun of(
+            pageNumber: Int,
+            quote: String,
+            review: String,
+            emotionTags: List<String>
+        ): CreateReadingRecordRequest {
+            return CreateReadingRecordRequest(
+                pageNumber = pageNumber,
+                quote = quote,
+                review = review,
+                emotionTags = emotionTags
+            )
+        }
+    }
+}
