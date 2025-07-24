@@ -17,7 +17,10 @@ class UserBookRepositoryImpl(
 
     override fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook? {
         return jpaUserBookRepository.findByUserIdAndBookIsbn(userId, isbn)?.toDomain()
+    }
 
+    override fun findByIdAndUserId(id: UUID, userId: UUID): UserBook? {
+        return jpaUserBookRepository.findByIdAndUserId(id, userId)?.toDomain()
     }
 
     override fun save(userBook: UserBook): UserBook {
