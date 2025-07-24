@@ -7,10 +7,11 @@ import org.yapp.apis.auth.dto.request.UserBooksByIsbnsRequest
 import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.dto.request.UpsertUserBookRequest
+import org.yapp.apis.book.exception.UserBookErrorCode
+import org.yapp.apis.book.exception.UserBookNotFoundException
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.domain.userbook.UserBook
 import org.yapp.domain.userbook.UserBookDomainService
-import org.yapp.domain.userbook.vo.UserBookInfoVO
-import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
 import java.util.UUID
 
 
@@ -18,33 +19,34 @@ import java.util.UUID
 class UserBookService(
     private val userBookDomainService: UserBookDomainService
 ) {
-    fun upsertUserBook(upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse =
-        UserBookResponse.from(
-            userBookDomainService.upsertUserBook(
-                upsertUserBookRequest.userId,
-                upsertUserBookRequest.bookIsbn,
-                upsertUserBookRequest.bookTitle,
-                upsertUserBookRequest.bookAuthor,
-                upsertUserBookRequest.bookPublisher,
-                upsertUserBookRequest.bookCoverImageUrl,
-                upsertUserBookRequest.status
-            )
+    fun upsertUserBook(upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse {
+        val userBookInfoVO = userBookDomainService.upsertUserBook(
+            upsertUserBookRequest.userId,
+            upsertUserBookRequest.bookIsbn,
+            upsertUserBookRequest.bookTitle,
+            upsertUserBookRequest.bookAuthor,
+            upsertUserBookRequest.bookPublisher,
+            upsertUserBookRequest.bookCoverImageUrl,
+            upsertUserBookRequest.status
         )
-
-    fun findAllUserBooks(userId: UUID): List<UserBookResponse> {
-        val userBooks: List<UserBookInfoVO> = userBookDomainService.findAllUserBooks(userId)
-        return userBooks.map { userBook: UserBookInfoVO ->
-            UserBookResponse.from(userBook)
-        }
+        return UserBookResponse.from(userBookInfoVO)
     }
 
-    fun findAllByUserIdAndBookIsbnIn(userBooksByIsbnsRequest: UserBooksByIsbnsRequest): List<UserBookResponse> {
-        return userBookDomainService
-            .findAllByUserIdAndBookIsbnIn(
-                userBooksByIsbnsRequest.validUserId(),
-                userBooksByIsbnsRequest.validIsbns(),
+    fun validateUserBookExists(userId: UUID, userBookId: UUID): UserBook {
+        return userBookDomainService.findByIdAndUserId(userBookId, userId)
+            ?: throw UserBookNotFoundException(
+                UserBookErrorCode.USER_BOOK_NOT_FOUND,
+                "User book not found with id: $userBookId and userId: $userId"
             )
-            .map { UserBookResponse.from(it) }
+    }
+
+
+    fun findAllByUserIdAndBookIsbnIn(userBooksByIsbnsRequest: UserBooksByIsbnsRequest): List<UserBookResponse> {
+        val userBooks = userBookDomainService.findAllByUserIdAndBookIsbnIn(
+            userBooksByIsbnsRequest.validUserId(),
+            userBooksByIsbnsRequest.validIsbns(),
+        )
+        return userBooks.map { UserBookResponse.from(it) }
     }
 
     private fun findUserBooksByDynamicCondition(
@@ -53,8 +55,8 @@ class UserBookService(
         sort: String?,
         pageable: Pageable
     ): Page<UserBookResponse> {
-        return userBookDomainService.findUserBooksByDynamicCondition(userId, status, sort, pageable)
-            .map { UserBookResponse.from(it) }
+        val page = userBookDomainService.findUserBooksByDynamicCondition(userId, status, sort, pageable)
+        return page.map { UserBookResponse.from(it) }
     }
 
     fun findUserBooksByDynamicConditionWithStatusCounts(
