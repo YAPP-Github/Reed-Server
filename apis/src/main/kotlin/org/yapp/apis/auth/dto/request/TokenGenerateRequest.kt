@@ -9,7 +9,7 @@ import java.util.*
     name = "TokenGenerateRequest",
     description = "DTO containing information required to save the generated refresh token"
 )
-data class TokenGenerateRequest(
+data class TokenGenerateRequest private constructor(
     @field:NotNull(message = "userId must not be null")
     @Schema(description = "User ID", example = "f6b7d490-1b1a-4b9f-8e8e-27f8e3a5dafa")
     val userId: UUID? = null,

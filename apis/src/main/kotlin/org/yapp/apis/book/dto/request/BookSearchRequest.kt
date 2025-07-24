@@ -28,4 +28,28 @@ data class BookSearchRequest private constructor(
             categoryId = this.categoryId
         )
     }
+
+    companion object {
+        fun of(
+            query: String,
+            queryType: String? = null,
+            searchTarget: String? = null,
+            maxResults: Int? = null,
+            start: Int? = null,
+            sort: String? = null,
+            cover: String? = null,
+            categoryId: Int? = null
+        ): BookSearchRequest {
+            return BookSearchRequest(
+                query = query,
+                queryType = queryType,
+                searchTarget = searchTarget,
+                maxResults = maxResults,
+                start = start,
+                sort = sort,
+                cover = cover,
+                categoryId = categoryId
+            )
+        }
+    }
 }

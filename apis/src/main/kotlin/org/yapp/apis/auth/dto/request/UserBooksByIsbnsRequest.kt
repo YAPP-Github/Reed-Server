@@ -9,7 +9,7 @@ import java.util.UUID
     name = "UserBooksByIsbnsRequest",
     description = "Request DTO for finding user books by user ID and a list of ISBNs"
 )
-data class UserBooksByIsbnsRequest(
+data class UserBooksByIsbnsRequest private constructor(
     @Schema(
         description = "사용자 ID",
         example = "1"
