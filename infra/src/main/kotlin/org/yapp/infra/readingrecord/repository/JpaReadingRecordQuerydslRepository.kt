@@ -1,0 +1,15 @@
+package org.yapp.infra.readingrecord.repository
+
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.yapp.infra.readingrecord.entity.ReadingRecordEntity
+import java.util.UUID
+
+interface JpaReadingRecordQuerydslRepository {
+
+    fun findReadingRecordsByDynamicCondition(
+        userBookId: UUID,
+        sort: String?,
+        pageable: Pageable
+    ): Page<ReadingRecordEntity>
+}
