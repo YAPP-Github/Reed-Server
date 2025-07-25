@@ -7,14 +7,22 @@ import java.util.UUID
 
 
 data class UpsertUserBookRequest private constructor(
-    val userId: UUID,
-    val bookIsbn: String,
-    val bookTitle: String,
-    val bookAuthor: String,
-    val bookPublisher: String,
-    val bookCoverImageUrl: String,
-    val status: BookStatus
+    val userId: UUID? = null,
+    val bookIsbn: String? = null,
+    val bookTitle: String? = null,
+    val bookAuthor: String? = null,
+    val bookPublisher: String? = null,
+    val bookCoverImageUrl: String? = null,
+    val status: BookStatus? = null
 ) {
+    fun validUserId(): UUID = userId!!
+    fun validBookIsbn(): String = bookIsbn!!
+    fun validBookTitle(): String = bookTitle!!
+    fun validBookAuthor(): String = bookAuthor!!
+    fun validBookPublisher(): String = bookPublisher!!
+    fun validBookCoverImageUrl(): String = bookCoverImageUrl!!
+    fun validStatus(): BookStatus = status!!
+
     companion object {
         fun of(
             userId: UUID,

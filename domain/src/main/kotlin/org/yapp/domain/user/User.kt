@@ -28,6 +28,7 @@ data class User private constructor(
     val providerType: ProviderType,
     val providerId: ProviderId,
     val role: Role,
+    val termsAgreed: Boolean = false,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null
@@ -40,13 +41,20 @@ data class User private constructor(
         )
     }
 
+    fun updateTermsAgreement(termsAgreed: Boolean): User {
+        return this.copy(
+            termsAgreed = termsAgreed
+        )
+    }
+
     companion object {
         fun create(
             email: String,
             nickname: String,
             profileImageUrl: String?,
             providerType: ProviderType,
-            providerId: String
+            providerId: String,
+            termsAgreed: Boolean = false
         ): User {
             return User(
                 id = Id.newInstance(UuidGenerator.create()),
@@ -55,7 +63,8 @@ data class User private constructor(
                 profileImageUrl = profileImageUrl,
                 providerType = providerType,
                 providerId = ProviderId.newInstance(providerId),
-                role = Role.USER
+                role = Role.USER,
+                termsAgreed = termsAgreed
             )
         }
 
@@ -66,7 +75,8 @@ data class User private constructor(
             profileImageUrl: String?,
             providerType: ProviderType,
             providerId: String,
-            role: Role
+            role: Role,
+            termsAgreed: Boolean = false
         ): User {
             return User(
                 id = Id.newInstance(UuidGenerator.create()),
@@ -75,7 +85,8 @@ data class User private constructor(
                 profileImageUrl = profileImageUrl,
                 providerType = providerType,
                 providerId = ProviderId.newInstance(providerId),
-                role = role
+                role = role,
+                termsAgreed = termsAgreed
             )
         }
 
@@ -87,6 +98,7 @@ data class User private constructor(
             providerType: ProviderType,
             providerId: ProviderId,
             role: Role,
+            termsAgreed: Boolean = false,
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null,
             deletedAt: LocalDateTime? = null
@@ -99,6 +111,7 @@ data class User private constructor(
                 providerType = providerType,
                 providerId = providerId,
                 role = role,
+                termsAgreed = termsAgreed,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
                 deletedAt = deletedAt
