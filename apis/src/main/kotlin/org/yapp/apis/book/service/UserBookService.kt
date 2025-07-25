@@ -18,18 +18,18 @@ import java.util.UUID
 class UserBookService(
     private val userBookDomainService: UserBookDomainService
 ) {
-    fun upsertUserBook(upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse =
-        UserBookResponse.from(
-            userBookDomainService.upsertUserBook(
-                upsertUserBookRequest.userId,
-                upsertUserBookRequest.bookIsbn,
-                upsertUserBookRequest.bookTitle,
-                upsertUserBookRequest.bookAuthor,
-                upsertUserBookRequest.bookPublisher,
-                upsertUserBookRequest.bookCoverImageUrl,
-                upsertUserBookRequest.status
-            )
+    fun upsertUserBook(upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse {
+        val userBookInfoVO = userBookDomainService.upsertUserBook(
+            upsertUserBookRequest.validUserId(),
+            upsertUserBookRequest.validBookIsbn(),
+            upsertUserBookRequest.validBookTitle(),
+            upsertUserBookRequest.validBookAuthor(),
+            upsertUserBookRequest.validBookPublisher(),
+            upsertUserBookRequest.validBookCoverImageUrl(),
+            upsertUserBookRequest.validStatus()
         )
+        return UserBookResponse.from(userBookInfoVO)
+    }
 
     fun findAllUserBooks(userId: UUID): List<UserBookResponse> {
         val userBooks: List<UserBookInfoVO> = userBookDomainService.findAllUserBooks(userId)
@@ -39,12 +39,11 @@ class UserBookService(
     }
 
     fun findAllByUserIdAndBookIsbnIn(userBooksByIsbnsRequest: UserBooksByIsbnsRequest): List<UserBookResponse> {
-        return userBookDomainService
-            .findAllByUserIdAndBookIsbnIn(
-                userBooksByIsbnsRequest.validUserId(),
-                userBooksByIsbnsRequest.validIsbns(),
-            )
-            .map { UserBookResponse.from(it) }
+        val userBooks = userBookDomainService.findAllByUserIdAndBookIsbnIn(
+            userBooksByIsbnsRequest.validUserId(),
+            userBooksByIsbnsRequest.validIsbns(),
+        )
+        return userBooks.map { UserBookResponse.from(it) }
     }
 
     private fun findUserBooksByDynamicCondition(
@@ -53,8 +52,8 @@ class UserBookService(
         sort: String?,
         pageable: Pageable
     ): Page<UserBookResponse> {
-        return userBookDomainService.findUserBooksByDynamicCondition(userId, status, sort, pageable)
-            .map { UserBookResponse.from(it) }
+        val page = userBookDomainService.findUserBooksByDynamicCondition(userId, status, sort, pageable)
+        return page.map { UserBookResponse.from(it) }
     }
 
     fun findUserBooksByDynamicConditionWithStatusCounts(

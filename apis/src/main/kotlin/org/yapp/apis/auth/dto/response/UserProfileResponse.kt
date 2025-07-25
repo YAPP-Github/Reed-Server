@@ -33,7 +33,13 @@ data class UserProfileResponse(
         description = "Social login provider type",
         example = "KAKAO"
     )
-    val provider: ProviderType
+    val provider: ProviderType,
+
+    @Schema(
+        description = "Whether the user has agreed to the terms of service",
+        example = "false"
+    )
+    val termsAgreed: Boolean
 ) {
     companion object {
         fun from(userProfileVO: UserProfileVO): UserProfileResponse {
@@ -41,7 +47,8 @@ data class UserProfileResponse(
                 id = userProfileVO.id.value,
                 email = userProfileVO.email.value,
                 nickname = userProfileVO.nickname,
-                provider = userProfileVO.provider
+                provider = userProfileVO.provider,
+                termsAgreed = userProfileVO.termsAgreed
             )
         }
     }

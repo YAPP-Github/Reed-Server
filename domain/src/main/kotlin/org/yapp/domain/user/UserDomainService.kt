@@ -69,4 +69,12 @@ class UserDomainService(
         val restoredUser = userRepository.save(deletedUser.restore())
         return UserIdentityVO.newInstance(restoredUser)
     }
+
+    fun updateTermsAgreement(userId: UUID, termsAgreed: Boolean): UserProfileVO {
+        val user = userRepository.findById(userId)
+            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+
+        val updatedUser = userRepository.save(user.updateTermsAgreement(termsAgreed))
+        return UserProfileVO.newInstance(updatedUser)
+    }
 }

@@ -21,6 +21,12 @@ class UserAuthService(
         return UserProfileResponse.from(userProfile)
     }
 
+    fun updateTermsAgreement(userId: UUID, termsAgreed: Boolean): UserProfileResponse {
+        validateUserExists(userId)
+        val updatedUserProfile = userDomainService.updateTermsAgreement(userId, termsAgreed)
+        return UserProfileResponse.from(updatedUserProfile)
+    }
+
     fun validateUserExists(userId: UUID) {
         if (!userDomainService.existsActiveUserByIdAndDeletedAtIsNull(userId)) {
             throw AuthException(AuthErrorCode.USER_NOT_FOUND, "User not found: $userId")

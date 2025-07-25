@@ -54,4 +54,9 @@ class AuthUseCase(
     fun getUserProfile(userId: UUID): UserProfileResponse {
         return userAuthService.findUserProfileByUserId(userId)
     }
+
+    @Transactional
+    fun updateTermsAgreement(userId: UUID, termsAgreed: Boolean): UserProfileResponse {
+        return userAuthService.updateTermsAgreement(userId, termsAgreed)
+    }
 }
