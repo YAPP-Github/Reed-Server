@@ -20,13 +20,13 @@ class UserBookService(
 ) {
     fun upsertUserBook(upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse {
         val userBookInfoVO = userBookDomainService.upsertUserBook(
-            upsertUserBookRequest.userId,
-            upsertUserBookRequest.bookIsbn,
-            upsertUserBookRequest.bookTitle,
-            upsertUserBookRequest.bookAuthor,
-            upsertUserBookRequest.bookPublisher,
-            upsertUserBookRequest.bookCoverImageUrl,
-            upsertUserBookRequest.status
+            upsertUserBookRequest.validUserId(),
+            upsertUserBookRequest.validBookIsbn(),
+            upsertUserBookRequest.validBookTitle(),
+            upsertUserBookRequest.validBookAuthor(),
+            upsertUserBookRequest.validBookPublisher(),
+            upsertUserBookRequest.validBookCoverImageUrl(),
+            upsertUserBookRequest.validStatus()
         )
         return UserBookResponse.from(userBookInfoVO)
     }
