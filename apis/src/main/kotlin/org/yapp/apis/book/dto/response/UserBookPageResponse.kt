@@ -16,7 +16,10 @@ data class UserBookPageResponse private constructor(
     val readingCount: Long,
 
     @Schema(description = "완독한 책 개수")
-    val completedCount: Long
+    val completedCount: Long,
+
+    @Schema(description = "총 책 개수")
+    val totalCount: Long
 ) {
     companion object {
         fun of(
@@ -25,11 +28,13 @@ data class UserBookPageResponse private constructor(
             readingCount: Long,
             completedCount: Long
         ): UserBookPageResponse {
+            val totalCount = beforeReadingCount + readingCount + completedCount
             return UserBookPageResponse(
                 books = books,
                 beforeReadingCount = beforeReadingCount,
                 readingCount = readingCount,
-                completedCount = completedCount
+                completedCount = completedCount,
+                totalCount = totalCount
             )
         }
     }

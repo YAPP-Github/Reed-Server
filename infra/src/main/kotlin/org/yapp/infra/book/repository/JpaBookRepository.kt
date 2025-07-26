@@ -6,5 +6,9 @@ import org.yapp.infra.book.entity.BookEntity
 /**
  * JPA repository for BookEntity.
  */
-interface JpaBookRepository : JpaRepository<BookEntity, String> {
+import java.util.UUID
+
+interface JpaBookRepository : JpaRepository<BookEntity, UUID> {
+    fun findByIsbn(isbn: String): BookEntity?
+    fun existsByIsbn(isbn: String): Boolean
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookRepository
 import org.yapp.domain.userbook.UserBook
+import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.infra.userbook.entity.UserBookEntity
 import org.yapp.infra.userbook.repository.JpaUserBookRepository
 import java.util.*
@@ -17,7 +18,14 @@ class UserBookRepositoryImpl(
 
     override fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook? {
         return jpaUserBookRepository.findByUserIdAndBookIsbn(userId, isbn)?.toDomain()
+    }
 
+    override fun findByBookIdAndUserId(bookId: UUID, userId: UUID): UserBook? {
+        return jpaUserBookRepository.findByBookIdAndUserId(bookId, userId)?.toDomain()
+    }
+
+    override fun findByIdAndUserId(id: UUID, userId: UUID): UserBook? {
+        return jpaUserBookRepository.findByIdAndUserId(id, userId)?.toDomain()
     }
 
     override fun save(userBook: UserBook): UserBook {
@@ -40,7 +48,7 @@ class UserBookRepositoryImpl(
     override fun findUserBooksByDynamicCondition(
         userId: UUID,
         status: BookStatus?,
-        sort: String?,
+        sort: UserBookSortType?,
         pageable: Pageable
     ): Page<UserBook> {
         return jpaUserBookRepository.findUserBooksByDynamicCondition(userId, status, sort, pageable)

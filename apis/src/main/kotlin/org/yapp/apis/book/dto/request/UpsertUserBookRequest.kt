@@ -1,13 +1,13 @@
 package org.yapp.apis.book.dto.request
 
 import org.yapp.apis.book.dto.response.BookCreateResponse
-import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.domain.userbook.BookStatus
 import java.util.UUID
 
 
 data class UpsertUserBookRequest private constructor(
     val userId: UUID? = null,
+    val bookId: UUID? = null,
     val bookIsbn: String? = null,
     val bookTitle: String? = null,
     val bookAuthor: String? = null,
@@ -16,6 +16,7 @@ data class UpsertUserBookRequest private constructor(
     val status: BookStatus? = null
 ) {
     fun validUserId(): UUID = userId!!
+    fun validBookId(): UUID = bookId!!
     fun validBookIsbn(): String = bookIsbn!!
     fun validBookTitle(): String = bookTitle!!
     fun validBookAuthor(): String = bookAuthor!!
@@ -27,10 +28,11 @@ data class UpsertUserBookRequest private constructor(
         fun of(
             userId: UUID,
             bookCreateResponse: BookCreateResponse,
-            status: BookStatus
+            status: BookStatus,
         ): UpsertUserBookRequest {
             return UpsertUserBookRequest(
                 userId = userId,
+                bookId = bookCreateResponse.bookId,
                 bookIsbn = bookCreateResponse.isbn,
                 bookTitle = bookCreateResponse.title,
                 bookAuthor = bookCreateResponse.author,

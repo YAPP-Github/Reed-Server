@@ -20,6 +20,7 @@ import org.yapp.apis.book.service.BookManagementService
 import org.yapp.apis.book.service.BookQueryService
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.globalutils.annotation.UseCase
 import java.util.UUID
 
@@ -63,7 +64,7 @@ class BookUseCase(
         val upsertUserBookRequest = UpsertUserBookRequest.of(
             userId = userId,
             bookCreateResponse,
-            status = request.bookStatus
+            status = request.bookStatus,
         )
         val userBookResponse = userBookService.upsertUserBook(upsertUserBookRequest)
 
@@ -73,7 +74,7 @@ class BookUseCase(
     fun getUserLibraryBooks(
         userId: UUID,
         status: BookStatus?,
-        sort: String?,
+        sort: UserBookSortType?,
         pageable: Pageable
     ): UserBookPageResponse {
         userAuthService.validateUserExists(userId)
