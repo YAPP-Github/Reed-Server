@@ -27,7 +27,7 @@ interface ReadingRecordRepository {
 
     fun findReadingRecordsByDynamicCondition(
         userBookId: UUID,
-        sort: String?,
+        sort: ReadingRecordSortType?,
         pageable: Pageable
     ): Page<ReadingRecord>
 }

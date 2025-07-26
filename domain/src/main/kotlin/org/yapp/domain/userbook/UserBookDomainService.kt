@@ -13,6 +13,7 @@ class UserBookDomainService(
 ) {
     fun upsertUserBook(
         userId: UUID,
+        bookId: UUID,
         bookIsbn: String,
         bookTitle: String,
         bookAuthor: String,
@@ -23,6 +24,7 @@ class UserBookDomainService(
         val userBook = userBookRepository.findByUserIdAndBookIsbn(userId, bookIsbn)?.updateStatus(status)
             ?: UserBook.create(
                 userId = userId,
+                bookId = bookId,
                 bookIsbn = bookIsbn,
                 title = bookTitle,
                 author = bookAuthor,
@@ -35,16 +37,10 @@ class UserBookDomainService(
         return UserBookInfoVO.newInstance(savedUserBook)
     }
 
-
-    fun findAllUserBooks(userId: UUID): List<UserBookInfoVO> {
-        val userBooks = userBookRepository.findAllByUserId(userId)
-        return userBooks.map { UserBookInfoVO.newInstance(it) }
-    }
-
     fun findUserBooksByDynamicCondition(
         userId: UUID,
         status: BookStatus?,
-        sort: String?,
+        sort: UserBookSortType?,
         pageable: Pageable
     ): Page<UserBookInfoVO> {
         val page = userBookRepository.findUserBooksByDynamicCondition(userId, status, sort, pageable)

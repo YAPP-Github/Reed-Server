@@ -8,7 +8,7 @@ import java.util.UUID
 interface UserBookRepository {
 
     fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook?
-
+    fun findByBookIdAndUserId(bookId: UUID, userId: UUID): UserBook?
     fun findByIdAndUserId(id: UUID, userId: UUID): UserBook?
 
     fun save(userBook: UserBook): UserBook
@@ -20,7 +20,7 @@ interface UserBookRepository {
     fun findUserBooksByDynamicCondition(
         userId: UUID,
         status: BookStatus?,
-        sort: String?,
+        sort: UserBookSortType?,
         pageable: Pageable
     ): Page<UserBook>
 

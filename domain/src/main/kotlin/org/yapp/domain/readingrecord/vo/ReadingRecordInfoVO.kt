@@ -9,13 +9,13 @@ data class ReadingRecordInfoVO private constructor(
     val pageNumber: ReadingRecord.PageNumber,
     val quote: ReadingRecord.Quote,
     val review: ReadingRecord.Review,
-    val emotionTags: List<ReadingRecord.EmotionTag>,
+    val emotionTags: List<String>,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 ) {
     init {
         require(emotionTags.size <= 3) { "Maximum 3 emotion tags are allowed" }
-        require(createdAt.isBefore(updatedAt) || createdAt == updatedAt) {
+        require(!createdAt.isAfter(updatedAt)) {
             "생성일(createdAt)은 수정일(updatedAt)보다 이후일 수 없습니다."
         }
     }
@@ -23,6 +23,7 @@ data class ReadingRecordInfoVO private constructor(
     companion object {
         fun newInstance(
             readingRecord: ReadingRecord,
+            emotionTags: List<String>
         ): ReadingRecordInfoVO {
             return ReadingRecordInfoVO(
                 id = readingRecord.id,
@@ -30,7 +31,7 @@ data class ReadingRecordInfoVO private constructor(
                 pageNumber = readingRecord.pageNumber,
                 quote = readingRecord.quote,
                 review = readingRecord.review,
-                emotionTags = readingRecord.emotionTags,
+                emotionTags = emotionTags,
                 createdAt = readingRecord.createdAt ?: throw IllegalStateException("createdAt은 null일 수 없습니다."),
                 updatedAt = readingRecord.updatedAt ?: throw IllegalStateException("updatedAt은 null일 수 없습니다.")
             )
