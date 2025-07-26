@@ -42,7 +42,7 @@ data class ReadingRecordResponse private constructor(
                 pageNumber = readingRecordInfoVO.pageNumber.value,
                 quote = readingRecordInfoVO.quote.value,
                 review = readingRecordInfoVO.review.value,
-                emotionTags = readingRecordInfoVO.emotionTags.map { it.value },
+                emotionTags = readingRecordInfoVO.emotionTags,
                 createdAt = readingRecordInfoVO.createdAt.format(dateTimeFormatter),
                 updatedAt = readingRecordInfoVO.updatedAt.format(dateTimeFormatter)
             )

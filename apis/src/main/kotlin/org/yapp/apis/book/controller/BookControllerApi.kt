@@ -27,6 +27,7 @@ import org.yapp.apis.book.dto.response.BookSearchResponse
 import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.globalutils.exception.ErrorResponse
 import java.util.UUID
 
@@ -140,7 +141,7 @@ interface BookControllerApi {
     fun getUserLibraryBooks(
         @AuthenticationPrincipal userId: UUID,
         @RequestParam(required = false) status: BookStatus?,
-        @RequestParam(required = false) sort: String?,
+        @RequestParam(required = false) sort: UserBookSortType?,
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<UserBookPageResponse>

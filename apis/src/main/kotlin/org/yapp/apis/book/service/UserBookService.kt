@@ -12,6 +12,7 @@ import org.yapp.apis.book.exception.UserBookNotFoundException
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
 import org.yapp.domain.userbook.UserBookDomainService
+import org.yapp.domain.userbook.UserBookSortType
 import java.util.UUID
 
 
@@ -22,6 +23,7 @@ class UserBookService(
     fun upsertUserBook(upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse {
         val userBookInfoVO = userBookDomainService.upsertUserBook(
             upsertUserBookRequest.validUserId(),
+            upsertUserBookRequest.validBookId(),
             upsertUserBookRequest.validBookIsbn(),
             upsertUserBookRequest.validBookTitle(),
             upsertUserBookRequest.validBookAuthor(),
@@ -52,7 +54,7 @@ class UserBookService(
     private fun findUserBooksByDynamicCondition(
         userId: UUID,
         status: BookStatus?,
-        sort: String?,
+        sort: UserBookSortType?,
         pageable: Pageable
     ): Page<UserBookResponse> {
         val page = userBookDomainService.findUserBooksByDynamicCondition(userId, status, sort, pageable)
@@ -62,7 +64,7 @@ class UserBookService(
     fun findUserBooksByDynamicConditionWithStatusCounts(
         userId: UUID,
         status: BookStatus?,
-        sort: String?,
+        sort: UserBookSortType?,
         pageable: Pageable
     ): UserBookPageResponse {
         val userBookResponsePage = findUserBooksByDynamicCondition(userId, status, sort, pageable)

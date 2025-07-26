@@ -22,11 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
+import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.globalutils.exception.ErrorResponse
 import java.util.UUID
 
 @Tag(name = "Reading Records", description = "독서 기록 관련 API")
-@RequestMapping("/api/v1/user-books/{userBookId}/reading-records")
+@RequestMapping("/api/v1/reading-records")
 interface ReadingRecordControllerApi {
 
     @Operation(
@@ -52,7 +53,7 @@ interface ReadingRecordControllerApi {
             )
         ]
     )
-    @PostMapping
+    @PostMapping("/{userBookId}")
     fun createReadingRecord(
         @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
         @PathVariable @Parameter(description = "독서 기록을 생성할 사용자 책 ID") userBookId: UUID,
@@ -77,11 +78,11 @@ interface ReadingRecordControllerApi {
             )
         ]
     )
-    @GetMapping
+    @GetMapping("/{userBookId}")
     fun getReadingRecords(
         @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
         @PathVariable @Parameter(description = "독서 기록을 조회할 사용자 책 ID") userBookId: UUID,
-        @RequestParam(required = false) @Parameter(description = "정렬 방식 (page_asc, page_desc, date_asc, date_desc)") sort: String?,
+        @RequestParam(required = false) @Parameter(description = "정렬 방식 (PAGE_NUMBER_ASC, PAGE_NUMBER_DESC, CREATED_DATE_ASC, CREATED_DATE_DESC)") sort: ReadingRecordSortType?,
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         @Parameter(description = "페이지네이션 정보 (페이지 번호, 페이지 크기, 정렬 방식)") pageable: Pageable
     ): ResponseEntity<Page<ReadingRecordResponse>>

@@ -25,7 +25,7 @@ data class BookDetailResponse private constructor(
     val cover: String,
     val categoryId: Int?,
     val categoryName: String?,
-    val publisher: String
+    val publisher: String,
 ) {
     companion object {
 

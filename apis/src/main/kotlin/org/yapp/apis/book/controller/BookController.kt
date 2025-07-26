@@ -1,7 +1,6 @@
 package org.yapp.apis.book.controller
 
 import jakarta.validation.Valid
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -23,6 +22,7 @@ import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.usecase.BookUseCase
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.domain.userbook.UserBookSortType
 import java.util.UUID
 
 @RestController
@@ -62,7 +62,7 @@ class BookController(
     override fun getUserLibraryBooks(
         @AuthenticationPrincipal userId: UUID,
         @RequestParam(required = false) status: BookStatus?,
-        @RequestParam(required = false) sort: String?,
+        @RequestParam(required = false) sort: UserBookSortType?,
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<UserBookPageResponse> {
