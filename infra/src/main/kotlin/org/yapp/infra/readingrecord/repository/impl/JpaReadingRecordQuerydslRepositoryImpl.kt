@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
+import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.infra.readingrecord.entity.QReadingRecordEntity
 import org.yapp.infra.readingrecord.entity.ReadingRecordEntity
 import org.yapp.infra.readingrecord.repository.JpaReadingRecordQuerydslRepository
@@ -20,16 +21,15 @@ class JpaReadingRecordQuerydslRepositoryImpl(
 
     override fun findReadingRecordsByDynamicCondition(
         userBookId: UUID,
-        sort: String?,
+        sort: ReadingRecordSortType?,
         pageable: Pageable
     ): Page<ReadingRecordEntity> {
-        val baseQuery = queryFactory
-            .selectFrom(readingRecord)
-            .where(
-                readingRecord.userBookId.eq(userBookId)
-            )
 
-        val results = baseQuery
+        val whereCondition = readingRecord.userBookId.eq(userBookId)
+
+        val results = queryFactory
+            .selectFrom(readingRecord)
+            .where(whereCondition)
             .orderBy(createOrderSpecifier(sort))
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
@@ -38,21 +38,20 @@ class JpaReadingRecordQuerydslRepositoryImpl(
         val total = queryFactory
             .select(readingRecord.count())
             .from(readingRecord)
-            .where(
-                readingRecord.userBookId.eq(userBookId)
-            )
+            .where(whereCondition)
             .fetchOne() ?: 0L
 
         return PageImpl(results, pageable, total)
     }
 
-    private fun createOrderSpecifier(sort: String?): OrderSpecifier<*> {
+    private fun createOrderSpecifier(sort: ReadingRecordSortType?): OrderSpecifier<*> {
         return when (sort) {
-            "page_asc" -> readingRecord.pageNumber.asc()
-            "page_desc" -> readingRecord.pageNumber.desc()
-            "date_asc" -> readingRecord.createdAt.asc()
-            "date_desc" -> readingRecord.createdAt.desc()
-            else -> readingRecord.createdAt.desc()
+            ReadingRecordSortType.PAGE_NUMBER_ASC -> readingRecord.pageNumber.asc()
+            ReadingRecordSortType.PAGE_NUMBER_DESC -> readingRecord.pageNumber.desc()
+            ReadingRecordSortType.CREATED_DATE_ASC -> readingRecord.createdAt.asc()
+            ReadingRecordSortType.CREATED_DATE_DESC -> readingRecord.createdAt.desc()
+            null -> readingRecord.createdAt.desc()
         }
     }
+
 }

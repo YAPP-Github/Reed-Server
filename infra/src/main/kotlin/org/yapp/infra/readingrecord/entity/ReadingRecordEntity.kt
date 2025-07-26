@@ -3,6 +3,7 @@ package org.yapp.infra.readingrecord.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 import org.yapp.domain.readingrecord.ReadingRecord
 import org.yapp.infra.common.BaseTimeEntity
 import java.sql.Types
@@ -11,6 +12,7 @@ import java.util.*
 @Entity
 @Table(name = "reading_records")
 @SQLDelete(sql = "UPDATE reading_records SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 class ReadingRecordEntity(
     @Id
     @JdbcTypeCode(Types.VARCHAR)
@@ -25,13 +27,7 @@ class ReadingRecordEntity(
     quote: String,
     review: String,
 
-    @ElementCollection
-    @CollectionTable(
-        name = "reading_record_emotion_tags",
-        joinColumns = [JoinColumn(name = "reading_record_id")]
-    )
-    @Column(name = "tag", nullable = false, length = 10)
-    val emotionTags: List<String> = emptyList()
+    
 ) : BaseTimeEntity() {
 
     @Column(name = "page_number", nullable = false)
@@ -53,7 +49,7 @@ class ReadingRecordEntity(
             pageNumber = ReadingRecord.PageNumber.newInstance(this.pageNumber),
             quote = ReadingRecord.Quote.newInstance(this.quote),
             review = ReadingRecord.Review.newInstance(this.review),
-            emotionTags = this.emotionTags.map { ReadingRecord.EmotionTag.newInstance(it) },
+            emotionTags = emptyList(),
             createdAt = this.createdAt,
             updatedAt = this.updatedAt,
             deletedAt = this.deletedAt
@@ -67,8 +63,7 @@ class ReadingRecordEntity(
                 userBookId = readingRecord.userBookId.value,
                 pageNumber = readingRecord.pageNumber.value,
                 quote = readingRecord.quote.value,
-                review = readingRecord.review.value,
-                emotionTags = readingRecord.emotionTags.map { it.value }
+                review = readingRecord.review.value
             )
         }
     }

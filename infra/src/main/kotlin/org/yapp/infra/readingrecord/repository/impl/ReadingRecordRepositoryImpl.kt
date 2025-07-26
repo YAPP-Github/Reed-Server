@@ -6,6 +6,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import org.yapp.domain.readingrecord.ReadingRecord
 import org.yapp.domain.readingrecord.ReadingRecordRepository
+import org.yapp.domain.readingrecord.ReadingRecordSortType
+import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.infra.readingrecord.entity.ReadingRecordEntity
 import org.yapp.infra.readingrecord.repository.JpaReadingRecordRepository
 import java.util.UUID
@@ -45,7 +47,7 @@ class ReadingRecordRepositoryImpl(
 
     override fun findReadingRecordsByDynamicCondition(
         userBookId: UUID,
-        sort: String?,
+        sort: ReadingRecordSortType?,
         pageable: Pageable
     ): Page<ReadingRecord> {
         val page = jpaReadingRecordRepository.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)

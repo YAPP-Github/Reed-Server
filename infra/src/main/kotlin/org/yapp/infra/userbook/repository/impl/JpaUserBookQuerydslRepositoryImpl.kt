@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.infra.userbook.entity.QUserBookEntity
 import org.yapp.infra.userbook.entity.UserBookEntity
 import org.yapp.infra.userbook.repository.JpaUserBookQuerydslRepository
@@ -23,7 +24,7 @@ class JpaUserBookQuerydslRepositoryImpl(
     override fun findUserBooksByDynamicCondition(
         userId: UUID,
         status: BookStatus?,
-        sort: String?,
+        sort: UserBookSortType?,
         pageable: Pageable
     ): Page<UserBookEntity> {
         val baseQuery = queryFactory
@@ -40,13 +41,13 @@ class JpaUserBookQuerydslRepositoryImpl(
             .fetch()
 
         val total = queryFactory
-                    .select(userBook.count())
-                    .from(userBook)
-                    .where(
-                                userBook.userId.eq(userId),
-                        statusEq(status)
-                    )
-                    .fetchOne() ?: 0L
+            .select(userBook.count())
+            .from(userBook)
+            .where(
+                userBook.userId.eq(userId),
+                statusEq(status)
+            )
+            .fetchOne() ?: 0L
 
         return PageImpl(results, pageable, total)
     }
@@ -69,13 +70,13 @@ class JpaUserBookQuerydslRepositoryImpl(
         return status?.let { userBook.status.eq(it) }
     }
 
-    private fun createOrderSpecifier(sort: String?): OrderSpecifier<*> {
+    private fun createOrderSpecifier(sort: UserBookSortType?): OrderSpecifier<*> {
         return when (sort) {
-            "title_asc" -> userBook.title.asc()
-            "title_desc" -> userBook.title.desc()
-            "date_asc" -> userBook.createdAt.asc()
-            "date_desc" -> userBook.createdAt.desc()
-            else -> userBook.createdAt.desc()
+            UserBookSortType.TITLE_ASC -> userBook.title.asc()
+            UserBookSortType.TITLE_DESC -> userBook.title.desc()
+            UserBookSortType.CREATED_DATE_ASC -> userBook.createdAt.asc()
+            UserBookSortType.CREATED_DATE_DESC -> userBook.createdAt.desc()
+            null -> userBook.createdAt.desc()
         }
     }
 }
