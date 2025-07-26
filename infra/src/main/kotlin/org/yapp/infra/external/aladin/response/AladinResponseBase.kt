@@ -20,7 +20,8 @@ data class BookItem internal constructor(
     @JsonProperty("cover") val cover: String?,
     @JsonProperty("categoryId") val categoryId: Int?,
     @JsonProperty("categoryName") val categoryName: String?,
-    @JsonProperty("publisher") val publisher: String?
+    @JsonProperty("publisher") val publisher: String?,
+    @JsonProperty("itemPage") val itemPage: Int?
 )
 
 data class AladinSearchResponse internal constructor(
