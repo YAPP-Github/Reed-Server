@@ -8,6 +8,7 @@ import java.util.*
 data class UserBook private constructor(
     val id: Id,
     val userId: UserId,
+    val bookId: BookId,
     val bookIsbn: BookIsbn,
     val coverImageUrl: String,
     val publisher: String,
@@ -25,6 +26,7 @@ data class UserBook private constructor(
     companion object {
         fun create(
             userId: UUID,
+            bookId: UUID,
             bookIsbn: String,
             coverImageUrl: String,
             publisher: String,
@@ -35,6 +37,7 @@ data class UserBook private constructor(
             return UserBook(
                 id = Id.newInstance(UuidGenerator.create()),
                 userId = UserId.newInstance(userId),
+                bookId = BookId.newInstance(bookId),
                 bookIsbn = BookIsbn.newInstance(bookIsbn),
                 coverImageUrl = coverImageUrl,
                 publisher = publisher,
@@ -47,6 +50,7 @@ data class UserBook private constructor(
         fun reconstruct(
             id: Id,
             userId: UserId,
+            bookId: BookId,
             bookIsbn: BookIsbn,
             coverImageUrl: String,
             publisher: String,
@@ -60,6 +64,7 @@ data class UserBook private constructor(
             return UserBook(
                 id = id,
                 userId = userId,
+                bookId = bookId,
                 bookIsbn = bookIsbn,
                 coverImageUrl = coverImageUrl,
                 publisher = publisher,
@@ -84,6 +89,13 @@ data class UserBook private constructor(
     value class UserId(val value: UUID) {
         companion object {
             fun newInstance(value: UUID) = UserId(value)
+        }
+    }
+
+    @JvmInline
+    value class BookId(val value: UUID) {
+        companion object {
+            fun newInstance(value: UUID) = BookId(value)
         }
     }
 

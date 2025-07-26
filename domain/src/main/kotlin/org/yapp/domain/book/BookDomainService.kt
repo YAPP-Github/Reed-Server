@@ -5,13 +5,14 @@ import org.yapp.domain.book.exception.BookErrorCode
 import org.yapp.domain.book.exception.BookNotFoundException
 import org.yapp.domain.book.vo.BookInfoVO
 import org.yapp.globalutils.annotation.DomainService
+import java.util.UUID
 
 @DomainService
 class BookDomainService(
     private val bookRepository: BookRepository
 ) {
-    fun findByIsbn(isbn: String): BookInfoVO {
-        val book = bookRepository.findById(isbn) ?: throw BookNotFoundException(BookErrorCode.BOOK_NOT_FOUND)
+    fun findById(id: UUID): BookInfoVO {
+        val book = bookRepository.findById(id) ?: throw BookNotFoundException(BookErrorCode.BOOK_NOT_FOUND)
         return BookInfoVO.newInstance(book)
     }
 
@@ -40,7 +41,7 @@ class BookDomainService(
     }
 
     private fun findByIsbnOrNull(isbn: String): BookInfoVO? {
-        val book = bookRepository.findById(isbn)
+        val book = bookRepository.findByIsbn(isbn)
         return book?.let { BookInfoVO.newInstance(it) }
     }
 
@@ -52,9 +53,9 @@ class BookDomainService(
         publisher: String,
         coverImageUrl: String,
         publicationYear: Int? = null,
-        description: String? = null
+        description: String? = null,
     ): BookInfoVO {
-        if (bookRepository.existsById(isbn)) {
+        if (bookRepository.existsByIsbn(isbn)) {
             throw BookAlreadyExistsException(BookErrorCode.BOOK_ALREADY_EXISTS)
         }
 

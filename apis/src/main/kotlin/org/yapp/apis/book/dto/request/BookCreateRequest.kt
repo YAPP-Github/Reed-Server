@@ -22,7 +22,7 @@ data class BookCreateRequest private constructor(
     @field:Size(max = 2048, message = "표지 URL은 2048자 이내여야 합니다.")
     val coverImageUrl: String,
 
-    val description: String? = null,
+    val description: String? = null
 ) {
     fun validIsbn(): String = isbn!!
     fun validTitle(): String = title!!
@@ -42,7 +42,7 @@ data class BookCreateRequest private constructor(
                 publisher = bookDetail.publisher,
                 publicationYear = parsePublicationYear(bookDetail.pubDate),
                 coverImageUrl = bookDetail.cover,
-                description = bookDetail.description
+                description = bookDetail.description,
             )
         }
 

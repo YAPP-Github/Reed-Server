@@ -10,18 +10,20 @@ data class ReadingRecord private constructor(
     val pageNumber: PageNumber,
     val quote: Quote,
     val review: Review,
-    val emotionTags: List<EmotionTag>,
+    val emotionTags: List<EmotionTag> = emptyList(),
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
+    
+
     companion object {
         fun create(
             userBookId: UUID,
             pageNumber: Int,
             quote: String,
             review: String,
-            emotionTags: List<String>
+            emotionTags: List<String> = emptyList()
         ): ReadingRecord {
             return ReadingRecord(
                 id = Id.newInstance(UuidGenerator.create()),
@@ -39,7 +41,7 @@ data class ReadingRecord private constructor(
             pageNumber: PageNumber,
             quote: Quote,
             review: Review,
-            emotionTags: List<EmotionTag>,
+            emotionTags: List<EmotionTag> = emptyList(),
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null,
             deletedAt: LocalDateTime? = null
