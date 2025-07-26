@@ -3,6 +3,7 @@ package org.yapp.infra.userbook.entity
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 import org.yapp.infra.common.BaseTimeEntity
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
@@ -12,6 +13,7 @@ import java.util.*
 @Entity
 @Table(name = "user_books")
 @SQLDelete(sql = "UPDATE user_books SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 class UserBookEntity(
     @Id
     @JdbcTypeCode(Types.VARCHAR)
@@ -21,6 +23,10 @@ class UserBookEntity(
     @Column(name = "user_id", nullable = false, length = 36)
     @JdbcTypeCode(Types.VARCHAR)
     val userId: UUID,
+
+    @Column(name = "book_id", nullable = false, length = 36)
+    @JdbcTypeCode(Types.VARCHAR)
+    val bookId: UUID,
 
     @Column(name = "book_isbn", nullable = false)
     val bookIsbn: String,
@@ -56,6 +62,7 @@ class UserBookEntity(
     fun toDomain(): UserBook = UserBook.reconstruct(
         id = UserBook.Id.newInstance(this.id),
         userId = UserBook.UserId.newInstance(this.userId),
+        bookId = UserBook.BookId.newInstance(this.bookId),
         bookIsbn = UserBook.BookIsbn.newInstance(this.bookIsbn),
         coverImageUrl = this.coverImageUrl,
         publisher = this.publisher,
@@ -72,6 +79,7 @@ class UserBookEntity(
             return UserBookEntity(
                 id = userBook.id.value,
                 userId = userBook.userId.value,
+                bookId = userBook.bookId.value,
                 bookIsbn = userBook.bookIsbn.value,
                 coverImageUrl = userBook.coverImageUrl,
                 publisher = userBook.publisher,

@@ -6,17 +6,23 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.SQLRestriction
 import org.yapp.domain.book.Book
 import org.yapp.infra.common.BaseTimeEntity
 import java.sql.Types
+import java.util.UUID
 
 @Entity
 @Table(name = "books")
 @SQLDelete(sql = "UPDATE books SET deleted_at = NOW() WHERE isbn = ?")
+@SQLRestriction("deleted_at IS NULL")
 class BookEntity private constructor(
     @Id
     @JdbcTypeCode(Types.VARCHAR)
-    @Column(length = 13, updatable = false, nullable = false)
+    @Column(length = 36, updatable = false, nullable = false)
+    val id: UUID,
+
+    @Column(length = 13, updatable = false, nullable = false, unique = true)
     val isbn: String,
 
     title: String,
@@ -24,8 +30,7 @@ class BookEntity private constructor(
     publisher: String,
     publicationYear: Int? = null,
     coverImageUrl: String,
-    description: String? = null
-
+    description: String? = null,
 ) : BaseTimeEntity() {
 
     @Column(nullable = false, length = 255)
@@ -52,7 +57,9 @@ class BookEntity private constructor(
     var description: String? = description
         protected set
 
+
     fun toDomain(): Book = Book.reconstruct(
+        id = Book.Id.newInstance(this.id),
         isbn = Book.Isbn.newInstance(this.isbn),
         title = title,
         author = author,
@@ -67,21 +74,22 @@ class BookEntity private constructor(
 
     companion object {
         fun fromDomain(book: Book): BookEntity = BookEntity(
+            id = book.id.value,
             isbn = book.isbn.value,
             title = book.title,
             author = book.author,
             publisher = book.publisher,
             publicationYear = book.publicationYear,
             coverImageUrl = book.coverImageUrl,
-            description = book.description
+            description = book.description,
         )
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is BookEntity) return false
-        return isbn == other.isbn
+        return id == other.id
     }
 
-    override fun hashCode(): Int = isbn.hashCode()
+    override fun hashCode(): Int = id.hashCode()
 }
