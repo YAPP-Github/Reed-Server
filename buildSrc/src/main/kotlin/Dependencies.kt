@@ -61,5 +61,6 @@ object Dependencies {
 
     object BouncyCastle {
         const val BC_PROV = "org.bouncycastle:bcprov-jdk18on:1.78.1"
+        const val BC_PKIX = "org.bouncycastle:bcpkix-jdk18on:1.78.1"
     }
 }
