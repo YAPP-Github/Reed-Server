@@ -8,6 +8,7 @@ import com.nimbusds.jose.proc.SecurityContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -49,6 +50,7 @@ class JwtConfig(
      * @return 생성된 `JwtEncoder` 객체
      */
     @Bean
+    @Primary
     fun jwtEncoder(jwkSource: JWKSource<SecurityContext>): JwtEncoder {
         return NimbusJwtEncoder(jwkSource)
     }
@@ -60,6 +62,7 @@ class JwtConfig(
      * @return 생성된 `JwtDecoder` 객체
      */
     @Bean
+    @Primary
     fun jwtDecoder(): JwtDecoder {
         val secretKeySpec = SecretKeySpec(secretKey.toByteArray(), SIGNATURE_ALGORITHM.name)
         val decoder = NimbusJwtDecoder.withSecretKey(secretKeySpec).build()
