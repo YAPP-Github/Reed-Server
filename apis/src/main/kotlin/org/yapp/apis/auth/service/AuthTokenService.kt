@@ -1,17 +1,17 @@
-package org.yapp.apis.auth.helper
+package org.yapp.apis.auth.service
 
+import org.springframework.stereotype.Service
 import org.yapp.apis.auth.dto.request.DeleteTokenRequest
 import org.yapp.apis.auth.dto.request.GenerateTokenPairRequest
 import org.yapp.apis.auth.dto.request.TokenGenerateRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.dto.response.UserIdResponse
-import org.yapp.apis.auth.service.TokenService
 import org.yapp.gateway.jwt.JwtTokenService
 import org.yapp.globalutils.annotation.Helper
 
-@Helper
-class AuthTokenHelper(
+@Service
+class AuthTokenService(
     private val tokenService: TokenService,
     private val jwtTokenService: JwtTokenService
 ) {
