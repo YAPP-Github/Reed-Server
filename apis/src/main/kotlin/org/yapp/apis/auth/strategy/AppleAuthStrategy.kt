@@ -5,34 +5,26 @@ import org.springframework.stereotype.Component
 import org.yapp.apis.auth.dto.response.UserCreateInfoResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.helper.AppleJwtHelper
-import org.yapp.apis.util.NicknameGenerator
+import org.yapp.apis.auth.helper.apple.AppleIdTokenProcessor
+import org.yapp.apis.auth.util.NicknameGenerator
 import org.yapp.domain.user.ProviderType
 
-/**
- * Implementation of AuthStrategy for Apple authentication.
- */
 @Component
 class AppleAuthStrategy(
-    private val appleJwtHelper: AppleJwtHelper
+    private val appleIdTokenProcessor: AppleIdTokenProcessor
 ) : AuthStrategy {
-
     private val log = KotlinLogging.logger {}
 
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 
     override fun authenticate(credentials: AuthCredentials): UserCreateInfoResponse {
-        return try {
-            val appleCredentials = validateCredentials(credentials)
-            val payload = appleJwtHelper.parseIdToken(appleCredentials.idToken)
-            createUserInfo(payload)
-        } catch (exception: Exception) {
-            log.error("Apple authentication failed", exception)
-            when (exception) {
-                is AuthException -> throw exception
-                else -> throw AuthException(AuthErrorCode.FAILED_TO_GET_USER_INFO, exception.message)
-            }
-        }
+        val appleCredentials = validateCredentials(credentials)
+
+        val payload = appleIdTokenProcessor.parseAndValidate(appleCredentials.idToken)
+
+        log.info { "Apple ID Token validated successfully. sub=${payload.sub}, email=${payload.email}" }
+
+        return createUserInfo(payload)
     }
 
     private fun validateCredentials(credentials: AuthCredentials): AppleAuthCredentials {
@@ -43,7 +35,7 @@ class AppleAuthStrategy(
             )
     }
 
-    private fun createUserInfo(payload: AppleJwtHelper.AppleIdTokenPayload): UserCreateInfoResponse {
+    private fun createUserInfo(payload: AppleIdTokenProcessor.AppleIdTokenPayload): UserCreateInfoResponse {
         return UserCreateInfoResponse.of(
             email = payload.email,
             nickname = NicknameGenerator.generate(),
