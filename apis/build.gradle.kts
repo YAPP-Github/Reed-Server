@@ -20,6 +20,7 @@ dependencies {
     implementation(Dependencies.Logging.KOTLIN_LOGGING)
 
     implementation(Dependencies.BouncyCastle.BC_PROV)
+    implementation(Dependencies.BouncyCastle.BC_PKIX)
 
     annotationProcessor(Dependencies.Spring.CONFIGURATION_PROCESSOR)
 
