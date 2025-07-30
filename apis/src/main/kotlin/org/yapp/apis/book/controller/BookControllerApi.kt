@@ -117,7 +117,7 @@ interface BookControllerApi {
         @Valid @RequestBody request: UserBookRegisterRequest
     ): ResponseEntity<UserBookResponse>
 
-    @Operation(summary = "사용자 서재 조회", description = "현재 사용자의 서재에 등록된 모든 책을 조회합니다.")
+    @Operation(summary = "사용자 서재 조회", description = "현재 사용자의 서재에 등록된 모든 책을 조회합니다. 제목(title)으로 검색할 수 있습니다.")
     @ApiResponses(
         value = [
             ApiResponse(
@@ -140,8 +140,9 @@ interface BookControllerApi {
     @GetMapping("/my-library")
     fun getUserLibraryBooks(
         @AuthenticationPrincipal userId: UUID,
-        @RequestParam(required = false) status: BookStatus?,
-        @RequestParam(required = false) sort: UserBookSortType?,
+        @RequestParam(required = false) @Parameter(description = "책 상태 필터") status: BookStatus?,
+        @RequestParam(required = false) @Parameter(description = "정렬 방식") sort: UserBookSortType?,
+        @RequestParam(required = false) @Parameter(description = "책 제목 검색") title: String?,
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<UserBookPageResponse>

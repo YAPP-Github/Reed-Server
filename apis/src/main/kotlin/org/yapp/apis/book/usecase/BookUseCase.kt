@@ -75,10 +75,11 @@ class BookUseCase(
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): UserBookPageResponse {
         userAuthService.validateUserExists(userId)
 
-        return userBookService.findUserBooksByDynamicConditionWithStatusCounts(userId, status, sort, pageable)
+        return userBookService.findUserBooksByDynamicConditionWithStatusCounts(userId, status, sort, title, pageable)
     }
 }
