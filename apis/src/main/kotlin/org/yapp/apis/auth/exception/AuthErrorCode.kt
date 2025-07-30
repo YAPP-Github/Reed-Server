@@ -33,8 +33,17 @@ enum class AuthErrorCode(
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500_01", "Internal server error."),
     FAILED_TO_LOAD_PRIVATE_KEY(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500_02", "Failed to load Apple private key."),
     INVALID_PRIVATE_KEY_FORMAT(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500_03", "Invalid private key format."),
-    FAILED_TO_COMMUNICATE_WITH_PROVIDER(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500_04", "Failed to communicate with external provider."),
-    OAUTH_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500_05", "Social OAuth server error.");
+    FAILED_TO_COMMUNICATE_WITH_PROVIDER(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "AUTH_500_04",
+        "Failed to communicate with external provider."
+    ),
+    OAUTH_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500_05", "Social OAuth server error."),
+    MISSING_APPLE_REFRESH_TOKEN(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "AUTH_500_06",
+        "Apple did not provide a refresh token on initial login."
+    );
 
     override fun getHttpStatus(): HttpStatus = httpStatus
     override fun getCode(): String = code
