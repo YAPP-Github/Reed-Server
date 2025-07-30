@@ -17,7 +17,7 @@ class AppleClientSecretGenerator(
     @Qualifier("appleJwtEncoder")
     private val jwtEncoder: JwtEncoder,
 ) {
-    fun generate(): String {
+    fun generateClientSecret(): String {
         val header = JwsHeader.with(SignatureAlgorithm.ES256)
             .keyId(appleProperties.keyId)
             .build()
