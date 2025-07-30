@@ -9,11 +9,9 @@ import com.nimbusds.jose.proc.SecurityContext
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
-import org.springframework.security.oauth2.core.OAuth2TokenValidator
+import org.springframework.security.oauth2.core.*
 import org.springframework.security.oauth2.jwt.*
 import org.yapp.apis.auth.helper.apple.ApplePrivateKeyLoader
-import org.yapp.apis.auth.validator.AudienceValidator
 import java.security.interfaces.ECPublicKey
 
 @Configuration
@@ -84,7 +82,17 @@ class AppleJwtConfig(
 
         val issuerValidator: OAuth2TokenValidator<Jwt> =
             JwtValidators.createDefaultWithIssuer(appleProperties.audience)
-        val audienceValidator = AudienceValidator(appleProperties.clientId)
+
+        val audienceValidator = OAuth2TokenValidator<Jwt> { token ->
+            if (token.audience.contains(appleProperties.clientId)) {
+                OAuth2TokenValidatorResult.success()
+            } else {
+                val error = OAuth2Error(
+                    OAuth2ErrorCodes.INVALID_TOKEN, "The required audience is missing", null
+                )
+                OAuth2TokenValidatorResult.failure(error)
+            }
+        }
 
         val combinedValidator = DelegatingOAuth2TokenValidator(issuerValidator, audienceValidator)
         decoder.setJwtValidator(combinedValidator)
