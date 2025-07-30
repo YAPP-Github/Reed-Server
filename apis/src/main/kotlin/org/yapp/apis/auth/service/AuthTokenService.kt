@@ -8,11 +8,10 @@ import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.dto.response.UserIdResponse
 import org.yapp.gateway.jwt.JwtTokenService
-import org.yapp.globalutils.annotation.Helper
 
 @Service
 class AuthTokenService(
-    private val tokenService: TokenService,
+    private val refreshTokenService: RefreshTokenService,
     private val jwtTokenService: JwtTokenService
 ) {
     fun generateTokenPair(generateTokenPairRequest: GenerateTokenPairRequest): TokenPairResponse {
@@ -23,7 +22,7 @@ class AuthTokenService(
         val refreshToken = jwtTokenService.generateRefreshToken(userId)
         val expiration = jwtTokenService.getRefreshTokenExpiration()
 
-        val refreshTokenResponse = tokenService.saveRefreshToken(
+        val refreshTokenResponse = refreshTokenService.saveRefreshToken(
             TokenGenerateRequest.of(userId, refreshToken, expiration)
         )
 
@@ -31,15 +30,15 @@ class AuthTokenService(
     }
 
     fun validateAndGetUserIdFromRefreshToken(tokenRefreshRequest: TokenRefreshRequest): UserIdResponse {
-        tokenService.validateRefreshToken(tokenRefreshRequest.validRefreshToken())
-        return tokenService.getUserIdByToken(tokenRefreshRequest)
+        refreshTokenService.validateRefreshToken(tokenRefreshRequest.validRefreshToken())
+        return refreshTokenService.getUserIdByToken(tokenRefreshRequest)
     }
 
     fun deleteTokenForReissue(tokenRefreshRequest: TokenRefreshRequest) {
-        tokenService.deleteRefreshTokenByToken(tokenRefreshRequest.validRefreshToken())
+        refreshTokenService.deleteRefreshTokenByToken(tokenRefreshRequest.validRefreshToken())
     }
 
     fun deleteTokenForSignOut(deleteTokenRequest: DeleteTokenRequest) {
-        tokenService.deleteRefreshTokenByToken(deleteTokenRequest.validRefreshToken())
+        refreshTokenService.deleteRefreshTokenByToken(deleteTokenRequest.validRefreshToken())
     }
 }
