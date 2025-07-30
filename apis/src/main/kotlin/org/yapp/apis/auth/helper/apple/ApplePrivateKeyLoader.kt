@@ -1,7 +1,6 @@
 package org.yapp.apis.auth.helper.apple
 
 import org.springframework.core.io.ResourceLoader
-import org.springframework.stereotype.Component
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.util.AppleKeyParser
