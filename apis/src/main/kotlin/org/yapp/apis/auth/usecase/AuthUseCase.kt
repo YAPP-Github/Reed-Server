@@ -4,32 +4,42 @@ import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.auth.dto.request.*
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.dto.response.UserProfileResponse
+import org.yapp.apis.auth.service.AppleAuthService
 import org.yapp.apis.auth.service.AuthTokenService
-import org.yapp.apis.auth.service.SocialAuthService
-import org.yapp.apis.auth.service.TokenService
+import org.yapp.apis.auth.service.RefreshTokenService
 import org.yapp.apis.auth.service.UserAuthService
+import org.yapp.apis.auth.strategy.AppleAuthCredentials
+import org.yapp.apis.auth.strategy.AuthStrategyResolver
 import org.yapp.globalutils.annotation.UseCase
 import java.util.*
 
 @UseCase
 @Transactional(readOnly = true)
 class AuthUseCase(
-    private val socialAuthService: SocialAuthService,
+    private val authStrategyResolver: AuthStrategyResolver,
     private val userAuthService: UserAuthService,
-    private val tokenService: TokenService,
-    private val authTokenService: AuthTokenService
+    private val refreshTokenService: RefreshTokenService,
+    private val authTokenService: AuthTokenService,
+    private val appleAuthService: AppleAuthService
 ) {
     @Transactional
     fun signIn(socialLoginRequest: SocialLoginRequest): TokenPairResponse {
         val credentials = SocialLoginRequest.toCredentials(socialLoginRequest)
-        val strategy = socialAuthService.resolve(credentials)
-
+        val strategy = authStrategyResolver.resolve(credentials)
         val userCreateInfoResponse = strategy.authenticate(credentials)
-        val findOrCreateUserRequest = FindOrCreateUserRequest.from(userCreateInfoResponse)
-        val createUserResponse = userAuthService.findOrCreateUser(findOrCreateUserRequest)
-        val generateTokenPairRequest = GenerateTokenPairRequest.from(createUserResponse)
 
-        return authTokenService.generateTokenPair(generateTokenPairRequest)
+        val createUserResponse = userAuthService.findOrCreateUser(FindOrCreateUserRequest.from(userCreateInfoResponse))
+
+        if (credentials is AppleAuthCredentials) {
+            appleAuthService.saveAppleRefreshTokenIfMissing(
+                SaveAppleRefreshTokenRequest.of(
+                    createUserResponse,
+                    credentials
+                )
+            )
+        }
+
+        return authTokenService.generateTokenPair(GenerateTokenPairRequest.from(createUserResponse))
     }
 
     @Transactional
@@ -46,7 +56,7 @@ class AuthUseCase(
 
     @Transactional
     fun signOut(userId: UUID) {
-        val refreshTokenResponse = tokenService.getRefreshTokenByUserId(userId)
+        val refreshTokenResponse = refreshTokenService.getRefreshTokenByUserId(userId)
         val deleteTokenRequest = DeleteTokenRequest.from(refreshTokenResponse)
         authTokenService.deleteTokenForSignOut(deleteTokenRequest)
     }
