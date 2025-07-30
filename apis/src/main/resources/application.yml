@@ -34,7 +34,7 @@ springdoc:
 
 oauth:
   kakao:
-    admin-key: your-kakao-app-admin-key
+    admin-key: ${KAKAO_ADMIN_KEY}
   apple:
     clientId: ${APPLE_CLIENT_ID}
     keyId: ${APPLE_KEY_ID}
