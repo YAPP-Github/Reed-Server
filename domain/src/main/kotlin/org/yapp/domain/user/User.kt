@@ -6,20 +6,6 @@ import org.yapp.globalutils.validator.EmailValidator
 import java.time.LocalDateTime
 import java.util.*
 
-/**
- * User domain model.
- *
- * @property id The unique identifier of the user.
- * @property email The email of the user.
- * @property nickname The nickname of the user.
- * @property profileImageUrl The URL of the user's profile image.
- * @property providerType The type of authentication provider.
- * @property providerId The ID from the authentication provider.
- * @property role The roles of the user (e.g., USER, ADMIN).
- * @property createdAt The timestamp when the user was created.
- * @property updatedAt The timestamp when the user was last updated.
- * @property deletedAt The timestamp when the user was soft-deleted, or null if the user is not deleted.
- */
 data class User private constructor(
     val id: Id,
     val email: Email,
@@ -29,6 +15,7 @@ data class User private constructor(
     val providerId: ProviderId,
     val role: Role,
     val termsAgreed: Boolean = false,
+    val appleRefreshToken: String? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null
@@ -44,6 +31,12 @@ data class User private constructor(
     fun updateTermsAgreement(termsAgreed: Boolean): User {
         return this.copy(
             termsAgreed = termsAgreed
+        )
+    }
+
+    fun updateAppleRefreshToken(token: String): User {
+        return this.copy(
+            appleRefreshToken = token
         )
     }
 
@@ -64,7 +57,8 @@ data class User private constructor(
                 providerType = providerType,
                 providerId = ProviderId.newInstance(providerId),
                 role = Role.USER,
-                termsAgreed = termsAgreed
+                termsAgreed = termsAgreed,
+                appleRefreshToken = null
             )
         }
 
@@ -86,7 +80,8 @@ data class User private constructor(
                 providerType = providerType,
                 providerId = ProviderId.newInstance(providerId),
                 role = role,
-                termsAgreed = termsAgreed
+                termsAgreed = termsAgreed,
+                appleRefreshToken = null
             )
         }
 
@@ -99,6 +94,7 @@ data class User private constructor(
             providerId: ProviderId,
             role: Role,
             termsAgreed: Boolean = false,
+            appleRefreshToken: String? = null,
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null,
             deletedAt: LocalDateTime? = null
@@ -112,6 +108,7 @@ data class User private constructor(
                 providerId = providerId,
                 role = role,
                 termsAgreed = termsAgreed,
+                appleRefreshToken = appleRefreshToken,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
                 deletedAt = deletedAt
