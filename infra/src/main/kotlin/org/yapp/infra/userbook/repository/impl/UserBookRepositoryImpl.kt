@@ -49,9 +49,10 @@ class UserBookRepositoryImpl(
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): Page<UserBook> {
-        return jpaUserBookRepository.findUserBooksByDynamicCondition(userId, status, sort, pageable)
+        return jpaUserBookRepository.findUserBooksByDynamicCondition(userId, status, sort, title, pageable)
             .map { it.toDomain() }
     }
 
