@@ -9,7 +9,7 @@ import org.yapp.domain.token.TokenDomainRedisService
 import java.util.*
 
 @Service
-class TokenService(
+class RefreshTokenService(
     private val tokenDomainRedisService: TokenDomainRedisService,
 ) {
     fun deleteRefreshTokenByToken(token: String) {
