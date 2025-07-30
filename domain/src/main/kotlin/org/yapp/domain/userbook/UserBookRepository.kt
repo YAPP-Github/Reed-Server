@@ -21,6 +21,7 @@ interface UserBookRepository {
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): Page<UserBook>
 

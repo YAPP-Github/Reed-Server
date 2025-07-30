@@ -41,9 +41,10 @@ class UserBookDomainService(
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): Page<UserBookInfoVO> {
-        val page = userBookRepository.findUserBooksByDynamicCondition(userId, status, sort, pageable)
+        val page = userBookRepository.findUserBooksByDynamicCondition(userId, status, sort, title, pageable)
         return page.map { UserBookInfoVO.newInstance(it) }
     }
 
