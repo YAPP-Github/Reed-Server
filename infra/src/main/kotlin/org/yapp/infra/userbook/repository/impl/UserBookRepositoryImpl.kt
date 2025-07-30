@@ -28,6 +28,10 @@ class UserBookRepositoryImpl(
         return jpaUserBookRepository.findByIdAndUserId(id, userId)?.toDomain()
     }
 
+    override fun findById(id: UUID): UserBook? {
+        return jpaUserBookRepository.findById(id).orElse(null)?.toDomain()
+    }
+
     override fun save(userBook: UserBook): UserBook {
         val savedEntity = jpaUserBookRepository.saveAndFlush(UserBookEntity.fromDomain(userBook))
         return savedEntity.toDomain()
