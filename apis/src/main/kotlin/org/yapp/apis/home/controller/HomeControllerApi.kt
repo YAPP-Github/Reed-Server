@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
@@ -50,6 +52,6 @@ interface HomeControllerApi {
             description = "조회할 최대 도서 수 (기본값: 3, 최대: 10)",
             example = "3"
         )
-        @RequestParam(defaultValue = "3") limit: Int
+        @RequestParam(defaultValue = "3") @Min(1) @Max(10) limit: Int
     ): ResponseEntity<UserHomeResponse>
 } 
