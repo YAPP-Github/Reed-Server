@@ -96,7 +96,7 @@ class UserBookDomainService(
         return userBooks.map { userBook ->
             HomeBookVO.newInstance(
                 userBook = userBook,
-                lastRecordedAt = userBook.updatedAt!!
+                lastRecordedAt = userBook.updatedAt ?: throw IllegalStateException("UserBook의 updatedAt이 null입니다: ${userBook.id}")
             )
         }
     }
