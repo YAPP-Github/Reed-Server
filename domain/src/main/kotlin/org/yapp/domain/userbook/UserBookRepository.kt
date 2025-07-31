@@ -2,6 +2,7 @@ package org.yapp.domain.userbook
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import java.time.LocalDateTime
 import java.util.UUID
 
 
@@ -26,4 +27,5 @@ interface UserBookRepository {
 
     fun countUserBooksByStatus(userId: UUID, status: BookStatus): Long
 
+    fun findUserBooksWithLastRecord(userId: UUID, limit: Int): List<Pair<UserBook, LocalDateTime>>
 }

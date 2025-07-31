@@ -9,6 +9,7 @@ import org.yapp.domain.userbook.UserBook
 import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.infra.userbook.entity.UserBookEntity
 import org.yapp.infra.userbook.repository.JpaUserBookRepository
+import java.time.LocalDateTime
 import java.util.*
 
 @Repository
@@ -51,11 +52,22 @@ class UserBookRepositoryImpl(
         sort: UserBookSortType?,
         pageable: Pageable
     ): Page<UserBook> {
-        return jpaUserBookRepository.findUserBooksByDynamicCondition(userId, status, sort, pageable)
-            .map { it.toDomain() }
+        val page = jpaUserBookRepository.findUserBooksByDynamicCondition(userId, status, sort, pageable)
+        return page.map { it.toDomain() }
     }
 
     override fun countUserBooksByStatus(userId: UUID, status: BookStatus): Long {
         return jpaUserBookRepository.countUserBooksByStatus(userId, status)
+    }
+
+    override fun findUserBooksWithLastRecord(userId: UUID, limit: Int): List<Pair<UserBook, LocalDateTime>> {
+        val tuples = jpaUserBookRepository.findUserBooksWithLastRecord(userId, limit)
+
+        return tuples.map { tuple ->
+            val userBookEntity = tuple.get(0, UserBookEntity::class.java)!!
+            val lastRecordedAt = tuple.get(1, LocalDateTime::class.java)!!
+
+            Pair(userBookEntity.toDomain(), lastRecordedAt)
+        }
     }
 }

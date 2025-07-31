@@ -1,5 +1,6 @@
 package org.yapp.infra.userbook.repository
 
+import com.querydsl.core.Tuple
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.yapp.domain.userbook.BookStatus
@@ -19,4 +20,9 @@ interface JpaUserBookQuerydslRepository {
         userId: UUID,
         status: BookStatus
     ): Long
+
+    fun findUserBooksWithLastRecord(
+        userId: UUID,
+        limit: Int
+    ): List<Tuple>
 }

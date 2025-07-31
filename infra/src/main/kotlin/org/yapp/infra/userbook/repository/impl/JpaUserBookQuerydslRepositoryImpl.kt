@@ -1,5 +1,6 @@
 package org.yapp.infra.userbook.repository.impl
 
+import com.querydsl.core.Tuple
 import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookSortType
+import org.yapp.infra.readingrecord.entity.QReadingRecordEntity
 import org.yapp.infra.userbook.entity.QUserBookEntity
 import org.yapp.infra.userbook.entity.UserBookEntity
 import org.yapp.infra.userbook.repository.JpaUserBookQuerydslRepository
@@ -20,6 +22,7 @@ class JpaUserBookQuerydslRepositoryImpl(
 ) : JpaUserBookQuerydslRepository {
 
     private val userBook = QUserBookEntity.userBookEntity
+    private val readingRecord = QReadingRecordEntity.readingRecordEntity
 
     override fun findUserBooksByDynamicCondition(
         userId: UUID,
@@ -64,6 +67,21 @@ class JpaUserBookQuerydslRepositoryImpl(
                 userBook.status.eq(status)
             )
             .fetchOne() ?: 0L
+    }
+
+    override fun findUserBooksWithLastRecord(
+        userId: UUID,
+        limit: Int
+    ): List<Tuple> {
+        return queryFactory
+            .select(userBook, readingRecord.createdAt.max())
+            .from(userBook)
+            .join(readingRecord).on(userBook.id.eq(readingRecord.userBookId))
+            .where(userBook.userId.eq(userId))
+            .groupBy(userBook.id)
+            .orderBy(readingRecord.createdAt.max().desc())
+            .limit(limit.toLong())
+            .fetch()
     }
 
     private fun statusEq(status: BookStatus?): BooleanExpression? {
