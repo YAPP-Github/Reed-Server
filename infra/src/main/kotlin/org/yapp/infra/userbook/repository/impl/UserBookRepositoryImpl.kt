@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.yapp.domain.userbook.BookStatus
-import org.yapp.domain.userbook.UserBookRepository
 import org.yapp.domain.userbook.UserBook
+import org.yapp.domain.userbook.UserBookRepository
 import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.infra.userbook.entity.UserBookEntity
 import org.yapp.infra.userbook.repository.JpaUserBookRepository
@@ -14,7 +14,7 @@ import java.util.*
 
 @Repository
 class UserBookRepositoryImpl(
-    private val jpaUserBookRepository: JpaUserBookRepository
+    private val jpaUserBookRepository: JpaUserBookRepository,
 ) : UserBookRepository {
 
     override fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook? {
@@ -60,14 +60,20 @@ class UserBookRepositoryImpl(
         return jpaUserBookRepository.countUserBooksByStatus(userId, status)
     }
 
-    override fun findUserBooksWithLastRecord(userId: UUID, limit: Int): List<Pair<UserBook, LocalDateTime>> {
-        val tuples = jpaUserBookRepository.findUserBooksWithLastRecord(userId, limit)
+    override fun findRecordedBooksSortedByRecency(userId: UUID): List<Pair<UserBook, LocalDateTime>> {
+        val userBookLastRecordsProjections = jpaUserBookRepository.findRecordedBooksSortedByRecency(userId)
 
-        return tuples.map { tuple ->
-            val userBookEntity = tuple.get(0, UserBookEntity::class.java)!!
-            val lastRecordedAt = tuple.get(1, LocalDateTime::class.java)!!
-
-            Pair(userBookEntity.toDomain(), lastRecordedAt)
+        return userBookLastRecordsProjections.map { tuple ->
+            Pair(tuple.userBookEntity.toDomain(), tuple.lastRecordedAt)
         }
+    }
+
+    override fun findUnrecordedBooksSortedByPriority(
+        userId: UUID,
+        limit: Int,
+        excludeIds: Set<UUID>
+    ): List<UserBook> {
+        val entities = jpaUserBookRepository.findUnrecordedBooksSortedByPriority(userId, excludeIds, limit)
+        return entities.map { it.toDomain() }
     }
 }
