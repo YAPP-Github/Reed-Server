@@ -13,6 +13,7 @@ interface JpaUserBookQuerydslRepository {
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): Page<UserBookEntity>
 

@@ -19,6 +19,22 @@ data class BookSearchResponse private constructor(
     val searchCategoryName: String?,
     val books: List<BookSummary>
 ) {
+    fun from(updatedBooks: List<BookSummary>): BookSearchResponse {
+        return BookSearchResponse(
+            version = this.version,
+            title = this.title,
+            link = this.link,
+            pubDate = this.pubDate,
+            totalResults = this.totalResults,
+            startIndex = this.startIndex,
+            itemsPerPage = this.itemsPerPage,
+            query = this.query,
+            searchCategoryId = this.searchCategoryId,
+            searchCategoryName = this.searchCategoryName,
+            books = updatedBooks
+        )
+    }
+
     companion object {
         fun from(response: AladinSearchResponse): BookSearchResponse {
             val books = response.item?.mapNotNull { BookSummary.fromAladinItem(it) } ?: emptyList()
@@ -62,7 +78,7 @@ data class BookSearchResponse private constructor(
                     author = item.author,
                     publisher = item.publisher,
                     coverImageUrl = item.cover,
-                    userBookStatus = BookStatus.BEFORE_READING
+                    userBookStatus = BookStatus.BEFORE_REGISTRATION
                 )
             }
         }

@@ -43,12 +43,14 @@ class BookUseCase(
 
         val userBooksReponse = userBookService.findAllByUserIdAndBookIsbnIn(UserBooksByIsbnsRequest.of(userId, isbns))
         val statusMap = userBooksReponse.associateBy({ it.bookIsbn }, { it.status })
-        searchResponse.books.forEach { bookSummary ->
+
+        val updatedBooks = searchResponse.books.map { bookSummary ->
             statusMap[bookSummary.isbn]?.let { status ->
                 bookSummary.updateStatus(status)
-            }
+            } ?: bookSummary
         }
-        return searchResponse
+
+        return searchResponse.from(updatedBooks)
     }
 
     fun getBookDetail(bookDetailRequest: BookDetailRequest): BookDetailResponse {
@@ -75,10 +77,11 @@ class BookUseCase(
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): UserBookPageResponse {
         userAuthService.validateUserExists(userId)
 
-        return userBookService.findUserBooksByDynamicConditionWithStatusCounts(userId, status, sort, pageable)
+        return userBookService.findUserBooksByDynamicConditionWithStatusCounts(userId, status, sort, title, pageable)
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
+import jakarta.persistence.Index
 import org.yapp.infra.common.BaseTimeEntity
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
@@ -11,7 +12,13 @@ import java.sql.Types
 import java.util.*
 
 @Entity
-@Table(name = "user_books")
+@Table(
+    name = "user_books",
+    indexes = [
+        Index(name = "idx_user_books_title", columnList = "title"),
+        Index(name = "idx_user_books_user_id_title", columnList = "user_id, title")
+    ]
+)
 @SQLDelete(sql = "UPDATE user_books SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 class UserBookEntity(

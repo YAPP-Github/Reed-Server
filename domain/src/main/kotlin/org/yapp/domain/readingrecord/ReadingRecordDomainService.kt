@@ -7,6 +7,7 @@ import org.yapp.domain.readingrecordtag.ReadingRecordTag
 import org.yapp.domain.readingrecordtag.ReadingRecordTagRepository
 import org.yapp.domain.tag.Tag
 import org.yapp.domain.tag.TagRepository
+import org.yapp.domain.userbook.UserBookRepository
 import org.yapp.globalutils.annotation.DomainService
 import java.util.UUID
 
@@ -14,7 +15,8 @@ import java.util.UUID
 class ReadingRecordDomainService(
     private val readingRecordRepository: ReadingRecordRepository,
     private val tagRepository: TagRepository,
-    private val readingRecordTagRepository: ReadingRecordTagRepository
+    private val readingRecordTagRepository: ReadingRecordTagRepository,
+    private val userBookRepository: UserBookRepository
 ) {
 
     fun createReadingRecord(
@@ -46,7 +48,15 @@ class ReadingRecordDomainService(
         }
         readingRecordTagRepository.saveAll(readingRecordTags)
 
-        return ReadingRecordInfoVO.newInstance(savedReadingRecord, tags.map { it.name })
+        val userBook = userBookRepository.findById(userBookId)
+
+        return ReadingRecordInfoVO.newInstance(
+            readingRecord = savedReadingRecord,
+            emotionTags = tags.map { it.name },
+            bookTitle = userBook?.title,
+            bookPublisher = userBook?.publisher,
+            bookCoverImageUrl = userBook?.coverImageUrl
+        )
     }
 
     fun findReadingRecordsByDynamicCondition(
@@ -55,11 +65,21 @@ class ReadingRecordDomainService(
         pageable: Pageable
     ): Page<ReadingRecordInfoVO> {
         val page = readingRecordRepository.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)
+
+        // Get the UserBook entity to get the book thumbnail, title, and publisher
+        val userBook = userBookRepository.findById(userBookId)
+
         return page.map { readingRecord ->
             val readingRecordTags = readingRecordTagRepository.findByReadingRecordId(readingRecord.id.value)
             val tagIds = readingRecordTags.map { it.tagId.value }
             val tags = tagRepository.findByIds(tagIds)
-            ReadingRecordInfoVO.newInstance(readingRecord, tags.map { it.name })
+            ReadingRecordInfoVO.newInstance(
+                readingRecord = readingRecord,
+                emotionTags = tags.map { it.name },
+                bookTitle = userBook?.title,
+                bookPublisher = userBook?.publisher,
+                bookCoverImageUrl = userBook?.coverImageUrl
+            )
         }
     }
 
