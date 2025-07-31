@@ -2,11 +2,11 @@ package org.yapp.domain.userbook
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.yapp.domain.userbook.vo.HomeBookVO
 import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
 import org.yapp.globalutils.annotation.DomainService
-import java.util.UUID
-import org.yapp.domain.userbook.vo.UserBookWithLastRecordVO
+import java.util.*
 
 @DomainService
 class UserBookDomainService(
@@ -71,13 +71,32 @@ class UserBookDomainService(
         return userBookRepository.findByIdAndUserId(userBookId, userId)
     }
 
-    fun findRecentReadingBooksWithLastRecord(userId: UUID, limit: Int): List<UserBookWithLastRecordVO> {
-        val userBooksWithLastRecord = userBookRepository.findUserBooksWithLastRecord(userId, limit)
-        
-        return userBooksWithLastRecord.map { (userBook, lastRecordedAt) ->
-            UserBookWithLastRecordVO.newInstance(
+    fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {
+        val resultPairs = userBookRepository.findRecordedBooksSortedByRecency(userId)
+
+        return resultPairs.map { (userBook, lastRecordedAt) ->
+            HomeBookVO.newInstance(
                 userBook = userBook,
                 lastRecordedAt = lastRecordedAt
+            )
+        }
+    }
+
+    fun findBooksWithoutRecordsByStatusPriority(
+        userId: UUID,
+        limit: Int,
+        excludeIds: Set<UUID>
+    ): List<HomeBookVO> {
+        val userBooks = userBookRepository.findUnrecordedBooksSortedByPriority(
+            userId,
+            limit,
+            excludeIds
+        )
+
+        return userBooks.map { userBook ->
+            HomeBookVO.newInstance(
+                userBook = userBook,
+                lastRecordedAt = userBook.updatedAt!!
             )
         }
     }
