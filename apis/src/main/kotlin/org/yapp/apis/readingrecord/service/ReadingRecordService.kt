@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
+import org.yapp.apis.readingrecord.exception.ReadingRecordErrorCode
+import org.yapp.apis.readingrecord.exception.ReadingRecordNotFoundException
 import org.yapp.domain.book.BookDomainService
 import org.yapp.domain.readingrecord.ReadingRecordDomainService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
@@ -38,6 +40,20 @@ class ReadingRecordService(
         return ReadingRecordResponse.from(readingRecordInfoVO)
     }
 
+    fun getReadingRecordDetail(
+        userId: UUID,
+        readingRecordId: UUID
+    ): ReadingRecordResponse {
+        val readingRecordInfoVO = readingRecordDomainService.findReadingRecordById(readingRecordId)
+            ?: throw ReadingRecordNotFoundException(
+                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
+                "Reading record not found with id: $readingRecordId"
+            )
+
+        userBookService.validateUserBookExists(userId, readingRecordInfoVO.userBookId.value)
+
+        return ReadingRecordResponse.from(readingRecordInfoVO)
+    }
 
     fun getReadingRecordsByDynamicCondition(
         userBookId: UUID,

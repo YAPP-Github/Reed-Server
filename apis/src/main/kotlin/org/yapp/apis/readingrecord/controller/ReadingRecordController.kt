@@ -41,6 +41,18 @@ class ReadingRecordController(
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
+    @GetMapping("/detail/{readingRecordId}")
+    override fun getReadingRecordDetail(
+        @AuthenticationPrincipal userId: UUID,
+        @PathVariable readingRecordId: UUID
+    ): ResponseEntity<ReadingRecordResponse> {
+        val response = readingRecordUseCase.getReadingRecordDetail(
+            userId = userId,
+            readingRecordId = readingRecordId
+        )
+        return ResponseEntity.ok(response)
+    }
+
     @GetMapping("/{userBookId}")
     override fun getReadingRecords(
         @AuthenticationPrincipal userId: UUID,
