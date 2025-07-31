@@ -4,7 +4,7 @@ import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
 import java.time.LocalDateTime
 
-data class UserBookWithLastRecordVO private constructor(
+data class HomeBookVO private constructor(
     val id: UserBook.Id,
     val userId: UserBook.UserId,
     val bookId: UserBook.BookId,
@@ -32,8 +32,8 @@ data class UserBookWithLastRecordVO private constructor(
         fun newInstance(
             userBook: UserBook,
             lastRecordedAt: LocalDateTime
-        ): UserBookWithLastRecordVO {
-            return UserBookWithLastRecordVO(
+        ): HomeBookVO {
+            return HomeBookVO(
                 id = userBook.id,
                 userId = userBook.userId,
                 bookId = userBook.bookId,
