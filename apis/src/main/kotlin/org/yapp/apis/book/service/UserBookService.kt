@@ -9,12 +9,10 @@ import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.exception.UserBookErrorCode
 import org.yapp.apis.book.exception.UserBookNotFoundException
-import org.yapp.apis.home.dto.response.UserHomeResponse
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
 import org.yapp.domain.userbook.UserBookDomainService
 import org.yapp.domain.userbook.UserBookSortType
-import org.yapp.domain.userbook.vo.HomeBookVO
 import java.util.*
 
 @Service
@@ -51,29 +49,7 @@ class UserBookService(
         return userBooks.map { UserBookResponse.from(it) }
     }
 
-    fun findRecentReadingBooksForHome(userId: UUID, limit: Int): UserHomeResponse {
-        val selectedBooks = selectBooksForHome(userId, limit)
-        return UserHomeResponse.from(selectedBooks)
-    }
 
-    private fun selectBooksForHome(userId: UUID, limit: Int): List<HomeBookVO> {
-        val booksWithRecords = userBookDomainService.findBooksWithRecordsOrderByLatest(userId)
-
-        if (booksWithRecords.size >= limit) {
-            return booksWithRecords.take(limit)
-        }
-
-        val neededCount = limit - booksWithRecords.size
-        val excludedBookIds = booksWithRecords.map { it.id.value }.toSet()
-
-        val booksWithoutRecords = userBookDomainService.findBooksWithoutRecordsByStatusPriority(
-            userId,
-            neededCount,
-            excludedBookIds
-        )
-
-        return booksWithRecords + booksWithoutRecords
-    }
 
     private fun findUserBooksByDynamicCondition(
         userId: UUID,
