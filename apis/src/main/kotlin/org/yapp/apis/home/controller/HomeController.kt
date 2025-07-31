@@ -15,7 +15,7 @@ import java.util.*
 
 @Validated
 @RestController
-@RequestMapping("/api/home")
+@RequestMapping("/api/v1/home")
 class HomeController(
     private val homeUseCase: HomeUseCase
 ) : HomeControllerApi {

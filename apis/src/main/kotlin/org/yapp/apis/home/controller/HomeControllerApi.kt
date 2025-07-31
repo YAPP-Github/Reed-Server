@@ -19,7 +19,7 @@ import org.yapp.globalutils.exception.ErrorResponse
 import java.util.*
 
 @Tag(name = "Home", description = "홈 화면 관련 API")
-@RequestMapping("/api/home")
+@RequestMapping("/api/v1/home")
 interface HomeControllerApi {
 
     @Operation(
