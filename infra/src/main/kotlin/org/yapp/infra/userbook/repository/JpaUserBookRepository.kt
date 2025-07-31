@@ -10,5 +10,4 @@ interface JpaUserBookRepository : JpaRepository<UserBookEntity, UUID>, JpaUserBo
     fun findByIdAndUserId(id: UUID, userId: UUID): UserBookEntity?
     fun findAllByUserId(userId: UUID): List<UserBookEntity>
     fun findAllByUserIdAndBookIsbnIn(userId: UUID, bookIsbnList: List<String>): List<UserBookEntity>
-
 }

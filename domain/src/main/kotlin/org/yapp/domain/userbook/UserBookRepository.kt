@@ -3,7 +3,7 @@ package org.yapp.domain.userbook
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 
 interface UserBookRepository {
@@ -27,5 +27,11 @@ interface UserBookRepository {
 
     fun countUserBooksByStatus(userId: UUID, status: BookStatus): Long
 
-    fun findUserBooksWithLastRecord(userId: UUID, limit: Int): List<Pair<UserBook, LocalDateTime>>
+    fun findRecordedBooksSortedByRecency(userId: UUID): List<Pair<UserBook, LocalDateTime>>
+
+    fun findUnrecordedBooksSortedByPriority(
+        userId: UUID,
+        limit: Int,
+        excludeIds: Set<UUID>
+    ): List<UserBook>
 }
