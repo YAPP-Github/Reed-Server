@@ -1,6 +1,6 @@
 package org.yapp.apis.home.dto.response
 
-import org.yapp.domain.userbook.vo.UserBookWithLastRecordVO
+import org.yapp.domain.userbook.vo.HomeBookVO
 import java.time.LocalDateTime
 import java.util.*
 
@@ -13,10 +13,10 @@ data class UserHomeResponse private constructor(
         val author: String,
         val publisher: String,
         val coverImageUrl: String,
-        val lastRecordedAt: LocalDateTime?
+        val lastRecordedAt: LocalDateTime
     ) {
         companion object {
-            fun from(userBookInfo: UserBookWithLastRecordVO): RecentBookResponse {
+            fun from(userBookInfo: HomeBookVO): RecentBookResponse {
                 return RecentBookResponse(
                     userBookId = userBookInfo.id.value,
                     title = userBookInfo.title,
@@ -30,7 +30,7 @@ data class UserHomeResponse private constructor(
     }
 
     companion object {
-        fun from(recentBooks: List<UserBookWithLastRecordVO>): UserHomeResponse {
+        fun from(recentBooks: List<HomeBookVO>): UserHomeResponse {
             return UserHomeResponse(
                 recentBooks = recentBooks.map { RecentBookResponse.from(it) }
             )

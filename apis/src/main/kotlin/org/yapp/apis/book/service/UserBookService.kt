@@ -14,7 +14,7 @@ import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
 import org.yapp.domain.userbook.UserBookDomainService
 import org.yapp.domain.userbook.UserBookSortType
-import org.yapp.domain.userbook.vo.UserBookWithLastRecordVO
+import org.yapp.domain.userbook.vo.HomeBookVO
 import java.util.*
 
 @Service
@@ -52,52 +52,27 @@ class UserBookService(
     }
 
     fun findRecentReadingBooksForHome(userId: UUID, limit: Int): UserHomeResponse {
-        val fetchLimit = maxOf(limit * 2, 10)
-        val allUserBookVoInfos = userBookDomainService.findRecentReadingBooksWithLastRecord(userId, fetchLimit)
-        val selectedBooks = selectBooksByPriority(allUserBookVoInfos, limit)
-
+        val selectedBooks = selectBooksForHome(userId, limit)
         return UserHomeResponse.from(selectedBooks)
     }
 
-    private fun selectBooksByPriority(
-        allBooks: List<UserBookWithLastRecordVO>,
-        targetLimit: Int
-    ): List<UserBookWithLastRecordVO> {
-        if (allBooks.isEmpty()) return emptyList()
+    private fun selectBooksForHome(userId: UUID, limit: Int): List<HomeBookVO> {
+        val booksWithRecords = userBookDomainService.findBooksWithRecordsOrderByLatest(userId)
 
-        val result = mutableListOf<UserBookWithLastRecordVO>()
-        val usedBookIds = mutableSetOf<UUID>()
-
-        val readingBooks = allBooks
-            .filter { it.status == BookStatus.READING }
-            .sortedByDescending { it.lastRecordedAt }
-
-        val readingSelected = readingBooks.take(targetLimit)
-        result.addAll(readingSelected)
-        usedBookIds.addAll(readingSelected.map { it.id.value })
-
-        if (result.size < targetLimit) {
-            val remainingSlots = targetLimit - result.size
-            val completedBooks = allBooks
-                .filter { it.status == BookStatus.COMPLETED && !usedBookIds.contains(it.id.value) }
-                .sortedByDescending { it.lastRecordedAt }
-
-            val completedSelected = completedBooks.take(remainingSlots)
-            result.addAll(completedSelected)
-            usedBookIds.addAll(completedSelected.map { it.id.value })
+        if (booksWithRecords.size >= limit) {
+            return booksWithRecords.take(limit)
         }
 
-        if (result.size < targetLimit) {
-            val remainingSlots = targetLimit - result.size
-            val remainingBooks = allBooks
-                .filter { !usedBookIds.contains(it.id.value) }
-                .sortedByDescending { it.lastRecordedAt }
+        val neededCount = limit - booksWithRecords.size
+        val excludedBookIds = booksWithRecords.map { it.id.value }.toSet()
 
-            val remainingSelected = remainingBooks.take(remainingSlots)
-            result.addAll(remainingSelected)
-        }
+        val booksWithoutRecords = userBookDomainService.findBooksWithoutRecordsByStatusPriority(
+            userId,
+            neededCount,
+            excludedBookIds
+        )
 
-        return result
+        return booksWithRecords + booksWithoutRecords
     }
 
     private fun findUserBooksByDynamicCondition(
