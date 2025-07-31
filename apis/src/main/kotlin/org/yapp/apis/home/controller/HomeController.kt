@@ -1,5 +1,7 @@
 package org.yapp.apis.home.controller
 
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
@@ -21,7 +23,7 @@ class HomeController(
     @GetMapping
     override fun getUserHomeData(
         @AuthenticationPrincipal userId: UUID,
-        @RequestParam(defaultValue = "3") limit: Int
+        @RequestParam(defaultValue = "3") @Min(1) @Max(10) limit: Int
     ): ResponseEntity<UserHomeResponse> {
         val homeData = homeUseCase.getUserHomeData(userId, limit)
         return ResponseEntity.ok(homeData)
