@@ -2,10 +2,11 @@ package org.yapp.domain.userbook
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.yapp.domain.userbook.vo.HomeBookVO
 import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
 import org.yapp.globalutils.annotation.DomainService
-import java.util.UUID
+import java.util.*
 
 @DomainService
 class UserBookDomainService(
@@ -69,5 +70,37 @@ class UserBookDomainService(
 
     fun findByIdAndUserId(userBookId: UUID, userId: UUID): UserBook? {
         return userBookRepository.findByIdAndUserId(userBookId, userId)
+    }
+
+    fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {
+        val resultTriples = userBookRepository.findRecordedBooksSortedByRecency(userId)
+
+        return resultTriples.map { (userBook, lastRecordedAt, recordCount) ->
+            HomeBookVO.newInstance(
+                userBook = userBook,
+                lastRecordedAt = lastRecordedAt,
+                recordCount = recordCount.toInt()
+            )
+        }
+    }
+
+    fun findBooksWithoutRecordsByStatusPriority(
+        userId: UUID,
+        limit: Int,
+        excludeIds: Set<UUID>
+    ): List<HomeBookVO> {
+        val userBooks = userBookRepository.findUnrecordedBooksSortedByPriority(
+            userId,
+            limit,
+            excludeIds
+        )
+
+        return userBooks.map { userBook ->
+            HomeBookVO.newInstance(
+                userBook = userBook,
+                lastRecordedAt = userBook.updatedAt ?: throw IllegalStateException("UserBook의 updatedAt이 null입니다: ${userBook.id}"),
+                recordCount = 0
+            )
+        }
     }
 }

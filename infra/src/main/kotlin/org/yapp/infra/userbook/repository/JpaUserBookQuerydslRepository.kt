@@ -5,7 +5,8 @@ import org.springframework.data.domain.Pageable
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.infra.userbook.entity.UserBookEntity
-import java.util.UUID
+import org.yapp.infra.userbook.repository.dto.UserBookLastRecordProjection
+import java.util.*
 
 interface JpaUserBookQuerydslRepository {
     fun findUserBooksByDynamicCondition(
@@ -20,4 +21,12 @@ interface JpaUserBookQuerydslRepository {
         userId: UUID,
         status: BookStatus
     ): Long
+
+    fun findRecordedBooksSortedByRecency(userId: UUID): List<UserBookLastRecordProjection>
+
+    fun findUnrecordedBooksSortedByPriority(
+        userId: UUID,
+        excludeIds: Set<UUID>,
+        limit: Int
+    ): List<UserBookEntity>
 }

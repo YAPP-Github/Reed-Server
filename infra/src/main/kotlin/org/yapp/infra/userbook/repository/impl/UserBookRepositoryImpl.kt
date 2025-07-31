@@ -4,16 +4,17 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import org.yapp.domain.userbook.BookStatus
-import org.yapp.domain.userbook.UserBookRepository
 import org.yapp.domain.userbook.UserBook
+import org.yapp.domain.userbook.UserBookRepository
 import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.infra.userbook.entity.UserBookEntity
 import org.yapp.infra.userbook.repository.JpaUserBookRepository
+import java.time.LocalDateTime
 import java.util.*
 
 @Repository
 class UserBookRepositoryImpl(
-    private val jpaUserBookRepository: JpaUserBookRepository
+    private val jpaUserBookRepository: JpaUserBookRepository,
 ) : UserBookRepository {
 
     override fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook? {
@@ -56,11 +57,28 @@ class UserBookRepositoryImpl(
         title: String?,
         pageable: Pageable
     ): Page<UserBook> {
-        return jpaUserBookRepository.findUserBooksByDynamicCondition(userId, status, sort, title, pageable)
-            .map { it.toDomain() }
+        val page = jpaUserBookRepository.findUserBooksByDynamicCondition(userId, status, sort, title, pageable)
+        return page.map { it.toDomain() }
     }
 
     override fun countUserBooksByStatus(userId: UUID, status: BookStatus): Long {
         return jpaUserBookRepository.countUserBooksByStatus(userId, status)
+    }
+
+    override fun findRecordedBooksSortedByRecency(userId: UUID): List<Triple<UserBook, LocalDateTime, Long>> {
+        val userBookLastRecordsProjections = jpaUserBookRepository.findRecordedBooksSortedByRecency(userId)
+
+        return userBookLastRecordsProjections.map { projection ->
+            Triple(projection.userBookEntity.toDomain(), projection.lastRecordedAt, projection.recordCount)
+        }
+    }
+
+    override fun findUnrecordedBooksSortedByPriority(
+        userId: UUID,
+        limit: Int,
+        excludeIds: Set<UUID>
+    ): List<UserBook> {
+        val entities = jpaUserBookRepository.findUnrecordedBooksSortedByPriority(userId, excludeIds, limit)
+        return entities.map { it.toDomain() }
     }
 }
