@@ -6,17 +6,15 @@ import org.springframework.stereotype.Service
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
-import org.yapp.domain.book.BookDomainService
 import org.yapp.domain.readingrecord.ReadingRecordDomainService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
-import java.util.UUID
+import java.util.*
 
 
 @Service
 class ReadingRecordService(
     private val readingRecordDomainService: ReadingRecordDomainService,
     private val userBookService: UserBookService,
-    private val bookDomainService: BookDomainService
 ) {
 
     fun createReadingRecord(
@@ -25,7 +23,6 @@ class ReadingRecordService(
         request: CreateReadingRecordRequest
     ): ReadingRecordResponse {
         userBookService.validateUserBookExists(userId, userBookId)
-
 
         val readingRecordInfoVO = readingRecordDomainService.createReadingRecord(
             userBookId = userBookId,
