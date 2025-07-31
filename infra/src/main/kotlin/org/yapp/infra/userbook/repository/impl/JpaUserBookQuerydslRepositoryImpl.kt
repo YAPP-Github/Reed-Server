@@ -31,13 +31,15 @@ class JpaUserBookQuerydslRepositoryImpl(
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): Page<UserBookEntity> {
         val baseQuery = queryFactory
             .selectFrom(userBook)
             .where(
                 userBook.userId.eq(userId),
-                statusEq(status)
+                statusEq(status),
+                titleContains(title)
             )
 
         val results = baseQuery
@@ -51,7 +53,8 @@ class JpaUserBookQuerydslRepositoryImpl(
             .from(userBook)
             .where(
                 userBook.userId.eq(userId),
-                statusEq(status)
+                statusEq(status),
+                titleContains(title)
             )
             .fetchOne() ?: 0L
 
@@ -147,6 +150,12 @@ class JpaUserBookQuerydslRepositoryImpl(
 
     private fun statusEq(status: BookStatus?): BooleanExpression? {
         return status?.let { userBook.status.eq(it) }
+    }
+
+    private fun titleContains(title: String?): BooleanExpression? {
+        return title?.takeIf { it.isNotBlank() }?.let {
+            userBook.title.like("%" + it + "%")
+        }
     }
 
     private fun createOrderSpecifier(sort: UserBookSortType?): OrderSpecifier<*> {

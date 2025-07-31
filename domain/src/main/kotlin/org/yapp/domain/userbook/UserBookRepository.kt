@@ -11,6 +11,7 @@ interface UserBookRepository {
     fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook?
     fun findByBookIdAndUserId(bookId: UUID, userId: UUID): UserBook?
     fun findByIdAndUserId(id: UUID, userId: UUID): UserBook?
+    fun findById(id: UUID): UserBook?
 
     fun save(userBook: UserBook): UserBook
 
@@ -22,6 +23,7 @@ interface UserBookRepository {
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): Page<UserBook>
 

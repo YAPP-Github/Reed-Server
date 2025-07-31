@@ -30,7 +30,16 @@ data class ReadingRecordResponse private constructor(
     val createdAt: String,
 
     @Schema(description = "수정 일시", example = "2023-01-01T12:00:00")
-    val updatedAt: String
+    val updatedAt: String,
+
+    @Schema(description = "도서 제목", example = "클린 코드")
+    val bookTitle: String?,
+
+    @Schema(description = "출판사", example = "인사이트")
+    val bookPublisher: String?,
+
+    @Schema(description = "도서 썸네일 URL", example = "https://example.com/book-cover.jpg")
+    val bookCoverImageUrl: String?
 ) {
     companion object {
         private val dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
@@ -44,7 +53,10 @@ data class ReadingRecordResponse private constructor(
                 review = readingRecordInfoVO.review.value,
                 emotionTags = readingRecordInfoVO.emotionTags,
                 createdAt = readingRecordInfoVO.createdAt.format(dateTimeFormatter),
-                updatedAt = readingRecordInfoVO.updatedAt.format(dateTimeFormatter)
+                updatedAt = readingRecordInfoVO.updatedAt.format(dateTimeFormatter),
+                bookTitle = readingRecordInfoVO.bookTitle,
+                bookPublisher = readingRecordInfoVO.bookPublisher,
+                bookCoverImageUrl = readingRecordInfoVO.bookCoverImageUrl
             )
         }
     }

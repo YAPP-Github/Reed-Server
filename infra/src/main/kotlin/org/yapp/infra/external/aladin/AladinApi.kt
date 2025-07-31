@@ -22,7 +22,8 @@ class AladinApi(
 
     fun lookupBook(request: AladinBookLookupRequest): Result<AladinBookDetailResponse> {
         return runCatching {
-            val aladinApiParams = request.toMap()
+            val aladinApiParams = request.toMap().toMutableMap()
+            aladinApiParams["Cover"] = "Big"
             aladinRestClient.itemLookUp(ttbKey, aladinApiParams) // Map으로 전달
         }
     }
