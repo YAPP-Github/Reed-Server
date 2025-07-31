@@ -57,7 +57,7 @@ class UserBookRepositoryImpl(
         title: String?,
         pageable: Pageable
     ): Page<UserBook> {
-        val page = jpaUserBookRepository.findUserBooksByDynamicCondition(userId, status, sort, pageable)
+        val page = jpaUserBookRepository.findUserBooksByDynamicCondition(userId, status, sort, title, pageable)
         return page.map { it.toDomain() }
     }
 
