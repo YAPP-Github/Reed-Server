@@ -69,7 +69,7 @@ interface ReadingRecordControllerApi {
             ApiResponse(
                 responseCode = "200",
                 description = "독서 기록 목록 조회 성공",
-                content = [Content(schema = Schema(implementation = ReadingRecordResponse::class))]
+                content = [Content(schema = Schema(implementation = Page::class))]
             ),
             ApiResponse(
                 responseCode = "404",

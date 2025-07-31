@@ -55,9 +55,10 @@ class UserBookService(
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): Page<UserBookResponse> {
-        val page = userBookDomainService.findUserBooksByDynamicCondition(userId, status, sort, pageable)
+        val page = userBookDomainService.findUserBooksByDynamicCondition(userId, status, sort, title, pageable)
         return page.map { UserBookResponse.from(it) }
     }
 
@@ -65,9 +66,10 @@ class UserBookService(
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): UserBookPageResponse {
-        val userBookResponsePage = findUserBooksByDynamicCondition(userId, status, sort, pageable)
+        val userBookResponsePage = findUserBooksByDynamicCondition(userId, status, sort, title, pageable)
         val userBookStatusCountsVO = userBookDomainService.getUserBookStatusCounts(userId)
 
         return UserBookPageResponse.of(
