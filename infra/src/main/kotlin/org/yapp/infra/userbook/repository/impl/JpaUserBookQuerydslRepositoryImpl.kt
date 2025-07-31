@@ -77,7 +77,8 @@ class JpaUserBookQuerydslRepositoryImpl(
             .select(
                 QUserBookLastRecordProjection(
                     userBook,
-                    readingRecord.updatedAt.max()
+                    readingRecord.updatedAt.max(),
+                    readingRecord.count()
                 )
             )
             .from(userBook)

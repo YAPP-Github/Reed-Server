@@ -13,7 +13,8 @@ data class UserHomeResponse private constructor(
         val author: String,
         val publisher: String,
         val coverImageUrl: String,
-        val lastRecordedAt: LocalDateTime
+        val lastRecordedAt: LocalDateTime,
+        val recordCount: Int
     ) {
         companion object {
             fun from(userBookInfo: HomeBookVO): RecentBookResponse {
@@ -23,7 +24,8 @@ data class UserHomeResponse private constructor(
                     author = userBookInfo.author,
                     publisher = userBookInfo.publisher,
                     coverImageUrl = userBookInfo.coverImageUrl,
-                    lastRecordedAt = userBookInfo.lastRecordedAt
+                    lastRecordedAt = userBookInfo.lastRecordedAt,
+                    recordCount = userBookInfo.recordCount
                 )
             }
         }

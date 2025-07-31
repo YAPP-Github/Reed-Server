@@ -27,7 +27,7 @@ interface UserBookRepository {
 
     fun countUserBooksByStatus(userId: UUID, status: BookStatus): Long
 
-    fun findRecordedBooksSortedByRecency(userId: UUID): List<Pair<UserBook, LocalDateTime>>
+    fun findRecordedBooksSortedByRecency(userId: UUID): List<Triple<UserBook, LocalDateTime, Long>>
 
     fun findUnrecordedBooksSortedByPriority(
         userId: UUID,

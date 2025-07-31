@@ -60,11 +60,11 @@ class UserBookRepositoryImpl(
         return jpaUserBookRepository.countUserBooksByStatus(userId, status)
     }
 
-    override fun findRecordedBooksSortedByRecency(userId: UUID): List<Pair<UserBook, LocalDateTime>> {
+    override fun findRecordedBooksSortedByRecency(userId: UUID): List<Triple<UserBook, LocalDateTime, Long>> {
         val userBookLastRecordsProjections = jpaUserBookRepository.findRecordedBooksSortedByRecency(userId)
 
-        return userBookLastRecordsProjections.map { tuple ->
-            Pair(tuple.userBookEntity.toDomain(), tuple.lastRecordedAt)
+        return userBookLastRecordsProjections.map { projection ->
+            Triple(projection.userBookEntity.toDomain(), projection.lastRecordedAt, projection.recordCount)
         }
     }
 

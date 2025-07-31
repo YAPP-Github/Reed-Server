@@ -16,7 +16,8 @@ data class HomeBookVO private constructor(
     val status: BookStatus,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
-    val lastRecordedAt: LocalDateTime
+    val lastRecordedAt: LocalDateTime,
+    val recordCount: Int
 ) {
     init {
         require(coverImageUrl.isNotBlank()) { "표지 이미지 URL은 비어 있을 수 없습니다." }
@@ -26,12 +27,14 @@ data class HomeBookVO private constructor(
         require(!createdAt.isAfter(updatedAt)) {
             "생성일(createdAt)은 수정일(updatedAt)보다 이후일 수 없습니다."
         }
+        require(recordCount >= 0) { "독서 기록 수는 0 이상이어야 합니다." }
     }
 
     companion object {
         fun newInstance(
             userBook: UserBook,
-            lastRecordedAt: LocalDateTime
+            lastRecordedAt: LocalDateTime,
+            recordCount: Int
         ): HomeBookVO {
             return HomeBookVO(
                 id = userBook.id,
@@ -45,7 +48,8 @@ data class HomeBookVO private constructor(
                 status = userBook.status,
                 createdAt = userBook.createdAt ?: throw IllegalStateException("createdAt은 null일 수 없습니다."),
                 updatedAt = userBook.updatedAt ?: throw IllegalStateException("updatedAt은 null일 수 없습니다."),
-                lastRecordedAt = lastRecordedAt
+                lastRecordedAt = lastRecordedAt,
+                recordCount = recordCount
             )
         }
     }

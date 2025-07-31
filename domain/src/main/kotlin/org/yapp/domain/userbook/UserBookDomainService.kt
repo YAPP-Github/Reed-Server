@@ -72,12 +72,13 @@ class UserBookDomainService(
     }
 
     fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {
-        val resultPairs = userBookRepository.findRecordedBooksSortedByRecency(userId)
+        val resultTriples = userBookRepository.findRecordedBooksSortedByRecency(userId)
 
-        return resultPairs.map { (userBook, lastRecordedAt) ->
+        return resultTriples.map { (userBook, lastRecordedAt, recordCount) ->
             HomeBookVO.newInstance(
                 userBook = userBook,
-                lastRecordedAt = lastRecordedAt
+                lastRecordedAt = lastRecordedAt,
+                recordCount = recordCount.toInt()
             )
         }
     }
@@ -96,7 +97,8 @@ class UserBookDomainService(
         return userBooks.map { userBook ->
             HomeBookVO.newInstance(
                 userBook = userBook,
-                lastRecordedAt = userBook.updatedAt ?: throw IllegalStateException("UserBook의 updatedAt이 null입니다: ${userBook.id}")
+                lastRecordedAt = userBook.updatedAt ?: throw IllegalStateException("UserBook의 updatedAt이 null입니다: ${userBook.id}"),
+                recordCount = 0
             )
         }
     }

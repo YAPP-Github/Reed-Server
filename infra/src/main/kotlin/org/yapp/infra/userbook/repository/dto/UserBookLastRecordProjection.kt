@@ -6,5 +6,6 @@ import java.time.LocalDateTime
 
 data class UserBookLastRecordProjection @QueryProjection constructor(
     val userBookEntity: UserBookEntity,
-    val lastRecordedAt: LocalDateTime
+    val lastRecordedAt: LocalDateTime,
+    val recordCount: Long
 )
