@@ -6,6 +6,7 @@ import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
 import org.yapp.globalutils.annotation.DomainService
 import java.util.UUID
+import org.yapp.domain.userbook.vo.UserBookWithLastRecordVO
 
 @DomainService
 class UserBookDomainService(
@@ -68,5 +69,16 @@ class UserBookDomainService(
 
     fun findByIdAndUserId(userBookId: UUID, userId: UUID): UserBook? {
         return userBookRepository.findByIdAndUserId(userBookId, userId)
+    }
+
+    fun findRecentReadingBooksWithLastRecord(userId: UUID, limit: Int): List<UserBookWithLastRecordVO> {
+        val userBooksWithLastRecord = userBookRepository.findUserBooksWithLastRecord(userId, limit)
+        
+        return userBooksWithLastRecord.map { (userBook, lastRecordedAt) ->
+            UserBookWithLastRecordVO.newInstance(
+                userBook = userBook,
+                lastRecordedAt = lastRecordedAt
+            )
+        }
     }
 }
