@@ -11,7 +11,8 @@ import java.util.*
 class HomeUseCase(
     private val userBookService: UserBookService
 ) {
-    fun getUserHomeData(userId: UUID): UserHomeResponse {
-        return userBookService.findRecentReadingBooksForHome(userId, 3)
+    fun getUserHomeData(userId: UUID, limit: Int = 3): UserHomeResponse {
+        val validatedLimit = limit.coerceIn(1, 10)
+        return userBookService.findRecentReadingBooksForHome(userId, validatedLimit)
     }
 }
