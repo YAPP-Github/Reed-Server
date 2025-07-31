@@ -59,6 +59,24 @@ class ReadingRecordDomainService(
         )
     }
 
+    fun findReadingRecordById(readingRecordId: UUID): ReadingRecordInfoVO? {
+        val readingRecord = readingRecordRepository.findById(readingRecordId) ?: return null
+
+        val readingRecordTags = readingRecordTagRepository.findByReadingRecordId(readingRecord.id.value)
+        val tagIds = readingRecordTags.map { it.tagId.value }
+        val tags = tagRepository.findByIds(tagIds)
+
+        val userBook = userBookRepository.findById(readingRecord.userBookId.value)
+
+        return ReadingRecordInfoVO.newInstance(
+            readingRecord = readingRecord,
+            emotionTags = tags.map { it.name },
+            bookTitle = userBook?.title,
+            bookPublisher = userBook?.publisher,
+            bookCoverImageUrl = userBook?.coverImageUrl
+        )
+    }
+
     fun findReadingRecordsByDynamicCondition(
         userBookId: UUID,
         sort: ReadingRecordSortType?,
