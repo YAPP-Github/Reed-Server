@@ -3,10 +3,6 @@ package org.yapp.apis.book.dto.response
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 import java.math.BigDecimal
 
-/**
- * 단일 도서의 상세 정보를 나타내는 DTO.
- * 외부 API 응답 및 도메인 Book 객체로부터 변환됩니다.
- */
 data class BookDetailResponse private constructor(
     val version: String?,
     val title: String,
@@ -28,8 +24,6 @@ data class BookDetailResponse private constructor(
     val publisher: String,
 ) {
     companion object {
-
-
         fun from(response: AladinBookDetailResponse): BookDetailResponse {
             val bookItem = response.item?.firstOrNull()
                 ?: throw IllegalArgumentException("No book item found in detail response.")
