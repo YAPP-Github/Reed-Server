@@ -1,9 +1,11 @@
-package org.yapp.infra.readingrecordtag.repository
+package org.yapp.infra.readingrecordtag.repository.impl
 
 import org.springframework.stereotype.Repository
 import org.yapp.domain.readingrecordtag.ReadingRecordTag
 import org.yapp.domain.readingrecordtag.ReadingRecordTagRepository
 import org.yapp.infra.readingrecordtag.entity.ReadingRecordTagEntity
+import org.yapp.infra.readingrecordtag.repository.JpaReadingRecordTagRepository
+import java.util.*
 
 @Repository
 class ReadingRecordTagRepositoryImpl(
@@ -14,7 +16,11 @@ class ReadingRecordTagRepositoryImpl(
         return jpaReadingRecordTagRepository.saveAll(entities).map { it.toDomain() }
     }
 
-    override fun findByReadingRecordId(readingRecordId: java.util.UUID): List<ReadingRecordTag> {
+    override fun findByReadingRecordId(readingRecordId: UUID): List<ReadingRecordTag> {
         return jpaReadingRecordTagRepository.findByReadingRecordId(readingRecordId).map { it.toDomain() }
+    }
+
+    override fun countTagsByUserIdAndCategories(userId: UUID, categories: List<String>): Map<String, Int> {
+        return jpaReadingRecordTagRepository.countTagsByUserIdAndCategories(userId, categories)
     }
 }
