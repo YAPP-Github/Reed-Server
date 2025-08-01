@@ -1,9 +1,9 @@
 package org.yapp.apis.book.dto.request
 
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Pattern // Pattern 어노테이션 추가
+import jakarta.validation.constraints.Pattern
 import org.yapp.globalutils.util.RegexUtils
-import org.yapp.infra.external.aladin.dto.AladinBookLookupRequest
+import org.yapp.infra.external.aladin.request.AladinBookLookupRequest
 
 data class BookDetailRequest private constructor(
     @field:NotBlank(message = "아이템 ID는 필수입니다.")

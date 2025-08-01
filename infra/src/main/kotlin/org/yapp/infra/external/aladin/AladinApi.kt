@@ -2,8 +2,8 @@ package org.yapp.infra.external.aladin
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.yapp.infra.external.aladin.dto.AladinBookLookupRequest
 import org.yapp.infra.external.aladin.dto.AladinBookSearchRequest
+import org.yapp.infra.external.aladin.request.AladinBookLookupRequest
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 

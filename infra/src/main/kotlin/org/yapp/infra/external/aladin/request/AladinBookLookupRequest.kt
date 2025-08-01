@@ -1,10 +1,6 @@
-package org.yapp.infra.external.aladin.dto
+package org.yapp.infra.external.aladin.request
 
-/**
- * 알라딘 ItemLookUp API 호출을 위한 요청 DTO.
- * 내부적으로 알라딘 API 파라미터 규칙에 맞게 변환하는 책임을 가집니다.
- */
-data class AladinBookLookupRequest private constructor( // private constructor 유지
+data class AladinBookLookupRequest private constructor(
     val itemId: String,
     val itemIdType: String,
     val optResult: List<String>?

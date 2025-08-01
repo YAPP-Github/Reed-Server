@@ -1,10 +1,8 @@
 package org.yapp.apis.book.dto.response
 
 import org.yapp.domain.userbook.BookStatus
-import org.yapp.domain.userbook.UserBook
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 import org.yapp.infra.external.aladin.response.BookItem
-import java.time.LocalDateTime
 
 data class BookSearchResponse private constructor(
     val version: String?,
