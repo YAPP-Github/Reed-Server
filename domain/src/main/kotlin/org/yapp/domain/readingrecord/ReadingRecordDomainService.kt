@@ -62,10 +62,13 @@ class ReadingRecordDomainService(
     fun findReadingRecordById(readingRecordId: UUID): ReadingRecordInfoVO? {
         val readingRecord = readingRecordRepository.findById(readingRecordId) ?: return null
 
+        return buildReadingRecordInfoVO(readingRecord)
+    }
+
+    private fun buildReadingRecordInfoVO(readingRecord: ReadingRecord): ReadingRecordInfoVO {
         val readingRecordTags = readingRecordTagRepository.findByReadingRecordId(readingRecord.id.value)
         val tagIds = readingRecordTags.map { it.tagId.value }
         val tags = tagRepository.findByIds(tagIds)
-
         val userBook = userBookRepository.findById(readingRecord.userBookId.value)
 
         return ReadingRecordInfoVO.newInstance(
