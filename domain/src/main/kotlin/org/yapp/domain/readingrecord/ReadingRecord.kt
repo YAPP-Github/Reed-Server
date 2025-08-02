@@ -15,8 +15,6 @@ data class ReadingRecord private constructor(
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
 ) {
-    
-
     companion object {
         fun create(
             userBookId: UUID,

@@ -27,10 +27,8 @@ import java.util.UUID
 @UseCase
 @Transactional(readOnly = true)
 class BookUseCase(
-
     @Qualifier(BookQueryServiceQualifier.ALADIN)
     private val bookQueryService: BookQueryService,
-
     private val userAuthService: UserAuthService,
     private val userBookService: UserBookService,
     private val bookManagementService: BookManagementService
