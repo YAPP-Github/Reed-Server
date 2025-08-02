@@ -35,6 +35,18 @@ class ReadingRecordUseCase(
         )
     }
 
+    fun getReadingRecordDetail(
+        userId: UUID,
+        readingRecordId: UUID
+    ): ReadingRecordResponse {
+        userAuthService.validateUserExists(userId)
+
+        return readingRecordService.getReadingRecordDetail(
+            userId = userId,
+            readingRecordId = readingRecordId
+        )
+    }
+
     fun getReadingRecordsByUserBookId(
         userId: UUID,
         userBookId: UUID,
