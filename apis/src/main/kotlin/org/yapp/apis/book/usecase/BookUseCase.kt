@@ -1,33 +1,27 @@
 package org.yapp.apis.book.usecase
 
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.data.domain.Page
+
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.auth.dto.request.UserBooksByIsbnsRequest
 import org.yapp.apis.auth.service.UserAuthService
-import org.yapp.apis.book.dto.request.BookCreateRequest
-import org.yapp.apis.book.dto.request.BookDetailRequest
-import org.yapp.apis.book.dto.request.BookSearchRequest
-import org.yapp.apis.book.dto.request.UserBookRegisterRequest
+
+import org.yapp.apis.book.dto.request.*
 import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.apis.book.dto.response.BookSearchResponse
 import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
-import org.yapp.apis.book.constant.BookQueryServiceQualifier
-import org.yapp.apis.book.dto.request.UpsertUserBookRequest
 import org.yapp.apis.book.service.BookManagementService
 import org.yapp.apis.book.service.BookQueryService
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.globalutils.annotation.UseCase
-import java.util.UUID
+import java.util.*
 
 @UseCase
 @Transactional(readOnly = true)
 class BookUseCase(
-    @Qualifier(BookQueryServiceQualifier.ALADIN)
     private val bookQueryService: BookQueryService,
     private val userAuthService: UserAuthService,
     private val userBookService: UserBookService,
