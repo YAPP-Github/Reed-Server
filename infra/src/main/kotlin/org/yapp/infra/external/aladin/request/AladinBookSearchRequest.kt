@@ -24,14 +24,13 @@ data class AladinBookSearchRequest private constructor(
     }
 
     companion object {
-        fun create(
+        fun of(
             query: String,
             queryType: String? = null,
             searchTarget: String? = null,
             maxResults: Int? = null,
             start: Int? = null,
             sort: String? = null,
-            cover: String? = null,
             categoryId: Int? = null
         ): AladinBookSearchRequest {
             return AladinBookSearchRequest(
@@ -41,7 +40,7 @@ data class AladinBookSearchRequest private constructor(
                 maxResults = maxResults,
                 start = start,
                 sort = sort,
-                cover = cover,
+                cover = "Big",
                 categoryId = categoryId
             )
         }

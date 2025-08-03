@@ -18,7 +18,7 @@ data class BookDetailRequest private constructor(
     fun validIsbn(): String = itemId!!
 
     fun toAladinRequest(): AladinBookLookupRequest {
-        return AladinBookLookupRequest.create(
+        return AladinBookLookupRequest.of(
             itemId = this.validIsbn(),
             itemIdType = this.itemIdType ?: "ISBN",
             optResult = this.optResult
@@ -26,7 +26,10 @@ data class BookDetailRequest private constructor(
     }
 
     companion object {
-        fun of(isbn: String?, optResult: List<String>? = null): BookDetailRequest {
+        fun of(
+            isbn: String?,
+            optResult: List<String>? = null
+        ): BookDetailRequest {
             return BookDetailRequest(
                 itemId = isbn,
                 itemIdType = "ISBN",

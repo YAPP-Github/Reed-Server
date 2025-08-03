@@ -16,15 +16,14 @@ class AladinApi(
     fun searchBooks(request: AladinBookSearchRequest): Result<AladinSearchResponse> {
         return runCatching {
             val aladinApiParams = request.toMap()
-            aladinRestClient.itemSearch(ttbKey, aladinApiParams) // Map으로 전달
+            aladinRestClient.itemSearch(ttbKey, aladinApiParams)
         }
     }
 
     fun lookupBook(request: AladinBookLookupRequest): Result<AladinBookDetailResponse> {
         return runCatching {
-            val aladinApiParams = request.toMap().toMutableMap()
-            aladinApiParams["Cover"] = "Big"
-            aladinRestClient.itemLookUp(ttbKey, aladinApiParams) // Map으로 전달
+            val aladinApiParams = request.toMap()
+            aladinRestClient.itemLookUp(ttbKey, aladinApiParams)
         }
     }
 }
