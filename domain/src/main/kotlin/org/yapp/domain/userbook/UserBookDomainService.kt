@@ -2,6 +2,8 @@ package org.yapp.domain.userbook
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.yapp.domain.userbook.exception.UserBookErrorCode
+import org.yapp.domain.userbook.exception.UserBookNotFoundException
 import org.yapp.domain.userbook.vo.HomeBookVO
 import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
@@ -55,6 +57,12 @@ class UserBookDomainService(
         }
         val userBooks = userBookRepository.findAllByUserIdAndBookIsbnIn(userId, isbns)
         return userBooks.map { UserBookInfoVO.newInstance(it) }
+    }
+
+    fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBookInfoVO {
+        val userBook = userBookRepository.findByUserIdAndBookIsbn(userId, isbn)
+            ?: throw UserBookNotFoundException(UserBookErrorCode.USER_BOOK_NOT_FOUND)
+        return UserBookInfoVO.newInstance(userBook)
     }
 
     fun getUserBookStatusCounts(userId: UUID): UserBookStatusCountsVO {
