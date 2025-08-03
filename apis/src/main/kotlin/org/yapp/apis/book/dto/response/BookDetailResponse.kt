@@ -1,7 +1,7 @@
 package org.yapp.apis.book.dto.response
 
 import org.yapp.apis.util.AuthorExtractor
-import org.yapp.globalutils.util.IsbnConverter
+import org.yapp.apis.util.IsbnConverter
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 
 data class BookDetailResponse private constructor(
