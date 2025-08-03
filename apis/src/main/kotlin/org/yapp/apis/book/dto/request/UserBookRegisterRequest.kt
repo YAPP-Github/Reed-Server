@@ -1,13 +1,33 @@
 package org.yapp.apis.book.dto.request
 
+import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import org.yapp.domain.userbook.BookStatus
 
-
+@Schema(
+    title = "사용자 도서 등록 요청",
+    description = "사용자의 서재에 도서를 등록하거나 상태를 변경하는 요청"
+)
 data class UserBookRegisterRequest private constructor(
     @field:NotBlank(message = "ISBN은 필수입니다.")
+    @Schema(
+        description = "등록할 책의 13자리 ISBN 코드",
+        example = "9788932473901",
+        required = true,
+        minLength = 13,
+        maxLength = 13
+    )
     val bookIsbn: String? = null,
 
+    @field:NotNull(message = "도서 상태는 필수입니다.")
+    @Schema(
+        description = "사용자의 도서 읽기 상태",
+        example = "READING",
+        required = true,
+        allowableValues = ["BEFORE_REGISTRATION", "BEFORE_READING", "READING", "COMPLETED"],
+        enumAsRef = true
+    )
     val bookStatus: BookStatus
 ) {
     fun validBookIsbn(): String = bookIsbn!!
