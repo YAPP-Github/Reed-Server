@@ -1,8 +1,8 @@
 package org.yapp.apis.book.dto.response
 
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.globalutils.util.IsbnConverter
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
-import org.yapp.infra.external.aladin.response.BookItem
 
 data class BookSearchResponse private constructor(
     val version: String?,
@@ -17,25 +17,12 @@ data class BookSearchResponse private constructor(
     val searchCategoryName: String?,
     val books: List<BookSummary>
 ) {
-    fun from(updatedBooks: List<BookSummary>): BookSearchResponse {
-        return BookSearchResponse(
-            version = this.version,
-            title = this.title,
-            link = this.link,
-            pubDate = this.pubDate,
-            totalResults = this.totalResults,
-            startIndex = this.startIndex,
-            itemsPerPage = this.itemsPerPage,
-            query = this.query,
-            searchCategoryId = this.searchCategoryId,
-            searchCategoryName = this.searchCategoryName,
-            books = updatedBooks
-        )
+    fun withUpdatedBooks(updatedBooks: List<BookSummary>): BookSearchResponse {
+        return this.copy(books = updatedBooks)
     }
 
     companion object {
         fun from(response: AladinSearchResponse): BookSearchResponse {
-            val books = response.item?.mapNotNull { BookSummary.fromAladinItem(it) } ?: emptyList()
             return BookSearchResponse(
                 version = response.version,
                 title = response.title,
@@ -47,17 +34,26 @@ data class BookSearchResponse private constructor(
                 query = response.query,
                 searchCategoryId = response.searchCategoryId,
                 searchCategoryName = response.searchCategoryName,
-                books = books
+                books = response.item.map {
+                    BookSummary.of(
+                        isbn = it.isbn,
+                        isbn13 = it.isbn13,
+                        title = it.title,
+                        author = it.author,
+                        publisher = it.publisher,
+                        coverImageUrl = it.cover
+                    )
+                }
             )
         }
     }
 
     data class BookSummary private constructor(
-        val isbn: String,
+        val isbn13: String,
         val title: String,
         val author: String?,
         val publisher: String?,
-        val coverImageUrl: String?,
+        val coverImageUrl: String,
         val userBookStatus: BookStatus
     ) {
         fun updateStatus(newStatus: BookStatus): BookSummary {
@@ -65,17 +61,22 @@ data class BookSearchResponse private constructor(
         }
 
         companion object {
-            private val unknownTitle = "제목없음"
+            fun of(
+                isbn: String?,
+                isbn13: String?,
+                title: String?,
+                author: String?,
+                publisher: String?,
+                coverImageUrl: String
+            ): BookSummary {
+                require(!title.isNullOrBlank()) { "Title is required" }
 
-
-            fun fromAladinItem(item: BookItem): BookSummary? {
-                val isbn = item.isbn ?: item.isbn13 ?: return null
                 return BookSummary(
-                    isbn = isbn,
-                    title = item.title ?: unknownTitle,
-                    author = item.author,
-                    publisher = item.publisher,
-                    coverImageUrl = item.cover,
+                    isbn13 = isbn13 ?: IsbnConverter.toIsbn13(isbn) ?: throw IllegalArgumentException("Either isbn13 or isbn must be provided"),
+                    title = title,
+                    author = author,
+                    publisher = publisher,
+                    coverImageUrl = coverImageUrl,
                     userBookStatus = BookStatus.BEFORE_REGISTRATION
                 )
             }
