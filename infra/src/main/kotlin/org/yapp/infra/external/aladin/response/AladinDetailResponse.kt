@@ -27,7 +27,7 @@ data class AladinDetailItem internal constructor(
     @JsonProperty("pubDate") val pubDate: String?,
     @JsonProperty("description") val description: String?,
     @JsonProperty("isbn") val isbn: String?,
-    @JsonProperty("isbn13") val isbn13: String,
+    @JsonProperty("isbn13") val isbn13: String?,
     @JsonProperty("itemId") val itemId: Long,
     @JsonProperty("priceSales") val priceSales: BigDecimal,
     @JsonProperty("priceStandard") val priceStandard: BigDecimal,
