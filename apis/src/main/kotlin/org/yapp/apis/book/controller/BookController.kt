@@ -45,7 +45,7 @@ class BookController(
         @AuthenticationPrincipal userId: UUID,
         @Valid @ModelAttribute request: BookDetailRequest
     ): ResponseEntity<BookDetailResponse> {
-        val response = bookUseCase.getBookDetail(request)
+        val response = bookUseCase.getBookDetail(request, userId)
         return ResponseEntity.ok(response)
     }
 

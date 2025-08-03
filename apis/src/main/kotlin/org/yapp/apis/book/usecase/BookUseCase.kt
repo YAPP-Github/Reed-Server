@@ -27,7 +27,10 @@ class BookUseCase(
     private val userBookService: UserBookService,
     private val bookManagementService: BookManagementService
 ) {
-    fun searchBooks(request: BookSearchRequest, userId: UUID): BookSearchResponse {
+    fun searchBooks(
+        request: BookSearchRequest,
+        userId: UUID
+    ): BookSearchResponse {
         userAuthService.validateUserExists(userId)
 
         val searchResponse = bookQueryService.searchBooks(request)
@@ -45,12 +48,19 @@ class BookUseCase(
         return searchResponse.from(updatedBooks)
     }
 
-    fun getBookDetail(bookDetailRequest: BookDetailRequest): BookDetailResponse {
+    fun getBookDetail(
+        bookDetailRequest: BookDetailRequest,
+        userId: UUID
+    ): BookDetailResponse {
+        userAuthService.validateUserExists(userId)
         return bookQueryService.getBookDetail(bookDetailRequest)
     }
 
     @Transactional
-    fun upsertBookToMyLibrary(userId: UUID, request: UserBookRegisterRequest): UserBookResponse {
+    fun upsertBookToMyLibrary(
+        userId: UUID,
+        request: UserBookRegisterRequest
+    ): UserBookResponse {
         userAuthService.validateUserExists(userId)
 
         val bookDetailResponse = bookQueryService.getBookDetail(BookDetailRequest.of(request.validBookIsbn()))
