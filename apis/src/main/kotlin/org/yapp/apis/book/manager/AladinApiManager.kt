@@ -1,15 +1,15 @@
-package org.yapp.apis.book.helper
+package org.yapp.apis.book.manager
 
 import mu.KotlinLogging
-import org.yapp.globalutils.annotation.Helper
+import org.springframework.stereotype.Component
 import org.yapp.infra.external.aladin.AladinApi
 import org.yapp.infra.external.aladin.dto.AladinBookSearchRequest
 import org.yapp.infra.external.aladin.request.AladinBookLookupRequest
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 
-@Helper
-class AladinApiHelper(
+@Component
+class AladinApiManager(
     private val aladinApi: AladinApi
 ) {
     private val log = KotlinLogging.logger {}
