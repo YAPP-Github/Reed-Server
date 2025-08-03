@@ -9,7 +9,6 @@ data class AladinBookSearchRequest private constructor(
     val sort: String?,
     val cover: String?,
     val categoryId: Int?,
-    val output: String?
 ) {
     fun toMap(): Map<String, Any> {
         val params = mutableMapOf<String, Any>()
@@ -21,7 +20,6 @@ data class AladinBookSearchRequest private constructor(
         sort?.let { params["Sort"] = it }
         cover?.let { params["Cover"] = it }
         categoryId?.let { params["CategoryId"] = it }
-        output?.let { params["Output"] = it }
         return params
     }
 
@@ -44,7 +42,6 @@ data class AladinBookSearchRequest private constructor(
                 sort = sort,
                 cover = "Big",
                 categoryId = categoryId,
-                output = "JS"
             )
         }
     }
