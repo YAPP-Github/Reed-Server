@@ -1,6 +1,7 @@
 package org.yapp.apis.book.usecase
 
 
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.auth.dto.request.UserBooksByIsbnsRequest
@@ -22,6 +23,7 @@ import java.util.*
 @UseCase
 @Transactional(readOnly = true)
 class BookUseCase(
+    @Qualifier("aladinBookQueryService")
     private val bookQueryService: BookQueryService,
     private val userAuthService: UserAuthService,
     private val userBookService: UserBookService,
