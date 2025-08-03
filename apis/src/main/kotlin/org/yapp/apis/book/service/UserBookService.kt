@@ -49,6 +49,11 @@ class UserBookService(
         return userBooks.map { UserBookResponse.from(it) }
     }
 
+    fun findUserBookStatusByIsbn(userId: UUID, isbn: String): BookStatus {
+        val userBook = userBookDomainService.findByUserIdAndBookIsbn(userId, isbn)
+        return userBook.status
+    }
+
     private fun findUserBooksByDynamicCondition(
         userId: UUID,
         status: BookStatus?,

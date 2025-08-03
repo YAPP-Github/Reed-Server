@@ -2,6 +2,7 @@ package org.yapp.apis.book.dto.response
 
 import org.yapp.apis.util.AuthorExtractor
 import org.yapp.apis.util.IsbnConverter
+import org.yapp.domain.userbook.BookStatus
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 
 data class BookDetailResponse private constructor(
@@ -16,10 +17,15 @@ data class BookDetailResponse private constructor(
     val cover: String,
     val categoryName: String,
     val publisher: String?,
-    val totalPage: Int?
+    val totalPage: Int?,
+    val userBookStatus: BookStatus
 ) {
+    fun withUserBookStatus(newUserBookStatus: BookStatus): BookDetailResponse {
+        return this.copy(userBookStatus = newUserBookStatus)
+    }
+
     companion object {
-        fun from(response: AladinBookDetailResponse): BookDetailResponse {
+        fun from(response: AladinBookDetailResponse, userBookStatus: BookStatus = BookStatus.BEFORE_REGISTRATION): BookDetailResponse {
             val item = response.item.firstOrNull()
                 ?: throw IllegalArgumentException("No book item found in detail response.")
 
@@ -35,7 +41,8 @@ data class BookDetailResponse private constructor(
                 cover = item.cover,
                 categoryName = item.categoryName,
                 publisher = item.publisher ?: "",
-                totalPage = item.subInfo.itemPage ?: 4032
+                totalPage = item.subInfo.itemPage ?: 4032,
+                userBookStatus = userBookStatus
             )
         }
     }

@@ -46,7 +46,13 @@ class BookUseCase(
         userId: UUID
     ): BookDetailResponse {
         userAuthService.validateUserExists(userId)
-        return bookQueryService.getBookDetail(bookDetailRequest)
+
+        val bookDetailResponse = bookQueryService.getBookDetail(bookDetailRequest)
+        val isbn13 = bookDetailResponse.isbn13
+            ?: return bookDetailResponse.withUserBookStatus(BookStatus.BEFORE_REGISTRATION)
+        val userBookStatus = userBookService.findUserBookStatusByIsbn(userId, isbn13)
+
+        return bookDetailResponse.withUserBookStatus(userBookStatus)
     }
 
     @Transactional
@@ -91,7 +97,6 @@ class BookUseCase(
         val isbn13List = searchedBooks.map { it.isbn13 }
         val userBookStatusMap = getUserBookStatusMap(isbn13List, userId)
 
-        // 검색 결과에 사용자 책 상태 적용
         return searchedBooks.map { bookSummary ->
             val userStatus = userBookStatusMap[bookSummary.isbn13]
             if (userStatus != null) {
