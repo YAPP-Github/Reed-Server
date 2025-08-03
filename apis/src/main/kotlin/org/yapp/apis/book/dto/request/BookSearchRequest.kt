@@ -1,8 +1,9 @@
 package org.yapp.apis.book.dto.request
 
-import org.yapp.infra.external.aladin.dto.AladinBookSearchRequest
+import jakarta.validation.constraints.NotBlank
 
 data class BookSearchRequest private constructor(
+    @field:NotBlank(message = "검색어는 필수입니다.")
     val query: String? = null,
     val queryType: String? = null,
     val searchTarget: String? = null,
@@ -12,16 +13,4 @@ data class BookSearchRequest private constructor(
     val categoryId: Int? = null
 ) {
     fun validQuery(): String = query!!
-
-    fun toAladinRequest(): AladinBookSearchRequest {
-        return AladinBookSearchRequest.of(
-            query = this.validQuery(),
-            queryType = this.queryType,
-            searchTarget = this.searchTarget,
-            maxResults = this.maxResults,
-            start = this.start,
-            sort = this.sort,
-            categoryId = this.categoryId
-        )
-    }
 }
