@@ -15,18 +15,6 @@ class AladinRestClient(
     private val API_VERSION = "20131101"
     private val DEFAULT_OUTPUT_FORMAT = "JS"
 
-    private fun UriComponentsBuilder.addCommonQueryParams(params: Map<String, Any>) {
-        params.forEach { (key, value) ->
-            if (key == "OptResult" && value is List<*>) {
-                this.queryParam(key, value.joinToString(","))
-            } else {
-                this.queryParam(key, value)
-            }
-        }
-        this.queryParam("output", DEFAULT_OUTPUT_FORMAT)
-            .queryParam("Version", API_VERSION)
-    }
-
     fun itemSearch(
         ttbKey: String?,
         params: Map<String, Any>
@@ -57,5 +45,17 @@ class AladinRestClient(
             .retrieve()
             .body(AladinBookDetailResponse::class.java)
             ?: throw IllegalStateException("Aladin ItemLookUp API 응답이 null 입니다.")
+    }
+
+    private fun UriComponentsBuilder.addCommonQueryParams(params: Map<String, Any>) {
+        params.forEach { (key, value) ->
+            if (key == "OptResult" && value is List<*>) {
+                this.queryParam(key, value.joinToString(","))
+            } else {
+                this.queryParam(key, value)
+            }
+        }
+        this.queryParam("Output", DEFAULT_OUTPUT_FORMAT)
+            .queryParam("Version", API_VERSION)
     }
 }
