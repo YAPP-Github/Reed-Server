@@ -32,7 +32,7 @@ data class BookCreateRequest private constructor(
     companion object {
 
         fun from(bookDetail: BookDetailResponse): BookCreateRequest {
-            val finalIsbn = bookDetail.isbn ?: bookDetail.isbn13
+            val finalIsbn = bookDetail.isbn13
             ?: throw IllegalArgumentException("ISBN이 존재하지 않습니다.")
 
             return BookCreateRequest(
