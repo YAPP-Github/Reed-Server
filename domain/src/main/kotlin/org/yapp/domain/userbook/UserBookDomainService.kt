@@ -68,8 +68,8 @@ class UserBookDomainService(
         return userBookRepository.countUserBooksByStatus(userId, status)
     }
 
-    fun findByIdAndUserId(userBookId: UUID, userId: UUID): UserBook? {
-        return userBookRepository.findByIdAndUserId(userBookId, userId)
+    fun existsByUserBookIdAndUserId(userBookId: UUID, userId: UUID): Boolean {
+        return userBookRepository.existsByIdAndUserId(userBookId, userId)
     }
 
     fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {

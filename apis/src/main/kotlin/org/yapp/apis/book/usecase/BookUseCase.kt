@@ -65,7 +65,7 @@ class BookUseCase(
     ): UserBookResponse {
         userAuthService.validateUserExists(userId)
 
-        val bookDetailResponse = bookQueryService.getBookDetail(BookDetailRequest.of(request.validBookIsbn()))
+        val bookDetailResponse = bookQueryService.getBookDetail(BookDetailRequest.from(request.validBookIsbn()))
         val bookCreateResponse = bookManagementService.findOrCreateBook(BookCreateRequest.from(bookDetailResponse))
         val upsertUserBookRequest = UpsertUserBookRequest.of(
             userId = userId,

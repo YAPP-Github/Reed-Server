@@ -25,8 +25,8 @@ class UserBookRepositoryImpl(
         return jpaUserBookRepository.findByBookIdAndUserId(bookId, userId)?.toDomain()
     }
 
-    override fun findByIdAndUserId(id: UUID, userId: UUID): UserBook? {
-        return jpaUserBookRepository.findByIdAndUserId(id, userId)?.toDomain()
+    override fun existsByIdAndUserId(id: UUID, userId: UUID): Boolean {
+        return jpaUserBookRepository.existsByIdAndUserId(id, userId)
     }
 
     override fun findById(id: UUID): UserBook? {
