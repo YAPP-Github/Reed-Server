@@ -1,5 +1,6 @@
 package org.yapp.apis.book.dto.response
 
+import org.yapp.apis.util.AuthorExtractor
 import org.yapp.globalutils.util.IsbnConverter
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 
@@ -26,7 +27,7 @@ data class BookDetailResponse private constructor(
                 version = response.version,
                 title = item.title,
                 link = item.link,
-                author = item.author ?: "",
+                author = AuthorExtractor.extractAuthors(item.author),
                 pubDate = item.pubDate ?: "",
                 description = item.description ?: "",
                 mallType = item.mallType,
