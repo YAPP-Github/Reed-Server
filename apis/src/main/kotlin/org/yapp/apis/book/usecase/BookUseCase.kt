@@ -36,18 +36,9 @@ class BookUseCase(
         userAuthService.validateUserExists(userId)
 
         val searchResponse = bookQueryService.searchBooks(request)
-        val isbns = searchResponse.books.map { it.isbn }
+        val booksWithUserStatus = mergeWithUserBookStatus(searchResponse.books, userId)
 
-        val userBooksReponse = userBookService.findAllByUserIdAndBookIsbnIn(UserBooksByIsbnsRequest.of(userId, isbns))
-        val statusMap = userBooksReponse.associateBy({ it.bookIsbn }, { it.status })
-
-        val updatedBooks = searchResponse.books.map { bookSummary ->
-            statusMap[bookSummary.isbn]?.let { status ->
-                bookSummary.updateStatus(status)
-            } ?: bookSummary
-        }
-
-        return searchResponse.from(updatedBooks)
+        return searchResponse.withUpdatedBooks(booksWithUserStatus)
     }
 
     fun getBookDetail(
@@ -87,5 +78,40 @@ class BookUseCase(
         userAuthService.validateUserExists(userId)
 
         return userBookService.findUserBooksByDynamicConditionWithStatusCounts(userId, status, sort, title, pageable)
+    }
+
+    private fun mergeWithUserBookStatus(
+        searchedBooks: List<BookSearchResponse.BookSummary>,
+        userId: UUID
+    ): List<BookSearchResponse.BookSummary> {
+        if (searchedBooks.isEmpty()) {
+            return emptyList()
+        }
+
+        val isbn13List = searchedBooks.map { it.isbn13 }
+        val userBookStatusMap = getUserBookStatusMap(isbn13List, userId)
+
+        // 검색 결과에 사용자 책 상태 적용
+        return searchedBooks.map { bookSummary ->
+            val userStatus = userBookStatusMap[bookSummary.isbn13]
+            if (userStatus != null) {
+                bookSummary.updateStatus(userStatus)
+            } else {
+                bookSummary
+            }
+        }
+    }
+
+    private fun getUserBookStatusMap(
+        isbn13List: List<String>,
+        userId: UUID
+    ): Map<String, BookStatus> {
+        val userBooksResponse = userBookService.findAllByUserIdAndBookIsbnIn(
+            UserBooksByIsbnsRequest.of(userId, isbn13List)
+        )
+
+        return userBooksResponse.associate { userBook ->
+            userBook.bookIsbn to userBook.status
+        }
     }
 }
