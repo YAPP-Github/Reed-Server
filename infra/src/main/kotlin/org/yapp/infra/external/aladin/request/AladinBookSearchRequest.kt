@@ -1,4 +1,4 @@
-package org.yapp.infra.external.aladin.dto
+package org.yapp.infra.external.aladin.request
 
 data class AladinBookSearchRequest private constructor(
     val query: String,
@@ -8,7 +8,8 @@ data class AladinBookSearchRequest private constructor(
     val start: Int?,
     val sort: String?,
     val cover: String?,
-    val categoryId: Int?
+    val categoryId: Int?,
+    val output: String?
 ) {
     fun toMap(): Map<String, Any> {
         val params = mutableMapOf<String, Any>()
@@ -20,6 +21,7 @@ data class AladinBookSearchRequest private constructor(
         sort?.let { params["Sort"] = it }
         cover?.let { params["Cover"] = it }
         categoryId?.let { params["CategoryId"] = it }
+        output?.let { params["Output"] = it }
         return params
     }
 
@@ -41,7 +43,8 @@ data class AladinBookSearchRequest private constructor(
                 start = start,
                 sort = sort,
                 cover = "Big",
-                categoryId = categoryId
+                categoryId = categoryId,
+                output = "JS"
             )
         }
     }

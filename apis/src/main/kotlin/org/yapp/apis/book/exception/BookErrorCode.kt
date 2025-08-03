@@ -9,13 +9,9 @@ enum class BookErrorCode(
     private val code: String,
     private val message: String
 ) : BaseErrorCode {
-
-    /* 404 NOT_FOUND */
-    BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOK_001", "Book not found."),
-
     /* 500 INTERNAL_SERVER_ERROR */
-    ALADIN_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "BOOK_002", "Error fetching book from external API.");
-
+    ALADIN_API_SEARCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "BOOK_001", "알라딘 도서 검색 API 호출에 실패했습니다."),
+    ALADIN_API_LOOKUP_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "BOOK_002", "알라딘 도서 상세 조회 API 호출에 실패했습니다.");
 
     override fun getHttpStatus(): HttpStatus = httpStatus
     override fun getCode(): String = code
