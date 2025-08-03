@@ -50,7 +50,9 @@ class BookUseCase(
         val bookDetailResponse = bookQueryService.getBookDetail(bookDetailRequest)
         val isbn13 = bookDetailResponse.isbn13
             ?: return bookDetailResponse.withUserBookStatus(BookStatus.BEFORE_REGISTRATION)
-        val userBookStatus = userBookService.findUserBookStatusByIsbn(userId, isbn13)
+        
+        val userBookStatus = userBookService.findUserBookStatusByIsbn(userId, isbn13) 
+            ?: BookStatus.BEFORE_REGISTRATION
 
         return bookDetailResponse.withUserBookStatus(userBookStatus)
     }
