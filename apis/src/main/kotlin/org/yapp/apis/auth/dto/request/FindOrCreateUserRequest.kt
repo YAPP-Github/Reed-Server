@@ -2,6 +2,7 @@ package org.yapp.apis.auth.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import org.yapp.apis.auth.dto.response.UserCreateInfoResponse
 import org.yapp.apis.util.NicknameGenerator
 import org.yapp.domain.user.ProviderType
@@ -34,6 +35,7 @@ data class FindOrCreateUserRequest private constructor(
         description = "소셜 로그인 제공자",
         example = "KAKAO"
     )
+    @field:NotNull(message = "providerType은 필수입니다.")
     val providerType: ProviderType? = null,
 
     @Schema(
