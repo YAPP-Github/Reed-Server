@@ -15,6 +15,7 @@ data class UserBook private constructor(
     val title: String,
     val author: String,
     val status: BookStatus,
+    val readingRecordCount: Int = 0,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null,
@@ -22,6 +23,11 @@ data class UserBook private constructor(
     fun updateStatus(newStatus: BookStatus): UserBook {
         return this.copy(status = newStatus)
     }
+
+    fun increaseReadingRecordCount(): UserBook {
+        return this.copy(readingRecordCount = this.readingRecordCount + 1)
+    }
+
 
     companion object {
         fun create(
@@ -57,6 +63,7 @@ data class UserBook private constructor(
             title: String,
             author: String,
             status: BookStatus,
+            readingRecordCount: Int,
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null,
             deletedAt: LocalDateTime? = null
@@ -71,6 +78,7 @@ data class UserBook private constructor(
                 title = title,
                 author = author,
                 status = status,
+                readingRecordCount = readingRecordCount,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
                 deletedAt = deletedAt

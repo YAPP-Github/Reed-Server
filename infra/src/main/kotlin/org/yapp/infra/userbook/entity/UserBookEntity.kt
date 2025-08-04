@@ -66,6 +66,10 @@ class UserBookEntity(
     var status: BookStatus = status
         protected set
 
+    @Column(name = "reading_record_count", nullable = false)
+    var readingRecordCount: Int = 0
+        protected set
+
     fun toDomain(): UserBook = UserBook.reconstruct(
         id = UserBook.Id.newInstance(this.id),
         userId = UserBook.UserId.newInstance(this.userId),
@@ -76,6 +80,7 @@ class UserBookEntity(
         title = this.title,
         author = this.author,
         status = this.status,
+        readingRecordCount = this.readingRecordCount,
         createdAt = this.createdAt,
         updatedAt = this.updatedAt,
         deletedAt = this.deletedAt
@@ -93,7 +98,9 @@ class UserBookEntity(
                 title = userBook.title,
                 author = userBook.author,
                 status = userBook.status,
-            )
+            ).apply {
+                this.readingRecordCount = userBook.readingRecordCount
+            }
         }
     }
 

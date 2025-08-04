@@ -13,6 +13,9 @@ import org.yapp.domain.userbook.UserBookRepository
 import org.yapp.globalutils.annotation.DomainService
 import java.util.UUID
 
+import org.yapp.domain.userbook.exception.UserBookNotFoundException
+import org.yapp.domain.userbook.exception.UserBookErrorCode
+
 @DomainService
 class ReadingRecordDomainService(
     private val readingRecordRepository: ReadingRecordRepository,
@@ -28,6 +31,11 @@ class ReadingRecordDomainService(
         review: String,
         emotionTags: List<String>
     ): ReadingRecordInfoVO {
+        val userBook = userBookRepository.findById(userBookId)
+            ?: throw UserBookNotFoundException(
+                UserBookErrorCode.USER_BOOK_NOT_FOUND,
+                "User book not found with id: $userBookId"
+            )
 
         val readingRecord = ReadingRecord.create(
             userBookId = userBookId,
@@ -50,16 +58,18 @@ class ReadingRecordDomainService(
         }
         readingRecordTagRepository.saveAll(readingRecordTags)
 
-        val userBook = userBookRepository.findById(userBookId)
+        userBookRepository.save(userBook.increaseReadingRecordCount())
 
         return ReadingRecordInfoVO.newInstance(
             readingRecord = savedReadingRecord,
             emotionTags = tags.map { it.name },
-            bookTitle = userBook?.title,
-            bookPublisher = userBook?.publisher,
-            bookCoverImageUrl = userBook?.coverImageUrl
+            bookTitle = userBook.title,
+            bookPublisher = userBook.publisher,
+            bookCoverImageUrl = userBook.coverImageUrl,
+            author = userBook.author
         )
     }
+
 
     fun findReadingRecordById(readingRecordId: UUID): ReadingRecordInfoVO {
         val readingRecord = readingRecordRepository.findById(readingRecordId)
@@ -82,7 +92,8 @@ class ReadingRecordDomainService(
             emotionTags = tags.map { it.name },
             bookTitle = userBook?.title,
             bookPublisher = userBook?.publisher,
-            bookCoverImageUrl = userBook?.coverImageUrl
+            bookCoverImageUrl = userBook?.coverImageUrl,
+            author = userBook?.author
         )
     }
 
@@ -105,7 +116,8 @@ class ReadingRecordDomainService(
                 emotionTags = tags.map { it.name },
                 bookTitle = userBook?.title,
                 bookPublisher = userBook?.publisher,
-                bookCoverImageUrl = userBook?.coverImageUrl
+                bookCoverImageUrl = userBook?.coverImageUrl,
+                author = userBook?.author
             )
         }
     }
