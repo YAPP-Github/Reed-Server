@@ -39,7 +39,10 @@ data class ReadingRecordResponse private constructor(
     val bookPublisher: String?,
 
     @Schema(description = "도서 썸네일 URL", example = "https://example.com/book-cover.jpg")
-    val bookCoverImageUrl: String?
+    val bookCoverImageUrl: String?,
+
+    @Schema(description = "저자", example = "로버트 C. 마틴")
+    val author: String?
 ) {
     companion object {
         private val dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
@@ -56,7 +59,8 @@ data class ReadingRecordResponse private constructor(
                 updatedAt = readingRecordInfoVO.updatedAt.format(dateTimeFormatter),
                 bookTitle = readingRecordInfoVO.bookTitle,
                 bookPublisher = readingRecordInfoVO.bookPublisher,
-                bookCoverImageUrl = readingRecordInfoVO.bookCoverImageUrl
+                bookCoverImageUrl = readingRecordInfoVO.bookCoverImageUrl,
+                author = readingRecordInfoVO.author
             )
         }
     }

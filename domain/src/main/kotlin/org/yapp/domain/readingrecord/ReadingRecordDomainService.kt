@@ -65,11 +65,11 @@ class ReadingRecordDomainService(
             emotionTags = tags.map { it.name },
             bookTitle = userBook.title,
             bookPublisher = userBook.publisher,
-            bookCoverImageUrl = userBook.coverImageUrl
+            bookCoverImageUrl = userBook.coverImageUrl,
+            author = userBook.author
         )
     }
 
-    
 
     fun findReadingRecordById(readingRecordId: UUID): ReadingRecordInfoVO {
         val readingRecord = readingRecordRepository.findById(readingRecordId)
@@ -92,7 +92,8 @@ class ReadingRecordDomainService(
             emotionTags = tags.map { it.name },
             bookTitle = userBook?.title,
             bookPublisher = userBook?.publisher,
-            bookCoverImageUrl = userBook?.coverImageUrl
+            bookCoverImageUrl = userBook?.coverImageUrl,
+            author = userBook?.author
         )
     }
 
@@ -115,7 +116,8 @@ class ReadingRecordDomainService(
                 emotionTags = tags.map { it.name },
                 bookTitle = userBook?.title,
                 bookPublisher = userBook?.publisher,
-                bookCoverImageUrl = userBook?.coverImageUrl
+                bookCoverImageUrl = userBook?.coverImageUrl,
+                author = userBook?.author
             )
         }
     }
