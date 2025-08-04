@@ -63,6 +63,7 @@ data class BookCreateRequest private constructor(
     val publicationYear: Int? = null,
 
     @field:Size(max = 2048, message = "표지 URL은 2048자 이내여야 합니다.")
+    @field:NotBlank(message = "표지 이미지 URL은 필수입니다.")
     @Schema(
         description = "책 표지 이미지 URL",
         example = "https://image.aladin.co.kr/product/123/45/cover/1234567890123.jpg",
@@ -70,7 +71,7 @@ data class BookCreateRequest private constructor(
         maxLength = 2048,
         format = "uri"
     )
-    val coverImageUrl: String,
+    val coverImageUrl: String? = null,
 
     @field:Size(max = 2000, message = "책 설명은 2000자 이내여야 합니다.")
     @Schema(
@@ -84,6 +85,7 @@ data class BookCreateRequest private constructor(
     fun validTitle(): String = title!!
     fun validAuthor(): String = author!!
     fun validPublisher(): String = publisher!!
+    fun validCoverImageUrl(): String = coverImageUrl!!
 
     companion object {
 
