@@ -37,7 +37,7 @@ class TokenService(
         tokenDomainRedisService.validateRefreshTokenByToken(refreshToken)
     }
 
-    fun getUserIdByToken(@Valid tokenRefreshRequest: TokenRefreshRequest): UserIdResponse {
+    fun getUserIdByToken(tokenRefreshRequest: TokenRefreshRequest): UserIdResponse {
         val userId = tokenDomainRedisService.getUserIdByToken(tokenRefreshRequest.validRefreshToken())
         return UserIdResponse.from(userId)
     }

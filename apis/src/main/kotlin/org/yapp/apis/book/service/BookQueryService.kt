@@ -7,6 +7,6 @@ import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.apis.book.dto.response.BookSearchResponse
 
 sealed interface BookQueryService {
-    fun searchBooks(@Valid request: BookSearchRequest): BookSearchResponse
+    fun searchBooks(request: BookSearchRequest): BookSearchResponse
     fun getBookDetail(@Valid request: BookDetailRequest): BookDetailResponse
 }

@@ -23,7 +23,7 @@ class AladinBookQueryService(
 ) : BookQueryService {
     private val log = KotlinLogging.logger {}
 
-    override fun searchBooks(@Valid request: BookSearchRequest): BookSearchResponse {
+    override fun searchBooks(request: BookSearchRequest): BookSearchResponse {
         log.info("Service - Converting BookSearchRequest to AladinBookSearchRequest and calling Aladin API for book search.")
         val aladinSearchRequest = AladinBookSearchRequest.of(
             request.validQuery(),

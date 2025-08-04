@@ -21,7 +21,7 @@ class ReadingRecordService(
     fun createReadingRecord(
         userId: UUID,
         userBookId: UUID,
-        @Valid request: CreateReadingRecordRequest
+        request: CreateReadingRecordRequest
     ): ReadingRecordResponse {
         val readingRecordInfoVO = readingRecordDomainService.createReadingRecord(
             userBookId = userBookId,
