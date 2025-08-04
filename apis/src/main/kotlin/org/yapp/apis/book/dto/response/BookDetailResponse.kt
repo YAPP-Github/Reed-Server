@@ -25,6 +25,8 @@ data class BookDetailResponse private constructor(
     }
 
     companion object {
+        private const val DEFAULT_MAX_PAGE_COUNT = 4032
+        
         fun from(response: AladinBookDetailResponse, userBookStatus: BookStatus = BookStatus.BEFORE_REGISTRATION): BookDetailResponse {
             val item = response.item.firstOrNull()
                 ?: throw IllegalArgumentException("No book item found in detail response.")
@@ -41,7 +43,7 @@ data class BookDetailResponse private constructor(
                 coverImageUrl = item.cover,
                 categoryName = item.categoryName,
                 publisher = item.publisher ?: "",
-                totalPage = item.subInfo.itemPage ?: 4032,
+                totalPage = item.subInfo.itemPage ?: DEFAULT_MAX_PAGE_COUNT,
                 userBookStatus = userBookStatus
             )
         }
