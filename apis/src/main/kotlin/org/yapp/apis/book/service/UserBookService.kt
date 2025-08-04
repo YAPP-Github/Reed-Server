@@ -1,8 +1,10 @@
 package org.yapp.apis.book.service
 
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import org.yapp.apis.auth.dto.request.UserBooksByIsbnsRequest
 import org.yapp.apis.book.dto.request.UpsertUserBookRequest
 import org.yapp.apis.book.dto.response.UserBookPageResponse
@@ -15,10 +17,11 @@ import org.yapp.domain.userbook.UserBookSortType
 import java.util.*
 
 @Service
+@Validated
 class UserBookService(
     private val userBookDomainService: UserBookDomainService
 ) {
-    fun upsertUserBook(upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse {
+    fun upsertUserBook(@Valid upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse {
         val userBookInfoVO = userBookDomainService.upsertUserBook(
             upsertUserBookRequest.validUserId(),
             upsertUserBookRequest.validBookId(),
@@ -41,7 +44,7 @@ class UserBookService(
         }
     }
 
-    fun findAllByUserIdAndBookIsbnIn(userBooksByIsbnsRequest: UserBooksByIsbnsRequest): List<UserBookResponse> {
+    fun findAllByUserIdAndBookIsbnIn(@Valid userBooksByIsbnsRequest: UserBooksByIsbnsRequest): List<UserBookResponse> {
         val userBooks = userBookDomainService.findAllByUserIdAndBookIsbnIn(
             userBooksByIsbnsRequest.validUserId(),
             userBooksByIsbnsRequest.validIsbns(),

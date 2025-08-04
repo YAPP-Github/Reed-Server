@@ -1,7 +1,9 @@
 package org.yapp.apis.book.service
 
+import jakarta.validation.Valid
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
 import org.yapp.apis.book.dto.response.BookDetailResponse
@@ -15,12 +17,13 @@ import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 
 @Service
+@Validated
 class AladinBookQueryService(
     private val aladinApi: AladinApi
 ) : BookQueryService {
     private val log = KotlinLogging.logger {}
 
-    override fun searchBooks(request: BookSearchRequest): BookSearchResponse {
+    override fun searchBooks(@Valid request: BookSearchRequest): BookSearchResponse {
         log.info("Service - Converting BookSearchRequest to AladinBookSearchRequest and calling Aladin API for book search.")
         val aladinSearchRequest = AladinBookSearchRequest.of(
             request.validQuery(),
@@ -42,7 +45,7 @@ class AladinBookQueryService(
         return BookSearchResponse.from(response)
     }
 
-    override fun getBookDetail(request: BookDetailRequest): BookDetailResponse {
+    override fun getBookDetail(@Valid request: BookDetailRequest): BookDetailResponse {
         log.info("Service - Converting BookDetailRequest to AladinBookLookupRequest and calling Aladin API for book detail lookup.")
         val aladinLookupRequest = AladinBookLookupRequest.from(request.validIsbn())
         val response: AladinBookDetailResponse = aladinApi.lookupBook(aladinLookupRequest)

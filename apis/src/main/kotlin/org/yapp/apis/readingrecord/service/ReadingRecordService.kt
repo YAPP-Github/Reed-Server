@@ -1,8 +1,10 @@
 package org.yapp.apis.readingrecord.service
 
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.domain.readingrecord.ReadingRecordDomainService
@@ -11,6 +13,7 @@ import java.util.*
 
 
 @Service
+@Validated
 class ReadingRecordService(
     private val readingRecordDomainService: ReadingRecordDomainService,
 ) {
@@ -18,7 +21,7 @@ class ReadingRecordService(
     fun createReadingRecord(
         userId: UUID,
         userBookId: UUID,
-        request: CreateReadingRecordRequest
+        @Valid request: CreateReadingRecordRequest
     ): ReadingRecordResponse {
         val readingRecordInfoVO = readingRecordDomainService.createReadingRecord(
             userBookId = userBookId,
