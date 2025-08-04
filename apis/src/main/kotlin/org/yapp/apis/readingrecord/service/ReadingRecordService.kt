@@ -1,23 +1,21 @@
 package org.yapp.apis.readingrecord.service
 
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import org.yapp.apis.book.service.UserBookService
+import org.springframework.validation.annotation.Validated
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
-import org.yapp.apis.readingrecord.exception.ReadingRecordErrorCode
-import org.yapp.apis.readingrecord.exception.ReadingRecordNotFoundException
-import org.yapp.domain.book.BookDomainService
 import org.yapp.domain.readingrecord.ReadingRecordDomainService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import java.util.*
 
 
 @Service
+@Validated
 class ReadingRecordService(
     private val readingRecordDomainService: ReadingRecordDomainService,
-    private val userBookService: UserBookService,
 ) {
 
     fun createReadingRecord(
@@ -25,8 +23,6 @@ class ReadingRecordService(
         userBookId: UUID,
         request: CreateReadingRecordRequest
     ): ReadingRecordResponse {
-        userBookService.validateUserBookExists(userId, userBookId)
-
         val readingRecordInfoVO = readingRecordDomainService.createReadingRecord(
             userBookId = userBookId,
             pageNumber = request.validPageNumber(),
@@ -43,13 +39,6 @@ class ReadingRecordService(
         readingRecordId: UUID
     ): ReadingRecordResponse {
         val readingRecordInfoVO = readingRecordDomainService.findReadingRecordById(readingRecordId)
-            ?: throw ReadingRecordNotFoundException(
-                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
-                "Reading record not found with id: $readingRecordId"
-            )
-
-        userBookService.validateUserBookExists(userId, readingRecordInfoVO.userBookId.value)
-
         return ReadingRecordResponse.from(readingRecordInfoVO)
     }
 

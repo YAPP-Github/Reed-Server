@@ -2,6 +2,8 @@ package org.yapp.domain.readingrecord
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.yapp.domain.readingrecord.exception.ReadingRecordErrorCode
+import org.yapp.domain.readingrecord.exception.ReadingRecordNotFoundException
 import org.yapp.domain.readingrecord.vo.ReadingRecordInfoVO
 import org.yapp.domain.readingrecordtag.ReadingRecordTag
 import org.yapp.domain.readingrecordtag.ReadingRecordTagRepository
@@ -59,8 +61,12 @@ class ReadingRecordDomainService(
         )
     }
 
-    fun findReadingRecordById(readingRecordId: UUID): ReadingRecordInfoVO? {
-        val readingRecord = readingRecordRepository.findById(readingRecordId) ?: return null
+    fun findReadingRecordById(readingRecordId: UUID): ReadingRecordInfoVO {
+        val readingRecord = readingRecordRepository.findById(readingRecordId)
+            ?: throw ReadingRecordNotFoundException(
+                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
+                "Reading record not found with id: $readingRecordId"
+            )
 
         return buildReadingRecordInfoVO(readingRecord)
     }

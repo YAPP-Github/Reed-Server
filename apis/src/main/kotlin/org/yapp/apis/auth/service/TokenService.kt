@@ -1,6 +1,8 @@
 package org.yapp.apis.auth.service
 
+import jakarta.validation.Valid
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import org.yapp.apis.auth.dto.request.TokenGenerateRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.RefreshTokenResponse
@@ -9,6 +11,7 @@ import org.yapp.domain.token.TokenDomainRedisService
 import java.util.*
 
 @Service
+@Validated
 class TokenService(
     private val tokenDomainRedisService: TokenDomainRedisService,
 ) {
@@ -16,7 +19,7 @@ class TokenService(
         tokenDomainRedisService.deleteRefreshTokenByToken(token)
     }
 
-    fun saveRefreshToken(tokenGenerateRequest: TokenGenerateRequest): RefreshTokenResponse {
+    fun saveRefreshToken(@Valid tokenGenerateRequest: TokenGenerateRequest): RefreshTokenResponse {
         val token = tokenDomainRedisService.saveRefreshToken(
             tokenGenerateRequest.validUserId(),
             tokenGenerateRequest.validRefreshToken(),

@@ -1,8 +1,8 @@
-package org.yapp.apis.readingrecord.exception
+package org.yapp.domain.userbook.exception
 
 import org.yapp.globalutils.exception.CommonException
 
-class ReadingRecordNotFoundException(
-    errorCode: ReadingRecordErrorCode,
+class UserBookNotFoundException (
+    errorCode: UserBookErrorCode,
     message: String? = null
 ) : CommonException(errorCode, message)

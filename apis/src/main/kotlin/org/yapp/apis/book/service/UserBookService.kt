@@ -1,25 +1,27 @@
 package org.yapp.apis.book.service
 
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import org.yapp.apis.auth.dto.request.UserBooksByIsbnsRequest
 import org.yapp.apis.book.dto.request.UpsertUserBookRequest
 import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.exception.UserBookErrorCode
-import org.yapp.apis.book.exception.UserBookNotFoundException
+import org.yapp.apis.book.exception.UserBookException
 import org.yapp.domain.userbook.BookStatus
-import org.yapp.domain.userbook.UserBook
 import org.yapp.domain.userbook.UserBookDomainService
 import org.yapp.domain.userbook.UserBookSortType
 import java.util.*
 
 @Service
+@Validated
 class UserBookService(
     private val userBookDomainService: UserBookDomainService
 ) {
-    fun upsertUserBook(upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse {
+    fun upsertUserBook(@Valid upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse {
         val userBookInfoVO = userBookDomainService.upsertUserBook(
             upsertUserBookRequest.validUserId(),
             upsertUserBookRequest.validBookId(),
@@ -33,15 +35,16 @@ class UserBookService(
         return UserBookResponse.from(userBookInfoVO)
     }
 
-    fun validateUserBookExists(userId: UUID, userBookId: UUID): UserBook {
-        return userBookDomainService.findByIdAndUserId(userBookId, userId)
-            ?: throw UserBookNotFoundException(
+    fun validateUserBookExists(userBookId: UUID, userId: UUID) {
+        if (!userBookDomainService.existsByUserBookIdAndUserId(userBookId, userId)) {
+            throw UserBookException(
                 UserBookErrorCode.USER_BOOK_NOT_FOUND,
-                "User book not found with id: $userBookId and userId: $userId"
+                "UserBook not found or access denied: $userBookId"
             )
+        }
     }
 
-    fun findAllByUserIdAndBookIsbnIn(userBooksByIsbnsRequest: UserBooksByIsbnsRequest): List<UserBookResponse> {
+    fun findAllByUserIdAndBookIsbnIn(@Valid userBooksByIsbnsRequest: UserBooksByIsbnsRequest): List<UserBookResponse> {
         val userBooks = userBookDomainService.findAllByUserIdAndBookIsbnIn(
             userBooksByIsbnsRequest.validUserId(),
             userBooksByIsbnsRequest.validIsbns(),
@@ -49,7 +52,10 @@ class UserBookService(
         return userBooks.map { UserBookResponse.from(it) }
     }
 
-
+    fun findUserBookStatusByIsbn(userId: UUID, isbn: String): BookStatus? {
+        val userBook = userBookDomainService.findByUserIdAndBookIsbn(userId, isbn)
+        return userBook?.status
+    }
 
     private fun findUserBooksByDynamicCondition(
         userId: UUID,

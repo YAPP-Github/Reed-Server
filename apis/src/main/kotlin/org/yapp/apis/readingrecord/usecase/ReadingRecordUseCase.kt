@@ -26,7 +26,7 @@ class ReadingRecordUseCase(
         request: CreateReadingRecordRequest
     ): ReadingRecordResponse {
         userAuthService.validateUserExists(userId)
-        userBookService.validateUserBookExists(userId, userBookId)
+        userBookService.validateUserBookExists(userBookId, userId)
 
         return readingRecordService.createReadingRecord(
             userId = userId,
@@ -54,8 +54,7 @@ class ReadingRecordUseCase(
         pageable: Pageable
     ): Page<ReadingRecordResponse> {
         userAuthService.validateUserExists(userId)
-
-        userBookService.validateUserBookExists(userId, userBookId)
+        userBookService.validateUserBookExists(userBookId, userId)
 
         return readingRecordService.getReadingRecordsByDynamicCondition(
             userBookId = userBookId,

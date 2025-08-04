@@ -1,4 +1,6 @@
-package org.yapp.infra.external.aladin.dto
+package org.yapp.infra.external.aladin.request
+
+import org.yapp.globalutils.book.BookCoverSize
 
 data class AladinBookSearchRequest private constructor(
     val query: String,
@@ -8,7 +10,7 @@ data class AladinBookSearchRequest private constructor(
     val start: Int?,
     val sort: String?,
     val cover: String?,
-    val categoryId: Int?
+    val categoryId: Int?,
 ) {
     fun toMap(): Map<String, Any> {
         val params = mutableMapOf<String, Any>()
@@ -24,14 +26,13 @@ data class AladinBookSearchRequest private constructor(
     }
 
     companion object {
-        fun create(
+        fun of(
             query: String,
             queryType: String? = null,
             searchTarget: String? = null,
             maxResults: Int? = null,
             start: Int? = null,
             sort: String? = null,
-            cover: String? = null,
             categoryId: Int? = null
         ): AladinBookSearchRequest {
             return AladinBookSearchRequest(
@@ -41,8 +42,8 @@ data class AladinBookSearchRequest private constructor(
                 maxResults = maxResults,
                 start = start,
                 sort = sort,
-                cover = cover,
-                categoryId = categoryId
+                cover = BookCoverSize.BIG.apiValue,
+                categoryId = categoryId,
             )
         }
     }

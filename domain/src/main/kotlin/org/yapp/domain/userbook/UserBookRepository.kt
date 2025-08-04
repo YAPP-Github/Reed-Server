@@ -10,7 +10,7 @@ interface UserBookRepository {
 
     fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook?
     fun findByBookIdAndUserId(bookId: UUID, userId: UUID): UserBook?
-    fun findByIdAndUserId(id: UUID, userId: UUID): UserBook?
+    fun existsByIdAndUserId(id: UUID, userId: UUID): Boolean
     fun findById(id: UUID): UserBook?
 
     fun save(userBook: UserBook): UserBook

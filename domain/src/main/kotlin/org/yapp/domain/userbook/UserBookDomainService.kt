@@ -57,6 +57,11 @@ class UserBookDomainService(
         return userBooks.map { UserBookInfoVO.newInstance(it) }
     }
 
+    fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBookInfoVO? {
+        val userBook = userBookRepository.findByUserIdAndBookIsbn(userId, isbn)
+        return userBook?.let { UserBookInfoVO.newInstance(it) }
+    }
+
     fun getUserBookStatusCounts(userId: UUID): UserBookStatusCountsVO {
         val statusCounts = BookStatus.entries.associateWith { status ->
             countUserBooksByStatus(userId, status)
@@ -68,8 +73,8 @@ class UserBookDomainService(
         return userBookRepository.countUserBooksByStatus(userId, status)
     }
 
-    fun findByIdAndUserId(userBookId: UUID, userId: UUID): UserBook? {
-        return userBookRepository.findByIdAndUserId(userBookId, userId)
+    fun existsByUserBookIdAndUserId(userBookId: UUID, userId: UUID): Boolean {
+        return userBookRepository.existsByIdAndUserId(userBookId, userId)
     }
 
     fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {
