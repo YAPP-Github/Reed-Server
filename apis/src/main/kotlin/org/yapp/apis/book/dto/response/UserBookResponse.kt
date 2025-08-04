@@ -17,6 +17,7 @@ data class UserBookResponse private constructor(
     val publisher: String,
     val createdAt: String,
     val updatedAt: String,
+    val recordCount: Int,
 ) {
     companion object {
         fun from(
@@ -33,6 +34,7 @@ data class UserBookResponse private constructor(
                 publisher = BookDataValidator.removeParenthesesFromPublisher(userBook.publisher),
                 createdAt = userBook.createdAt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 updatedAt = userBook.updatedAt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                recordCount = userBook.recordCount,
             )
         }
     }
