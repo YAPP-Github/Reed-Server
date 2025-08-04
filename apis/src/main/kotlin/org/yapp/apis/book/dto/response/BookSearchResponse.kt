@@ -1,5 +1,6 @@
 package org.yapp.apis.book.dto.response
 
+import org.yapp.apis.util.AuthorExtractor
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.apis.util.IsbnConverter
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
@@ -39,7 +40,7 @@ data class BookSearchResponse private constructor(
                         isbn = it.isbn,
                         isbn13 = it.isbn13,
                         title = it.title,
-                        author = it.author,
+                        author = AuthorExtractor.extractAuthors(it.author),
                         publisher = it.publisher,
                         coverImageUrl = it.cover
                     )
