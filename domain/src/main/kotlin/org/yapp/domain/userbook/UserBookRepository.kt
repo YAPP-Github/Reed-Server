@@ -36,4 +36,6 @@ interface UserBookRepository {
         limit: Int,
         excludeIds: Set<UUID>
     ): List<UserBook>
+
+    
 }

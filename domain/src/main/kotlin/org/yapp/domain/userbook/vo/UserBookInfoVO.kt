@@ -15,13 +15,15 @@ data class UserBookInfoVO private constructor(
     val author: String,
     val status: BookStatus,
     val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
+    val updatedAt: LocalDateTime,
+    val recordCount: Int
 ) {
     init {
         require(coverImageUrl.isNotBlank()) { "표지 이미지 URL은 비어 있을 수 없습니다." }
         require(publisher.isNotBlank()) { "출판사는 비어 있을 수 없습니다." }
         require(title.isNotBlank()) { "도서 제목은 비어 있을 수 없습니다." }
         require(author.isNotBlank()) { "저자는 비어 있을 수 없습니다." }
+        require(recordCount >= 0) { "독서 기록 수는 0 이상이어야 합니다." }
         require(!createdAt.isAfter(updatedAt)) {
             "생성일(createdAt)은 수정일(updatedAt)보다 이후일 수 없습니다."
         }
@@ -30,6 +32,7 @@ data class UserBookInfoVO private constructor(
     companion object {
         fun newInstance(
             userBook: UserBook,
+            recordCount: Int
         ): UserBookInfoVO {
             return UserBookInfoVO(
                 id = userBook.id,
@@ -42,7 +45,8 @@ data class UserBookInfoVO private constructor(
                 author = userBook.author,
                 status = userBook.status,
                 createdAt = userBook.createdAt ?: throw IllegalStateException("createdAt은 null일 수 없습니다."),
-                updatedAt = userBook.updatedAt ?: throw IllegalStateException("updatedAt은 null일 수 없습니다.")
+                updatedAt = userBook.updatedAt ?: throw IllegalStateException("updatedAt은 null일 수 없습니다."),
+                recordCount = recordCount
             )
         }
     }

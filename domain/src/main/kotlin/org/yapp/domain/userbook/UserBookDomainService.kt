@@ -35,7 +35,7 @@ class UserBookDomainService(
             )
 
         val savedUserBook = userBookRepository.save(userBook)
-        return UserBookInfoVO.newInstance(savedUserBook)
+        return UserBookInfoVO.newInstance(savedUserBook, savedUserBook.readingRecordCount)
     }
 
     fun findUserBooksByDynamicCondition(
@@ -46,7 +46,7 @@ class UserBookDomainService(
         pageable: Pageable
     ): Page<UserBookInfoVO> {
         val page = userBookRepository.findUserBooksByDynamicCondition(userId, status, sort, title, pageable)
-        return page.map { UserBookInfoVO.newInstance(it) }
+        return page.map { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
     }
 
     fun findAllByUserIdAndBookIsbnIn(userId: UUID, isbns: List<String>): List<UserBookInfoVO> {
@@ -54,12 +54,12 @@ class UserBookDomainService(
             return emptyList()
         }
         val userBooks = userBookRepository.findAllByUserIdAndBookIsbnIn(userId, isbns)
-        return userBooks.map { UserBookInfoVO.newInstance(it) }
+        return userBooks.map { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
     }
 
     fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBookInfoVO? {
         val userBook = userBookRepository.findByUserIdAndBookIsbn(userId, isbn)
-        return userBook?.let { UserBookInfoVO.newInstance(it) }
+        return userBook?.let { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
     }
 
     fun getUserBookStatusCounts(userId: UUID): UserBookStatusCountsVO {
