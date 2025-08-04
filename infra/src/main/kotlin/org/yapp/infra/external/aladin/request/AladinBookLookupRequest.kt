@@ -1,5 +1,7 @@
 package org.yapp.infra.external.aladin.request
 
+import org.yapp.globalutils.book.BookCoverSize
+
 data class AladinBookLookupRequest private constructor(
     val itemId: String,
     val itemIdType: String = "ISBN13",
@@ -17,7 +19,7 @@ data class AladinBookLookupRequest private constructor(
         fun from(
             itemId: String,
         ): AladinBookLookupRequest {
-            return AladinBookLookupRequest(itemId, "ISBN13", "Big")
+            return AladinBookLookupRequest(itemId, "ISBN13", BookCoverSize.BIG.apiValue)
         }
     }
 }

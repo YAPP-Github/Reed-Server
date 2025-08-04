@@ -1,5 +1,7 @@
 package org.yapp.infra.external.aladin.request
 
+import org.yapp.globalutils.book.BookCoverSize
+
 data class AladinBookSearchRequest private constructor(
     val query: String,
     val queryType: String?,
@@ -40,7 +42,7 @@ data class AladinBookSearchRequest private constructor(
                 maxResults = maxResults,
                 start = start,
                 sort = sort,
-                cover = "Big",
+                cover = BookCoverSize.BIG.apiValue,
                 categoryId = categoryId,
             )
         }
