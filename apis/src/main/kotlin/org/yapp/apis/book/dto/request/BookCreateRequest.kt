@@ -97,7 +97,7 @@ data class BookCreateRequest private constructor(
                 author = bookDetail.author,
                 publisher = bookDetail.publisher,
                 publicationYear = parsePublicationYear(bookDetail.pubDate),
-                coverImageUrl = bookDetail.cover,
+                coverImageUrl = bookDetail.coverImageUrl,
                 description = bookDetail.description,
             )
         }
