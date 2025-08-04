@@ -19,7 +19,11 @@ data class AladinBookLookupRequest private constructor(
         fun from(
             itemId: String,
         ): AladinBookLookupRequest {
-            return AladinBookLookupRequest(itemId, "ISBN13", BookCoverSize.BIG.apiValue)
+            return AladinBookLookupRequest(
+                itemId = itemId,
+                itemIdType = "ISBN13",
+                cover = BookCoverSize.BIG.apiValue
+            )
         }
     }
 }
