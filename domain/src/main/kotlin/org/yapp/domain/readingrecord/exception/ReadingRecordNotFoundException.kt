@@ -1,4 +1,4 @@
-package org.yapp.apis.readingrecord.exception
+package org.yapp.domain.readingrecord.exception
 
 import org.yapp.globalutils.exception.CommonException
 

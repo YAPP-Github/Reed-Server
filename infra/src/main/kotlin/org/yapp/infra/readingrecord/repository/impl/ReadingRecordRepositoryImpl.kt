@@ -7,10 +7,9 @@ import org.springframework.stereotype.Repository
 import org.yapp.domain.readingrecord.ReadingRecord
 import org.yapp.domain.readingrecord.ReadingRecordRepository
 import org.yapp.domain.readingrecord.ReadingRecordSortType
-import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.infra.readingrecord.entity.ReadingRecordEntity
 import org.yapp.infra.readingrecord.repository.JpaReadingRecordRepository
-import java.util.UUID
+import java.util.*
 
 @Repository
 class ReadingRecordRepositoryImpl(

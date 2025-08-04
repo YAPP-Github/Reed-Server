@@ -54,7 +54,6 @@ class ReadingRecordUseCase(
         pageable: Pageable
     ): Page<ReadingRecordResponse> {
         userAuthService.validateUserExists(userId)
-
         userBookService.validateUserBookExists(userId, userBookId)
 
         return readingRecordService.getReadingRecordsByDynamicCondition(
