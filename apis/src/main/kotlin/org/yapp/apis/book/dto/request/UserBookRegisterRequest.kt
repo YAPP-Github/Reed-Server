@@ -28,13 +28,8 @@ data class UserBookRegisterRequest private constructor(
         allowableValues = ["BEFORE_REGISTRATION", "BEFORE_READING", "READING", "COMPLETED"],
         enumAsRef = true
     )
-    val bookStatus: BookStatus
+    val bookStatus: BookStatus? = null
 ) {
     fun validBookIsbn(): String = bookIsbn!!
-
-    companion object {
-        fun create(bookIsbn: String, bookStatus: BookStatus): UserBookRegisterRequest {
-            return UserBookRegisterRequest(bookIsbn, bookStatus)
-        }
-    }
+    fun validBookStatus(): BookStatus = bookStatus!!
 }

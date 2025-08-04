@@ -69,7 +69,7 @@ class BookUseCase(
         val upsertUserBookRequest = UpsertUserBookRequest.of(
             userId = userId,
             bookCreateResponse,
-            status = request.bookStatus,
+            status = request.validBookStatus(),
         )
         val userBookResponse = userBookService.upsertUserBook(upsertUserBookRequest)
 
