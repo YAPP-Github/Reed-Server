@@ -34,8 +34,8 @@ data class CreateReadingRecordRequest private constructor(
     @Schema(description = "감상평", example = "이 책은 매우 인상적이었습니다.", required = true)
     val review: String? = null,
 
-    @field:Size(max = 3, message = "감정 태그는 최대 3개까지 가능합니다.")
-    @Schema(description = "감정 태그 목록 (최대 3개)", example = "[\"감동적\", \"슬픔\", \"희망\"]")
+    @field:Size(max = 1, message = "감정 태그는 최대 1개까지 가능합니다. (단일 감정만 받지만, 확장성을 위해 리스트 형태로 관리됩니다.)")
+    @Schema(description = "감정 태그 목록 (현재는 최대 1개, 확장 가능)", example = "[\"감동적\"]")
     val emotionTags: List<@Size(max = 10, message = "감정 태그는 10자를 초과할 수 없습니다.") String> = emptyList()
 ) {
     fun validPageNumber(): Int = pageNumber!!
