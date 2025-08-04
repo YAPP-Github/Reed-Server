@@ -6,9 +6,19 @@ import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
-
-@Schema(description = "독서 기록 생성 요청")
+@Schema(
+    description = "독서 기록 생성 요청",
+    example = """
+        {
+          "pageNumber": 42,
+          "quote": "이것은 기억에 남는 문장입니다.",
+          "review": "이 책은 매우 인상적이었습니다.",
+          "emotionTags": ["감동적"]
+        }
+    """
+)
 data class CreateReadingRecordRequest private constructor(
+
     @field:Min(1, message = "페이지 번호는 1 이상이어야 합니다.")
     @field:Max(9999, message = "페이지 번호는 9999 이하여야 합니다.")
     @Schema(description = "현재 읽은 페이지 번호", example = "42", required = true)
