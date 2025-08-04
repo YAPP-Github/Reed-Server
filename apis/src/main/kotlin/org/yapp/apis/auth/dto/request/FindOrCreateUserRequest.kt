@@ -34,7 +34,6 @@ data class FindOrCreateUserRequest private constructor(
         description = "소셜 로그인 제공자",
         example = "KAKAO"
     )
-    @field:NotBlank(message = "providerType은 필수입니다.")
     val providerType: ProviderType? = null,
 
     @Schema(
