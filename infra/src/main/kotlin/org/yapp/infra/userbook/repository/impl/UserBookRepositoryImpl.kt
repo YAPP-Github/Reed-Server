@@ -14,7 +14,7 @@ import java.util.*
 
 @Repository
 class UserBookRepositoryImpl(
-    private val jpaUserBookRepository: JpaUserBookRepository,
+    private val jpaUserBookRepository: JpaUserBookRepository
 ) : UserBookRepository {
 
     override fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook? {
@@ -81,4 +81,6 @@ class UserBookRepositoryImpl(
         val entities = jpaUserBookRepository.findUnrecordedBooksSortedByPriority(userId, excludeIds, limit)
         return entities.map { it.toDomain() }
     }
+
+
 }
