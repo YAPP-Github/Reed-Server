@@ -1,4 +1,4 @@
-package org.yapp.apis.auth.strategy
+package org.yapp.apis.auth.strategy.signin
 
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
@@ -10,24 +10,21 @@ import org.yapp.apis.auth.util.NicknameGenerator
 import org.yapp.domain.user.ProviderType
 
 @Component
-class AppleAuthStrategy(
+class AppleSignInStrategy(
     private val appleIdTokenProcessor: AppleIdTokenProcessor
-) : AuthStrategy {
+) : SignInStrategy {
     private val log = KotlinLogging.logger {}
 
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 
-    override fun authenticate(credentials: AuthCredentials): UserCreateInfoResponse {
+    override fun authenticate(credentials: SignInCredentials): UserCreateInfoResponse {
         val appleCredentials = validateCredentials(credentials)
-
         val payload = appleIdTokenProcessor.parseAndValidate(appleCredentials.idToken)
-
         log.info { "Apple ID Token validated successfully. sub=${payload.sub}, email=${payload.email}" }
-
         return createUserInfo(payload)
     }
 
-    private fun validateCredentials(credentials: AuthCredentials): AppleAuthCredentials {
+    private fun validateCredentials(credentials: SignInCredentials): AppleAuthCredentials {
         return credentials as? AppleAuthCredentials
             ?: throw AuthException(
                 AuthErrorCode.INVALID_CREDENTIALS,

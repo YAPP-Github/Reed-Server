@@ -2,11 +2,11 @@ package org.yapp.apis.auth.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
-import org.yapp.apis.auth.strategy.AppleAuthCredentials
-import org.yapp.apis.auth.strategy.AuthCredentials
-import org.yapp.apis.auth.strategy.KakaoAuthCredentials
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
+import org.yapp.apis.auth.strategy.signin.AppleAuthCredentials
+import org.yapp.apis.auth.strategy.signin.KakaoAuthCredentials
+import org.yapp.apis.auth.strategy.signin.SignInCredentials
 import org.yapp.domain.user.ProviderType
 
 @Schema(
@@ -41,7 +41,7 @@ data class SocialLoginRequest private constructor(
     fun validOauthToken(): String = oauthToken!!
 
     companion object {
-        fun toCredentials(request: SocialLoginRequest): AuthCredentials {
+        fun toCredentials(request: SocialLoginRequest): SignInCredentials {
             val provider = try {
                 ProviderType.valueOf(request.validProviderType().uppercase())
             } catch (e: IllegalArgumentException) {
@@ -55,7 +55,10 @@ data class SocialLoginRequest private constructor(
                 ProviderType.KAKAO -> KakaoAuthCredentials(request.validOauthToken())
                 ProviderType.APPLE -> {
                     val authCode = request.authorizationCode
-                        ?: throw AuthException(AuthErrorCode.INVALID_REQUEST, "Apple login requires an authorization code.")
+                        ?: throw AuthException(
+                            AuthErrorCode.INVALID_REQUEST,
+                            "Apple login requires an authorization code."
+                        )
                     AppleAuthCredentials(request.validOauthToken(), authCode)
                 }
             }

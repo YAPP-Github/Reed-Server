@@ -1,11 +1,11 @@
-package org.yapp.apis.auth.strategy
+package org.yapp.apis.auth.strategy.signin
 
 import org.yapp.apis.auth.dto.response.UserCreateInfoResponse
 import org.yapp.domain.user.ProviderType
 
-interface AuthStrategy {
+interface SignInStrategy {
 
     fun getProviderType(): ProviderType
 
-    fun authenticate(credentials: AuthCredentials): UserCreateInfoResponse
+    fun authenticate(credentials: SignInCredentials): UserCreateInfoResponse
 }

@@ -1,4 +1,4 @@
-package org.yapp.apis.auth.strategy
+package org.yapp.apis.auth.strategy.signin
 
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
@@ -11,15 +11,15 @@ import org.yapp.domain.user.ProviderType
 import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
 @Component
-class KakaoAuthStrategy(
+class KakaoSignInStrategy(
     private val kakaoApiManager: KakaoApiManager
-) : AuthStrategy {
+) : SignInStrategy {
 
     private val log = KotlinLogging.logger {}
 
     override fun getProviderType(): ProviderType = ProviderType.KAKAO
 
-    override fun authenticate(credentials: AuthCredentials): UserCreateInfoResponse {
+    override fun authenticate(credentials: SignInCredentials): UserCreateInfoResponse {
         return try {
             val kakaoCredentials = validateCredentials(credentials)
             val kakaoUser = kakaoApiManager.getUserInfo(kakaoCredentials.accessToken)
@@ -33,7 +33,7 @@ class KakaoAuthStrategy(
         }
     }
 
-    private fun validateCredentials(credentials: AuthCredentials): KakaoAuthCredentials {
+    private fun validateCredentials(credentials: SignInCredentials): KakaoAuthCredentials {
         return credentials as? KakaoAuthCredentials
             ?: throw AuthException(
                 AuthErrorCode.INVALID_CREDENTIALS,
