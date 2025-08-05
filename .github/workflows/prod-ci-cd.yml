@@ -29,6 +29,7 @@ jobs:
           mkdir ./secret
           echo "${{ secrets.PROD_SECRET_PROPERTIES }}" > ./secret/application-prod-secret.properties
           echo "${{ secrets.TEST_SECRET_PROPERTIES }}" > ./secret/application-test-secret.properties
+          echo "${{ secrets.APPLE_AUTH_KEY }}" > ./secret/AuthKey.p8
           chmod 600 ./secret/*
 
       - name: Set up Docker Buildx
