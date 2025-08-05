@@ -121,7 +121,10 @@
                 fetch(`${API_SERVER}/api/v1/auth/signin`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({providerType: "KAKAO", oauthToken: accessToken})
+                    body: JSON.stringify({
+                        providerType: "KAKAO",
+                        oauthToken: accessToken
+                    })
                 })
                     .then(res => res.json())
                     .then(data => {
@@ -137,35 +140,103 @@
         });
     });
 
-    // Apple 로그인
+    // Apple 로그인 - popup 모드
     document.getElementById('apple-login-btn').addEventListener('click', () => {
         AppleID.auth.init({
             clientId: '',
             scope: 'name email',
-            redirectURI: 'http://localhost:8080/kakao-login.html',
+            redirectURI: `${window.location.origin}/kakao-login.html`,
+            state: 'apple-login-' + Date.now(),
+            responseType: 'code', // authorization code만 요청 (popup 모드에서 안정적)
+            responseMode: 'query', // URL query parameter로 응답 받기
             usePopup: true
         });
 
+        // Apple Sign In 실행
         AppleID.auth.signIn()
             .then(response => {
-                // id_token을 서버로 전송
-                const id_token = response.authorization.id_token;
-                fetch(`${API_SERVER}/api/v1/auth/signin`, {
+                console.log('Apple 로그인 성공:', response);
+                
+                const authorizationCode = response.authorization?.code;
+                
+                if (!authorizationCode) {
+                    throw new Error('Authorization code not received from Apple');
+                }
+
+                const idToken = response.authorization?.id_token || 'popup-mode-token';
+
+                const requestData = {
+                    providerType: "APPLE",
+                    oauthToken: idToken,
+                    authorizationCode: authorizationCode
+                };
+
+                console.log('서버로 전송할 데이터:', requestData);
+
+                return fetch(`${API_SERVER}/api/v1/auth/signin`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({providerType: "APPLE", idToken: id_token})
-                })
-                    .then(res => res.json())
-                    .then(data => {
-                        document.getElementById('result').textContent = 'Apple 로그인 성공\n\nJWT: ' + data.accessToken;
-                    })
-                    .catch(err => {
-                        document.getElementById('result').textContent = 'Apple 로그인 실패: ' + err.message;
-                    });
+                    body: JSON.stringify(requestData)
+                });
+            })
+            .then(async response => {
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(`서버 에러 (${response.status}): ${data.message || 'Unknown error'}`);
+                }
+                return data;
+            })
+            .then(data => {
+                document.getElementById('result').textContent = 
+                    'Apple 로그인 성공!\n\n' +
+                    'JWT: ' + data.accessToken + '\n\n' +
+                    '사용자 정보: ' + JSON.stringify(data.user || {}, null, 2);
             })
             .catch(error => {
-                document.getElementById('result').textContent = 'Apple 로그인 실패: ' + JSON.stringify(error);
+                console.error('Apple 로그인 에러:', error);
+                document.getElementById('result').textContent = 'Apple 로그인 실패: ' + error.message;
             });
+    });
+
+    // Apple 콜백 처리 (페이지 로드 시 URL 파라미터 확인)
+    window.addEventListener('load', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+        
+        if (code && state && state.startsWith('apple-login-')) {
+            console.log('Apple 콜백 감지됨:', { code, state });
+            
+            const requestData = {
+                providerType: "APPLE",
+                oauthToken: 'callback-id-token',
+                authorizationCode: code
+            };
+
+            fetch(`${API_SERVER}/api/v1/auth/signin`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(requestData)
+            })
+                .then(async response => {
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(`서버 에러 (${response.status}): ${data.message || 'Unknown error'}`);
+                    }
+                    return data;
+                })
+                .then(data => {
+                    document.getElementById('result').textContent = 
+                        'Apple 로그인 성공 (콜백)!\n\n' +
+                        'JWT: ' + data.accessToken;
+                        
+                    history.replaceState({}, document.title, window.location.pathname);
+                })
+                .catch(error => {
+                    console.error('Apple 콜백 처리 에러:', error);
+                    document.getElementById('result').textContent = 'Apple 로그인 실패 (콜백): ' + error.message;
+                });
+        }
     });
 </script>
 
