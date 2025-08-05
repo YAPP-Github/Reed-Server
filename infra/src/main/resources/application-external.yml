@@ -1,6 +1,6 @@
 aladin:
   api:
-    ttbkey: ${ALADIN_API_KEY}
+    ttb-key: ${ALADIN_API_KEY}
 
 oauth:
   kakao:

@@ -76,7 +76,7 @@ springdoc:
 
 aladin:
   api:
-    ttbkey: dummy-aladin-key
+    ttb-key: dummy-aladin-key
 
 oauth:
   apple:

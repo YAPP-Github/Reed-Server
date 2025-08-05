@@ -10,7 +10,7 @@ import org.yapp.infra.external.aladin.response.AladinSearchResponse
 @Component
 class AladinApi(
     private val aladinRestClient: AladinRestClient,
-    @Value("\${aladin.api.ttbkey}")
+    @Value("\${aladin.api.ttb-key}")
     private var ttbKey: String
 ) {
     fun searchBooks(request: AladinBookSearchRequest): Result<AladinSearchResponse> {
