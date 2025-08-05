@@ -61,7 +61,7 @@ class UserAuthService(
         return CreateUserResponse.from(createdUser)
     }
 
-    private fun createNewUser(findOrCreateUserRequest: FindOrCreateUserRequest): UserAuthVO {
+    private fun createNewUser(@Valid findOrCreateUserRequest: FindOrCreateUserRequest): UserAuthVO {
         val email = findOrCreateUserRequest.getOrDefaultEmail()
         val nickname = findOrCreateUserRequest.getOrDefaultNickname()
 
