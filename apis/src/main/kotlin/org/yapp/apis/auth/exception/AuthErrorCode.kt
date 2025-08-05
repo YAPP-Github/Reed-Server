@@ -20,6 +20,8 @@ enum class AuthErrorCode(
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH_400_08", "사용자를 찾을 수 없습니다."),
     EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH_400_09", "이메일을 찾을 수 없습니다."),
     INVALID_APPLE_ID_TOKEN(HttpStatus.BAD_REQUEST, "AUTH_400_10", "유효하지 않은 Apple ID 토큰입니다."),
+    PROVIDER_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "AUTH_400_11", "요청된 공급자 타입이 실제 사용자의 공급자 타입과 일치하지 않습니다."),
+    APPLE_REFRESH_TOKEN_MISSING(HttpStatus.BAD_REQUEST, "AUTH_400_12", "Apple 사용자 탈퇴 시 리프레시 토큰이 누락되었습니다."),
 
     /* 401 UNAUTHORIZED */
     INVALID_OAUTH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_401_01", "잘못된 소셜 OAuth 토큰입니다."),

@@ -3,12 +3,14 @@ package org.yapp.apis.user.service
 import jakarta.validation.Valid
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
-import org.yapp.apis.user.dto.response.CreateUserResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
+import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
+import org.yapp.apis.user.dto.response.CreateUserResponse
+import org.yapp.apis.user.dto.response.WithdrawTargetUserResponse
 import org.yapp.domain.user.UserDomainService
 import org.yapp.domain.user.vo.UserAuthVO
+import java.util.*
 
 @Service
 @Validated
@@ -33,6 +35,15 @@ class UserAccountService(
 
         val createdUser = createNewUser(findOrCreateUserRequest)
         return CreateUserResponse.from(createdUser)
+    }
+
+    fun findWithdrawUserById(userId: UUID): WithdrawTargetUserResponse {
+        val withdrawTargetUserVO = userDomainService.findWithdrawUserById(userId)
+        return WithdrawTargetUserResponse.from(withdrawTargetUserVO)
+    }
+
+    fun withdrawUser(userId: UUID) {
+        userDomainService.deleteUser(userId)
     }
 
     private fun createNewUser(@Valid findOrCreateUserRequest: FindOrCreateUserRequest): UserAuthVO {

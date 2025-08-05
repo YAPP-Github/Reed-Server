@@ -2,9 +2,6 @@ package org.yapp.domain.user
 
 import java.util.*
 
-/**
- * Repository interface for User domain model.
- */
 interface UserRepository {
 
     fun findById(id: UUID): User?
@@ -18,4 +15,6 @@ interface UserRepository {
     fun existsById(id: UUID): Boolean
 
     fun existsByEmail(email: String): Boolean
+
+    fun deleteById(userId: UUID): Unit
 }
