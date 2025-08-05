@@ -22,7 +22,7 @@ class UserService(
         return UserProfileResponse.from(userProfile)
     }
 
-    fun updateTermsAgreement(@Valid userId: UUID, request: TermsAgreementRequest): UserProfileResponse {
+    fun updateTermsAgreement(userId: UUID, @Valid request: TermsAgreementRequest): UserProfileResponse {
         validateUserExists(userId)
         val updatedUserProfile = userDomainService.updateTermsAgreement(userId, request.validTermsAgreed())
         return UserProfileResponse.from(updatedUserProfile)
