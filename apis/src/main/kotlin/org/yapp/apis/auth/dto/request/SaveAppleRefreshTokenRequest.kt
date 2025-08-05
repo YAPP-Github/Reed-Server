@@ -3,7 +3,7 @@ package org.yapp.apis.auth.dto.request
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
-import org.yapp.apis.auth.dto.response.CreateUserResponse
+import org.yapp.apis.user.dto.response.CreateUserResponse
 import org.yapp.apis.auth.strategy.AppleAuthCredentials
 import java.util.UUID
 

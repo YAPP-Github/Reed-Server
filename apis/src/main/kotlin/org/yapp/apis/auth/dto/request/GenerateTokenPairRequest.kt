@@ -2,8 +2,8 @@ package org.yapp.apis.auth.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull
-import org.yapp.apis.auth.dto.response.CreateUserResponse
-import org.yapp.apis.auth.dto.response.UserAuthInfoResponse
+import org.yapp.apis.user.dto.response.CreateUserResponse
+import org.yapp.apis.user.dto.response.UserAuthInfoResponse
 import org.yapp.globalutils.auth.Role
 import java.util.UUID
 

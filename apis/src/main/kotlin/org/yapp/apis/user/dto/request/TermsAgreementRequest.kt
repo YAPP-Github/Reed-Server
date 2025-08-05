@@ -1,4 +1,4 @@
-package org.yapp.apis.auth.dto.request
+package org.yapp.apis.user.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotNull

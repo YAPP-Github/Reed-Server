@@ -1,4 +1,4 @@
-package org.yapp.apis.auth.dto.response
+package org.yapp.apis.user.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
 import org.yapp.domain.user.vo.UserIdentityVO
