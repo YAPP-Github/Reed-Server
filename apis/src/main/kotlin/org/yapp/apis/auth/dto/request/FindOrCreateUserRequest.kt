@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import org.yapp.apis.auth.dto.response.UserCreateInfoResponse
-import org.yapp.apis.util.NicknameGenerator
+import org.yapp.apis.auth.util.NicknameGenerator
 import org.yapp.domain.user.ProviderType
 
 @Schema(

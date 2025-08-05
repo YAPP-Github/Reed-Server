@@ -2,16 +2,16 @@ package org.yapp.domain.user
 
 import org.yapp.domain.user.exception.UserErrorCode
 import org.yapp.domain.user.exception.UserNotFoundException
+import org.yapp.domain.user.vo.UserAuthVO
 import org.yapp.domain.user.vo.UserIdentityVO
 import org.yapp.domain.user.vo.UserProfileVO
 import org.yapp.globalutils.annotation.DomainService
-import org.yapp.globalutils.util.TimeProvider
-import java.util.UUID
+
+import java.util.*
 
 @DomainService
 class UserDomainService(
     private val userRepository: UserRepository,
-    private val timeProvider: TimeProvider
 ) {
     fun findUserProfileById(id: UUID): UserProfileVO {
         val user = userRepository.findById(id) ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
@@ -23,17 +23,17 @@ class UserDomainService(
         return UserIdentityVO.newInstance(user)
     }
 
-    fun findUserByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): UserIdentityVO? {
+    fun findUserByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): UserAuthVO? {
         return userRepository.findByProviderTypeAndProviderId(providerType, providerId)
-            ?.let { UserIdentityVO.newInstance(it) }
+            ?.let { UserAuthVO.newInstance(it) }
     }
 
     fun findUserByProviderTypeAndProviderIdIncludingDeleted(
         providerType: ProviderType,
         providerId: String
-    ): UserIdentityVO? {
+    ): UserAuthVO? {
         return userRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType, providerId)
-            ?.let { UserIdentityVO.newInstance(it) }
+            ?.let { UserAuthVO.newInstance(it) }
     }
 
     fun existsActiveUserByIdAndDeletedAtIsNull(id: UUID): Boolean {
@@ -44,13 +44,13 @@ class UserDomainService(
         return userRepository.existsByEmail(email)
     }
 
-    fun createNewUser(
+    fun createUser(
         email: String,
         nickname: String,
         profileImageUrl: String?,
         providerType: ProviderType,
         providerId: String
-    ): UserIdentityVO {
+    ): UserAuthVO {
         val user = User.create(
             email = email,
             nickname = nickname,
@@ -59,15 +59,15 @@ class UserDomainService(
             providerId = providerId
         )
         val savedUser = userRepository.save(user)
-        return UserIdentityVO.newInstance(savedUser)
+        return UserAuthVO.newInstance(savedUser)
     }
 
-    fun restoreDeletedUser(userId: UUID): UserIdentityVO {
+    fun restoreDeletedUser(userId: UUID): UserAuthVO {
         val deletedUser = userRepository.findById(userId)
             ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
 
         val restoredUser = userRepository.save(deletedUser.restore())
-        return UserIdentityVO.newInstance(restoredUser)
+        return UserAuthVO.newInstance(restoredUser)
     }
 
     fun updateTermsAgreement(userId: UUID, termsAgreed: Boolean): UserProfileVO {
@@ -76,5 +76,14 @@ class UserDomainService(
 
         val updatedUser = userRepository.save(user.updateTermsAgreement(termsAgreed))
         return UserProfileVO.newInstance(updatedUser)
+    }
+
+    fun updateAppleRefreshToken(userId: UUID, refreshToken: String): UserIdentityVO {
+        val user = userRepository.findById(userId)
+            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+
+        val updatedUser = userRepository.save(user.updateAppleRefreshToken(refreshToken))
+
+        return UserIdentityVO.newInstance(updatedUser)
     }
 }

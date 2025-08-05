@@ -4,10 +4,10 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
-import org.yapp.infra.common.BaseTimeEntity
 import org.yapp.domain.user.ProviderType
 import org.yapp.domain.user.User
 import org.yapp.globalutils.auth.Role
+import org.yapp.infra.common.BaseTimeEntity
 import java.sql.Types
 import java.util.*
 
@@ -37,7 +37,9 @@ class UserEntity private constructor(
 
     role: Role,
 
-    termsAgreed: Boolean = false
+    termsAgreed: Boolean = false,
+
+    appleRefreshToken: String? = null
 ) : BaseTimeEntity() {
 
     @Column(nullable = false, length = 100)
@@ -57,6 +59,10 @@ class UserEntity private constructor(
     var termsAgreed: Boolean = termsAgreed
         protected set
 
+    @Column(name = "apple_refresh_token", length = 1024)
+    var appleRefreshToken: String? = appleRefreshToken
+        protected set
+
     fun toDomain(): User = User.reconstruct(
         id = User.Id.newInstance(this.id),
         email = User.Email.newInstance(this.email),
@@ -66,6 +72,7 @@ class UserEntity private constructor(
         providerId = User.ProviderId.newInstance(this.providerId),
         role = role,
         termsAgreed = termsAgreed,
+        appleRefreshToken = appleRefreshToken,
         createdAt = createdAt,
         updatedAt = updatedAt,
         deletedAt = deletedAt
@@ -80,7 +87,8 @@ class UserEntity private constructor(
             providerType = user.providerType,
             providerId = user.providerId.value,
             role = user.role,
-            termsAgreed = user.termsAgreed
+            termsAgreed = user.termsAgreed,
+            appleRefreshToken = user.appleRefreshToken
         )
     }
 

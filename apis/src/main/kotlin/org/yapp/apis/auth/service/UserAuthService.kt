@@ -11,7 +11,7 @@ import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.domain.user.UserDomainService
-import org.yapp.domain.user.vo.UserIdentityVO
+import org.yapp.domain.user.vo.UserAuthVO
 import java.util.*
 
 @Service
@@ -45,22 +45,23 @@ class UserAuthService(
         userDomainService.findUserByProviderTypeAndProviderId(
             findOrCreateUserRequest.validProviderType(),
             findOrCreateUserRequest.validProviderId()
-        )?.let { return CreateUserResponse.from(it) }
+        )?.let {
+            return CreateUserResponse.from(it)
+        }
 
         userDomainService.findUserByProviderTypeAndProviderIdIncludingDeleted(
             findOrCreateUserRequest.validProviderType(),
             findOrCreateUserRequest.validProviderId()
-        )?.let { deletedUserIdentity ->
-            return CreateUserResponse.from(
-                userDomainService.restoreDeletedUser(deletedUserIdentity.id.value)
-            )
+        )?.let { deletedUserAuth ->
+            val restoredUser = userDomainService.restoreDeletedUser(deletedUserAuth.id.value)
+            return CreateUserResponse.from(restoredUser)
         }
 
         val createdUser = createNewUser(findOrCreateUserRequest)
         return CreateUserResponse.from(createdUser)
     }
 
-    private fun createNewUser(findOrCreateUserRequest: FindOrCreateUserRequest): UserIdentityVO {
+    private fun createNewUser(@Valid findOrCreateUserRequest: FindOrCreateUserRequest): UserAuthVO {
         val email = findOrCreateUserRequest.getOrDefaultEmail()
         val nickname = findOrCreateUserRequest.getOrDefaultNickname()
 
@@ -68,7 +69,7 @@ class UserAuthService(
             throw AuthException(AuthErrorCode.EMAIL_ALREADY_IN_USE, "Email already in use")
         }
 
-        return userDomainService.createNewUser(
+        return userDomainService.createUser(
             email = email,
             nickname = nickname,
             profileImageUrl = findOrCreateUserRequest.profileImageUrl,

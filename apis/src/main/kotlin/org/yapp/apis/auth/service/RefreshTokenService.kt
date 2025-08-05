@@ -12,7 +12,7 @@ import java.util.*
 
 @Service
 @Validated
-class TokenService(
+class RefreshTokenService(
     private val tokenDomainRedisService: TokenDomainRedisService,
 ) {
     fun deleteRefreshTokenByToken(token: String) {
@@ -37,7 +37,7 @@ class TokenService(
         tokenDomainRedisService.validateRefreshTokenByToken(refreshToken)
     }
 
-    fun getUserIdByToken(tokenRefreshRequest: TokenRefreshRequest): UserIdResponse {
+    fun getUserIdByToken(@Valid tokenRefreshRequest: TokenRefreshRequest): UserIdResponse {
         val userId = tokenDomainRedisService.getUserIdByToken(tokenRefreshRequest.validRefreshToken())
         return UserIdResponse.from(userId)
     }

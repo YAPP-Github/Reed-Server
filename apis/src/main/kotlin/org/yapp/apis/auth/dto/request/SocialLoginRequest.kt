@@ -28,7 +28,14 @@ data class SocialLoginRequest private constructor(
         required = true
     )
     @field:NotBlank(message = "OAuth token is required")
-    val oauthToken: String? = null
+    val oauthToken: String? = null,
+
+    @Schema(
+        description = "Authorization code used to issue Apple access/refresh tokens (required only for Apple login)",
+        example = "c322a426...",
+        required = false
+    )
+    val authorizationCode: String? = null
 ) {
     fun validProviderType(): String = providerType!!
     fun validOauthToken(): String = oauthToken!!
@@ -46,7 +53,11 @@ data class SocialLoginRequest private constructor(
 
             return when (provider) {
                 ProviderType.KAKAO -> KakaoAuthCredentials(request.validOauthToken())
-                ProviderType.APPLE -> AppleAuthCredentials(request.validOauthToken())
+                ProviderType.APPLE -> {
+                    val authCode = request.authorizationCode
+                        ?: throw AuthException(AuthErrorCode.INVALID_REQUEST, "Apple login requires an authorization code.")
+                    AppleAuthCredentials(request.validOauthToken(), authCode)
+                }
             }
         }
     }

@@ -1,9 +1,9 @@
 package org.yapp.apis.auth.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
-import org.yapp.domain.user.vo.UserIdentityVO
+import org.yapp.domain.user.vo.UserAuthVO
 import org.yapp.globalutils.auth.Role
-import java.util.UUID
+import java.util.*
 
 @Schema(
     name = "CreateUserResponse",
@@ -20,13 +20,20 @@ data class CreateUserResponse private constructor(
         description = "사용자 역할",
         example = "USER"
     )
-    val role: Role
+    val role: Role,
+
+    @Schema(
+        description = "Apple Refresh Token (Apple 유저인 경우에만 존재)",
+        nullable = true
+    )
+    val appleRefreshToken: String?
 ) {
     companion object {
-        fun from(identity: UserIdentityVO): CreateUserResponse {
+        fun from(auth: UserAuthVO): CreateUserResponse {
             return CreateUserResponse(
-                id = identity.id.value,
-                role = identity.role
+                id = auth.id.value,
+                role = auth.role,
+                appleRefreshToken = auth.appleRefreshToken
             )
         }
     }

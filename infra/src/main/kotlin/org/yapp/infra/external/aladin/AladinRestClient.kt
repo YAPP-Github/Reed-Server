@@ -16,7 +16,7 @@ class AladinRestClient(
     private val DEFAULT_OUTPUT_FORMAT = "JS"
 
     fun itemSearch(
-        ttbKey: String?,
+        ttbKey: String,
         params: Map<String, Any>
     ): AladinSearchResponse {
         val uriBuilder = UriComponentsBuilder.fromUriString("/ItemSearch.aspx")
@@ -32,7 +32,7 @@ class AladinRestClient(
     }
 
     fun itemLookUp(
-        ttbKey: String?,
+        ttbKey: String,
         params: Map<String, Any> = emptyMap()
     ): AladinBookDetailResponse {
         val uriBuilder = UriComponentsBuilder.fromUriString("/ItemLookUp.aspx")

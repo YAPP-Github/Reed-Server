@@ -12,9 +12,6 @@ import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.usecase.AuthUseCase
 import java.util.*
 
-/**
- * Implementation of the authentication controller API.
- */
 @RestController
 @RequestMapping("/api/v1/auth")
 class AuthController(

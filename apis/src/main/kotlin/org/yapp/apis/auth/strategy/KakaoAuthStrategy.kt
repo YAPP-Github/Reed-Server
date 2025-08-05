@@ -5,17 +5,14 @@ import org.springframework.stereotype.Component
 import org.yapp.apis.auth.dto.response.UserCreateInfoResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.helper.KakaoApiHelper
-import org.yapp.apis.util.NicknameGenerator
+import org.yapp.apis.auth.manager.KakaoApiManager
+import org.yapp.apis.auth.util.NicknameGenerator
 import org.yapp.domain.user.ProviderType
 import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
-/**
- * Implementation of AuthStrategy for Kakao authentication.
- */
 @Component
 class KakaoAuthStrategy(
-    private val kakaoApiHelper: KakaoApiHelper
+    private val kakaoApiManager: KakaoApiManager
 ) : AuthStrategy {
 
     private val log = KotlinLogging.logger {}
@@ -25,7 +22,7 @@ class KakaoAuthStrategy(
     override fun authenticate(credentials: AuthCredentials): UserCreateInfoResponse {
         return try {
             val kakaoCredentials = validateCredentials(credentials)
-            val kakaoUser = kakaoApiHelper.getUserInfo(kakaoCredentials.accessToken)
+            val kakaoUser = kakaoApiManager.getUserInfo(kakaoCredentials.accessToken)
             createUserInfo(kakaoUser)
         } catch (exception: Exception) {
             log.error("Kakao authentication failed", exception)

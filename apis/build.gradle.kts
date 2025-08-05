@@ -11,12 +11,18 @@ dependencies {
     implementation(Dependencies.Spring.BOOT_STARTER_SECURITY)
     implementation(Dependencies.Spring.BOOT_STARTER_VALIDATION)
     implementation(Dependencies.Spring.BOOT_STARTER_ACTUATOR)
+    implementation(Dependencies.Spring.BOOT_STARTER_OAUTH2_CLIENT)
 
     implementation(Dependencies.Database.MYSQL_CONNECTOR)
 
     implementation(Dependencies.Swagger.SPRINGDOC_OPENAPI_STARTER_WEBMVC_UI)
 
     implementation(Dependencies.Logging.KOTLIN_LOGGING)
+
+    implementation(Dependencies.BouncyCastle.BC_PROV)
+    implementation(Dependencies.BouncyCastle.BC_PKIX)
+
+    annotationProcessor(Dependencies.Spring.CONFIGURATION_PROCESSOR)
 
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
     testImplementation(Dependencies.TestContainers.MYSQL)

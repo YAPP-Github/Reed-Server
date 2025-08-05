@@ -10,9 +10,6 @@ import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.web.SecurityFilterChain
 
-/**
- * Security configuration for the gateway.
- */
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(

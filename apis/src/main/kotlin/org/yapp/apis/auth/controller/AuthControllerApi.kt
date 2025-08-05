@@ -21,28 +21,28 @@ import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.globalutils.exception.ErrorResponse
 import java.util.*
 
-@Tag(name = "Authentication", description = "Authentication API")
+@Tag(name = "Authentication", description = "인증 관련 API")
 interface AuthControllerApi {
 
     @Operation(
-        summary = "Sign in or sign up with social login",
-        description = "Sign in a user with social login credentials (Kakao or Apple). If the user doesn't exist, they will be automatically registered."
+        summary = "소셜 로그인",
+        description = "카카오 또는 애플 계정으로 로그인합니다. 사용자가 존재하지 않으면 자동으로 회원가입됩니다."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Successful sign in or sign up",
+                description = "로그인/회원가입 성공",
                 content = [Content(schema = Schema(implementation = AuthResponse::class))]
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "Invalid request or credentials",
+                description = "잘못된 요청 또는 인증 정보",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             ),
             ApiResponse(
                 responseCode = "409",
-                description = "Email already in use with a different account",
+                description = "이미 다른 계정으로 사용 중인 이메일",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             )
         ]
@@ -51,24 +51,24 @@ interface AuthControllerApi {
     fun signIn(@RequestBody @Valid request: SocialLoginRequest): ResponseEntity<AuthResponse>
 
     @Operation(
-        summary = "Refresh token",
-        description = "Refresh an access token using a refresh token. Returns both a new access token and a new refresh token."
+        summary = "토큰 갱신",
+        description = "리프레시 토큰을 사용하여 액세스 토큰을 갱신합니다. 새로운 액세스 토큰과 리프레시 토큰을 반환합니다."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Successful token refresh",
+                description = "토큰 갱신 성공",
                 content = [Content(schema = Schema(implementation = AuthResponse::class))]
             ),
             ApiResponse(
                 responseCode = "400",
-                description = "Invalid refresh token",
+                description = "유효하지 않은 리프레시 토큰",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             ),
             ApiResponse(
                 responseCode = "404",
-                description = "Refresh token not found",
+                description = "리프레시 토큰을 찾을 수 없음",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             )
         ]
@@ -76,13 +76,13 @@ interface AuthControllerApi {
     @PostMapping("/refresh")
     fun refreshToken(@RequestBody @Valid request: TokenRefreshRequest): ResponseEntity<AuthResponse>
 
-    @Operation(summary = "Sign out", description = "Sign out a user by invalidating their refresh token")
+    @Operation(summary = "로그아웃", description = "리프레시 토큰을 무효화하여 사용자를 로그아웃합니다")
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "204", description = "Successful sign out"),
+            ApiResponse(responseCode = "204", description = "로그아웃 성공"),
             ApiResponse(
                 responseCode = "400",
-                description = "Invalid user ID",
+                description = "유효하지 않은 사용자 ID",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             )
         ]
@@ -90,17 +90,17 @@ interface AuthControllerApi {
     @PostMapping("/signout")
     fun signOut(@AuthenticationPrincipal userId: UUID): ResponseEntity<Unit>
 
-    @Operation(summary = "Get user profile", description = "Retrieves profile information for the given user ID.")
+    @Operation(summary = "사용자 프로필 조회", description = "현재 로그인한 사용자의 프로필 정보를 조회합니다.")
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "User profile retrieved successfully",
+                description = "사용자 프로필 조회 성공",
                 content = [Content(schema = Schema(implementation = UserProfileResponse::class))]
             ),
             ApiResponse(
                 responseCode = "404",
-                description = "User not found",
+                description = "사용자를 찾을 수 없음",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             )
         ]
@@ -108,17 +108,17 @@ interface AuthControllerApi {
     @GetMapping("/me")
     fun getUserProfile(@AuthenticationPrincipal userId: UUID): ResponseEntity<UserProfileResponse>
 
-    @Operation(summary = "Update terms agreement", description = "Updates the user's terms agreement status")
+    @Operation(summary = "약관 동의 상태 수정", description = "사용자의 약관 동의 상태를 업데이트합니다")
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "Terms agreement status updated successfully",
+                description = "약관 동의 상태 업데이트 성공",
                 content = [Content(schema = Schema(implementation = UserProfileResponse::class))]
             ),
             ApiResponse(
                 responseCode = "404",
-                description = "User not found",
+                description = "사용자를 찾을 수 없음",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             )
         ]

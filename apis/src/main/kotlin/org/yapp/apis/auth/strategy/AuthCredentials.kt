@@ -13,7 +13,8 @@ data class KakaoAuthCredentials(
 }
 
 data class AppleAuthCredentials(
-    val idToken: String
+    val idToken: String,
+    val authorizationCode: String
 ) : AuthCredentials() {
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 }

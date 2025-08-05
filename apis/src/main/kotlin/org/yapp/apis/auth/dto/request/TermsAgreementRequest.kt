@@ -6,9 +6,8 @@ import jakarta.validation.constraints.NotNull
 @Schema(description = "Request to update terms agreement status")
 data class TermsAgreementRequest private constructor(
     @Schema(description = "Whether the user agrees to the terms of service", example = "true", required = true)
+    @field:NotNull(message = "termsAgreed must not be null")
     val termsAgreed: Boolean? = null
-
-
 ) {
     fun validTermsAgreed(): Boolean = termsAgreed!!
 }

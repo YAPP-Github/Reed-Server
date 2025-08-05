@@ -8,9 +8,10 @@ object Dependencies {
         const val BOOT_STARTER_ACTUATOR = "org.springframework.boot:spring-boot-starter-actuator"
         const val BOOT_STARTER_TEST = "org.springframework.boot:spring-boot-starter-test"
         const val BOOT_STARTER_DATA_REDIS = "org.springframework.boot:spring-boot-starter-data-redis"
-        const val BOOT_STARTER_OAUTH2_RESOURCE_SERVER =
-            "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+        const val BOOT_STARTER_OAUTH2_RESOURCE_SERVER = "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+        const val BOOT_STARTER_OAUTH2_CLIENT = "org.springframework.boot:spring-boot-starter-oauth2-client"
         const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect"
+        const val CONFIGURATION_PROCESSOR = "org.springframework.boot:spring-boot-configuration-processor"
     }
 
     object Database {
@@ -56,5 +57,10 @@ object Dependencies {
     object QueryDsl {
         const val JPA = "com.querydsl:querydsl-jpa:5.0.0:jakarta"
         const val APT = "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    }
+
+    object BouncyCastle {
+        const val BC_PROV = "org.bouncycastle:bcprov-jdk18on:1.78.1"
+        const val BC_PKIX = "org.bouncycastle:bcpkix-jdk18on:1.78.1"
     }
 }
