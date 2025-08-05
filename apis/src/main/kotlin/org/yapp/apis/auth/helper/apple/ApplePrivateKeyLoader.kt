@@ -1,5 +1,6 @@
 package org.yapp.apis.auth.helper.apple
 
+import org.springframework.context.annotation.Profile
 import org.springframework.core.io.ResourceLoader
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
@@ -9,6 +10,7 @@ import org.yapp.globalutils.annotation.Helper
 import java.security.KeyPair
 
 @Helper
+@Profile("!test")
 class ApplePrivateKeyLoader(
     private val appleProperties: AppleOauthProperties,
     private val resourceLoader: ResourceLoader,
