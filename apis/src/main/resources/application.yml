@@ -73,3 +73,16 @@ springdoc:
     enabled: false
   api-docs:
     enabled: false
+
+aladin:
+  api:
+    ttbkey: dummy-aladin-key
+
+oauth:
+  apple:
+    client-id: dummy.client.id
+    key-id: DUMMYKEYID
+    team-id: DUMMYTEAMID
+    key-path: "path-ignored-by-mock"
+    audience: https://appleid.apple.com
+
