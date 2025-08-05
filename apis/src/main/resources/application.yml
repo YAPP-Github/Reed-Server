@@ -32,16 +32,6 @@ springdoc:
     enabled: true
   override-with-generic-response: false
 
-oauth:
-  kakao:
-    admin-key: ${KAKAO_ADMIN_KEY}
-  apple:
-    clientId: ${APPLE_CLIENT_ID}
-    keyId: ${APPLE_KEY_ID}
-    teamId: ${APPLE_TEAM_ID}
-    keyPath: ${APPLE_KEY_PATH}
-    audience: https://appleid.apple.com
-
 ---
 spring:
   config:
