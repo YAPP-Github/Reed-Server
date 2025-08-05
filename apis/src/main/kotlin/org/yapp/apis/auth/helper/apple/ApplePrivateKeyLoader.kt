@@ -26,8 +26,14 @@ class ApplePrivateKeyLoader(
             )
         }
 
-        val pemString = resource.inputStream.bufferedReader().use { it.readText() }
-
-        return AppleKeyParser.parseKeyPair(pemString)
+        return try {
+            val pemString = resource.inputStream.bufferedReader().use { it.readText() }
+            AppleKeyParser.parseKeyPair(pemString)
+        } catch (e: IllegalArgumentException) {
+            throw AuthException(
+                AuthErrorCode.INVALID_PRIVATE_KEY_FORMAT,
+                "Failed to parse Apple private key: ${e.message}",
+            )
+        }
     }
 }
