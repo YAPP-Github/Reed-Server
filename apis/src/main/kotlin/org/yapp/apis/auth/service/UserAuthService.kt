@@ -1,6 +1,8 @@
 package org.yapp.apis.auth.service
 
+import jakarta.validation.Valid
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import org.yapp.apis.auth.dto.request.FindOrCreateUserRequest
 import org.yapp.apis.auth.dto.request.FindUserIdentityRequest
 import org.yapp.apis.auth.dto.response.CreateUserResponse
@@ -13,6 +15,7 @@ import org.yapp.domain.user.vo.UserAuthVO
 import java.util.*
 
 @Service
+@Validated
 class UserAuthService(
     private val userDomainService: UserDomainService
 ) {
@@ -33,12 +36,12 @@ class UserAuthService(
         }
     }
 
-    fun findUserIdentityByUserId(findUserIdentityRequest: FindUserIdentityRequest): UserAuthInfoResponse {
+    fun findUserIdentityByUserId(@Valid findUserIdentityRequest: FindUserIdentityRequest): UserAuthInfoResponse {
         val userIdentity = userDomainService.findUserIdentityById(findUserIdentityRequest.validUserId())
         return UserAuthInfoResponse.from(userIdentity)
     }
 
-    fun findOrCreateUser(findOrCreateUserRequest: FindOrCreateUserRequest): CreateUserResponse {
+    fun findOrCreateUser(@Valid findOrCreateUserRequest: FindOrCreateUserRequest): CreateUserResponse {
         userDomainService.findUserByProviderTypeAndProviderId(
             findOrCreateUserRequest.validProviderType(),
             findOrCreateUserRequest.validProviderId()

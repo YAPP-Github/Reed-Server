@@ -25,7 +25,7 @@ spring:
 
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
+    path: /swagger-ui
     enabled: true
   api-docs:
     path: /v3/api-docs
@@ -48,6 +48,15 @@ spring:
     import: optional:file:secret/application-dev-secret.properties
     activate:
       on-profile: dev
+
+swagger:
+  servers:
+    - url: ${SWAGGER_SERVER_URL:http://localhost:8080}
+      description: Development Server
+  info:
+    title: YAPP API (Dev)
+    description: YAPP API Documentation for Development
+    version: v1.0.0-dev
 
 ---
 spring:

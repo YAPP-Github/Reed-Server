@@ -8,17 +8,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
 import org.yapp.apis.book.dto.request.UserBookRegisterRequest
@@ -29,7 +24,7 @@ import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.globalutils.exception.ErrorResponse
-import java.util.UUID
+import java.util.*
 
 
 @Tag(name = "Books", description = "도서 정보를 조회하는 API")
@@ -117,7 +112,7 @@ interface BookControllerApi {
         @Valid @RequestBody request: UserBookRegisterRequest
     ): ResponseEntity<UserBookResponse>
 
-    @Operation(summary = "사용자 서재 조회", description = "현재 사용자의 서재에 등록된 모든 책을 조회합니다.")
+    @Operation(summary = "사용자 서재 조회", description = "현재 사용자의 서재에 등록된 모든 책을 조회합니다. 제목(title)으로 검색할 수 있습니다.")
     @ApiResponses(
         value = [
             ApiResponse(
@@ -140,10 +135,10 @@ interface BookControllerApi {
     @GetMapping("/my-library")
     fun getUserLibraryBooks(
         @AuthenticationPrincipal userId: UUID,
-        @RequestParam(required = false) status: BookStatus?,
-        @RequestParam(required = false) sort: UserBookSortType?,
+        @RequestParam(required = false) @Parameter(description = "책 상태 필터") status: BookStatus?,
+        @RequestParam(required = false) @Parameter(description = "정렬 방식") sort: UserBookSortType?,
+        @RequestParam(required = false) @Parameter(description = "책 제목 검색") title: String?,
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<UserBookPageResponse>
-
 }

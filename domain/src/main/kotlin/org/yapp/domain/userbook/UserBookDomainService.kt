@@ -2,10 +2,11 @@ package org.yapp.domain.userbook
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.yapp.domain.userbook.vo.HomeBookVO
 import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
 import org.yapp.globalutils.annotation.DomainService
-import java.util.UUID
+import java.util.*
 
 @DomainService
 class UserBookDomainService(
@@ -34,17 +35,18 @@ class UserBookDomainService(
             )
 
         val savedUserBook = userBookRepository.save(userBook)
-        return UserBookInfoVO.newInstance(savedUserBook)
+        return UserBookInfoVO.newInstance(savedUserBook, savedUserBook.readingRecordCount)
     }
 
     fun findUserBooksByDynamicCondition(
         userId: UUID,
         status: BookStatus?,
         sort: UserBookSortType?,
+        title: String?,
         pageable: Pageable
     ): Page<UserBookInfoVO> {
-        val page = userBookRepository.findUserBooksByDynamicCondition(userId, status, sort, pageable)
-        return page.map { UserBookInfoVO.newInstance(it) }
+        val page = userBookRepository.findUserBooksByDynamicCondition(userId, status, sort, title, pageable)
+        return page.map { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
     }
 
     fun findAllByUserIdAndBookIsbnIn(userId: UUID, isbns: List<String>): List<UserBookInfoVO> {
@@ -52,7 +54,12 @@ class UserBookDomainService(
             return emptyList()
         }
         val userBooks = userBookRepository.findAllByUserIdAndBookIsbnIn(userId, isbns)
-        return userBooks.map { UserBookInfoVO.newInstance(it) }
+        return userBooks.map { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
+    }
+
+    fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBookInfoVO? {
+        val userBook = userBookRepository.findByUserIdAndBookIsbn(userId, isbn)
+        return userBook?.let { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
     }
 
     fun getUserBookStatusCounts(userId: UUID): UserBookStatusCountsVO {
@@ -66,7 +73,39 @@ class UserBookDomainService(
         return userBookRepository.countUserBooksByStatus(userId, status)
     }
 
-    fun findByIdAndUserId(userBookId: UUID, userId: UUID): UserBook? {
-        return userBookRepository.findByIdAndUserId(userBookId, userId)
+    fun existsByUserBookIdAndUserId(userBookId: UUID, userId: UUID): Boolean {
+        return userBookRepository.existsByIdAndUserId(userBookId, userId)
+    }
+
+    fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {
+        val resultTriples = userBookRepository.findRecordedBooksSortedByRecency(userId)
+
+        return resultTriples.map { (userBook, lastRecordedAt, recordCount) ->
+            HomeBookVO.newInstance(
+                userBook = userBook,
+                lastRecordedAt = lastRecordedAt,
+                recordCount = recordCount.toInt()
+            )
+        }
+    }
+
+    fun findBooksWithoutRecordsByStatusPriority(
+        userId: UUID,
+        limit: Int,
+        excludeIds: Set<UUID>
+    ): List<HomeBookVO> {
+        val userBooks = userBookRepository.findUnrecordedBooksSortedByPriority(
+            userId,
+            limit,
+            excludeIds
+        )
+
+        return userBooks.map { userBook ->
+            HomeBookVO.newInstance(
+                userBook = userBook,
+                lastRecordedAt = userBook.updatedAt ?: throw IllegalStateException("UserBook의 updatedAt이 null입니다: ${userBook.id}"),
+                recordCount = 0
+            )
+        }
     }
 }

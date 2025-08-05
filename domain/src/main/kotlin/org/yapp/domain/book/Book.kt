@@ -3,11 +3,8 @@ package org.yapp.domain.book
 import org.yapp.globalutils.util.UuidGenerator
 import org.yapp.globalutils.validator.IsbnValidator
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
-/**
- * Represents a book in the domain model.
- */
 data class Book private constructor(
     val id: Id,
     val isbn: Isbn,

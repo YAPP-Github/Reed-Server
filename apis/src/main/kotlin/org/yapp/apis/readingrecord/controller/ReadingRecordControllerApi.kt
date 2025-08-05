@@ -61,6 +61,30 @@ interface ReadingRecordControllerApi {
     ): ResponseEntity<ReadingRecordResponse>
 
     @Operation(
+        summary = "독서 기록 상세 조회",
+        description = "독서 기록 ID로 독서 기록 상세 정보를 조회합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "독서 기록 상세 조회 성공",
+                content = [Content(schema = Schema(implementation = ReadingRecordResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "사용자 또는 독서 기록을 찾을 수 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @GetMapping("/detail/{readingRecordId}")
+    fun getReadingRecordDetail(
+        @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
+        @PathVariable @Parameter(description = "조회할 독서 기록 ID") readingRecordId: UUID
+    ): ResponseEntity<ReadingRecordResponse>
+
+    @Operation(
         summary = "독서 기록 목록 조회",
         description = "사용자의 책에 대한 독서 기록을 페이징하여 조회합니다. 정렬은 페이지 번호 또는 최신 등록순으로 가능합니다."
     )
@@ -69,7 +93,7 @@ interface ReadingRecordControllerApi {
             ApiResponse(
                 responseCode = "200",
                 description = "독서 기록 목록 조회 성공",
-                content = [Content(schema = Schema(implementation = ReadingRecordResponse::class))]
+                content = [Content(schema = Schema(implementation = Page::class))]
             ),
             ApiResponse(
                 responseCode = "404",

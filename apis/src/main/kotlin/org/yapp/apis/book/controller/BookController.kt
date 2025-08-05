@@ -45,7 +45,7 @@ class BookController(
         @AuthenticationPrincipal userId: UUID,
         @Valid @ModelAttribute request: BookDetailRequest
     ): ResponseEntity<BookDetailResponse> {
-        val response = bookUseCase.getBookDetail(request)
+        val response = bookUseCase.getBookDetail(request, userId)
         return ResponseEntity.ok(response)
     }
 
@@ -63,10 +63,11 @@ class BookController(
         @AuthenticationPrincipal userId: UUID,
         @RequestParam(required = false) status: BookStatus?,
         @RequestParam(required = false) sort: UserBookSortType?,
+        @RequestParam(required = false) title: String?,
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<UserBookPageResponse> {
-        val response = bookUseCase.getUserLibraryBooks(userId, status, sort, pageable)
+        val response = bookUseCase.getUserLibraryBooks(userId, status, sort, title, pageable)
         return ResponseEntity.ok(response)
     }
 

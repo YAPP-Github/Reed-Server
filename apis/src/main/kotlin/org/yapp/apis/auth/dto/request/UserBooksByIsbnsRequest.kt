@@ -1,8 +1,8 @@
 package org.yapp.apis.auth.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
-import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.NotNull
 import java.util.UUID
 
 @Schema(
@@ -14,7 +14,7 @@ data class UserBooksByIsbnsRequest private constructor(
         description = "사용자 ID",
         example = "1"
     )
-    @field:NotBlank(message = "userId는 필수입니다.")
+    @field:NotNull(message = "userId는 필수입니다.")
     val userId: UUID? = null,
 
     @Schema(
