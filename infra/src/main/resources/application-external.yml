@@ -6,8 +6,8 @@ oauth:
   kakao:
     admin-key: ${KAKAO_ADMIN_KEY}
   apple:
-    clientId: ${APPLE_CLIENT_ID}
-    keyId: ${APPLE_KEY_ID}
-    teamId: ${APPLE_TEAM_ID}
-    keyPath: ${APPLE_KEY_PATH}
+    client-id: ${APPLE_CLIENT_ID}
+    key-id: ${APPLE_KEY_ID}
+    team-id: ${APPLE_TEAM_ID}
+    key-path: ${APPLE_KEY_PATH}
     audience: https://appleid.apple.com
