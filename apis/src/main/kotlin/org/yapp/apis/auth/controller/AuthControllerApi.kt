@@ -9,15 +9,13 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
-import org.yapp.apis.auth.dto.request.TermsAgreementRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
+import org.yapp.apis.auth.dto.request.WithdrawRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
-import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.globalutils.exception.ErrorResponse
 import java.util.*
 
@@ -90,42 +88,28 @@ interface AuthControllerApi {
     @PostMapping("/signout")
     fun signOut(@AuthenticationPrincipal userId: UUID): ResponseEntity<Unit>
 
-    @Operation(summary = "사용자 프로필 조회", description = "현재 로그인한 사용자의 프로필 정보를 조회합니다.")
+    @Operation(
+        summary = "회원 탈퇴",
+        description = "사용자 계정을 탈퇴합니다."
+    )
     @ApiResponses(
         value = [
+            ApiResponse(responseCode = "204", description = "회원 탈퇴 성공"),
             ApiResponse(
-                responseCode = "200",
-                description = "사용자 프로필 조회 성공",
-                content = [Content(schema = Schema(implementation = UserProfileResponse::class))]
+                responseCode = "400",
+                description = "잘못된 요청 또는 사용자를 찾을 수 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             ),
             ApiResponse(
-                responseCode = "404",
-                description = "사용자를 찾을 수 없음",
+                responseCode = "500",
+                description = "Apple or Kakao 서버 연결 해제 실패",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             )
         ]
     )
-    @GetMapping("/me")
-    fun getUserProfile(@AuthenticationPrincipal userId: UUID): ResponseEntity<UserProfileResponse>
-
-    @Operation(summary = "약관 동의 상태 수정", description = "사용자의 약관 동의 상태를 업데이트합니다")
-    @ApiResponses(
-        value = [
-            ApiResponse(
-                responseCode = "200",
-                description = "약관 동의 상태 업데이트 성공",
-                content = [Content(schema = Schema(implementation = UserProfileResponse::class))]
-            ),
-            ApiResponse(
-                responseCode = "404",
-                description = "사용자를 찾을 수 없음",
-                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
-            )
-        ]
-    )
-    @PutMapping("/terms-agreement")
-    fun updateTermsAgreement(
+    @DeleteMapping("/withdraw")
+    fun withdraw(
         @AuthenticationPrincipal userId: UUID,
-        @Valid @RequestBody request: TermsAgreementRequest
-    ): ResponseEntity<UserProfileResponse>
+        @Valid @RequestBody request: WithdrawRequest
+    ): ResponseEntity<Unit>
 }

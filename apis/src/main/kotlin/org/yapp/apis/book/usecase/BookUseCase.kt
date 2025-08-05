@@ -4,9 +4,7 @@ package org.yapp.apis.book.usecase
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
-import org.yapp.apis.auth.dto.request.UserBooksByIsbnsRequest
-import org.yapp.apis.auth.service.UserAuthService
-
+import org.yapp.apis.book.dto.request.UserBooksByIsbnsRequest
 import org.yapp.apis.book.dto.request.*
 import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.apis.book.dto.response.BookSearchResponse
@@ -15,6 +13,7 @@ import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.service.BookManagementService
 import org.yapp.apis.book.service.BookQueryService
 import org.yapp.apis.book.service.UserBookService
+import org.yapp.apis.user.service.UserService
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.globalutils.annotation.UseCase
@@ -25,7 +24,7 @@ import java.util.*
 class BookUseCase(
     @Qualifier("aladinBookQueryService")
     private val bookQueryService: BookQueryService,
-    private val userAuthService: UserAuthService,
+    private val userService: UserService,
     private val userBookService: UserBookService,
     private val bookManagementService: BookManagementService
 ) {
@@ -33,7 +32,7 @@ class BookUseCase(
         request: BookSearchRequest,
         userId: UUID
     ): BookSearchResponse {
-        userAuthService.validateUserExists(userId)
+        userService.validateUserExists(userId)
 
         val searchResponse = bookQueryService.searchBooks(request)
         val booksWithUserStatus = mergeWithUserBookStatus(searchResponse.books, userId)
@@ -45,13 +44,13 @@ class BookUseCase(
         bookDetailRequest: BookDetailRequest,
         userId: UUID
     ): BookDetailResponse {
-        userAuthService.validateUserExists(userId)
+        userService.validateUserExists(userId)
 
         val bookDetailResponse = bookQueryService.getBookDetail(bookDetailRequest)
         val isbn13 = bookDetailResponse.isbn13
             ?: return bookDetailResponse.withUserBookStatus(BookStatus.BEFORE_REGISTRATION)
-        
-        val userBookStatus = userBookService.findUserBookStatusByIsbn(userId, isbn13) 
+
+        val userBookStatus = userBookService.findUserBookStatusByIsbn(userId, isbn13)
             ?: BookStatus.BEFORE_REGISTRATION
 
         return bookDetailResponse.withUserBookStatus(userBookStatus)
@@ -62,7 +61,7 @@ class BookUseCase(
         userId: UUID,
         request: UserBookRegisterRequest
     ): UserBookResponse {
-        userAuthService.validateUserExists(userId)
+        userService.validateUserExists(userId)
 
         val bookDetailResponse = bookQueryService.getBookDetail(BookDetailRequest.from(request.validBookIsbn()))
         val bookCreateResponse = bookManagementService.findOrCreateBook(BookCreateRequest.from(bookDetailResponse))
@@ -83,7 +82,7 @@ class BookUseCase(
         title: String?,
         pageable: Pageable
     ): UserBookPageResponse {
-        userAuthService.validateUserExists(userId)
+        userService.validateUserExists(userId)
 
         return userBookService.findUserBooksByDynamicConditionWithStatusCounts(userId, status, sort, title, pageable)
     }

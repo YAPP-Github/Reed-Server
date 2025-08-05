@@ -5,10 +5,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
-import org.yapp.apis.auth.dto.request.TermsAgreementRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
+import org.yapp.apis.auth.dto.request.WithdrawRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
-import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.usecase.AuthUseCase
 import java.util.*
 
@@ -36,18 +35,12 @@ class AuthController(
         return ResponseEntity.noContent().build()
     }
 
-    @GetMapping("/me")
-    override fun getUserProfile(@AuthenticationPrincipal userId: UUID): ResponseEntity<UserProfileResponse> {
-        val userProfile = authUseCase.getUserProfile(userId)
-        return ResponseEntity.ok(userProfile)
-    }
-
-    @PutMapping("/terms-agreement")
-    override fun updateTermsAgreement(
+    @DeleteMapping("/withdraw")
+    override fun withdraw(
         @AuthenticationPrincipal userId: UUID,
-        @Valid @RequestBody request: TermsAgreementRequest
-    ): ResponseEntity<UserProfileResponse> {
-        val userProfile = authUseCase.updateTermsAgreement(userId, request.validTermsAgreed())
-        return ResponseEntity.ok(userProfile)
+        @Valid @RequestBody request: WithdrawRequest
+    ): ResponseEntity<Unit> {
+        authUseCase.withdraw(userId, request)
+        return ResponseEntity.noContent().build()
     }
 }

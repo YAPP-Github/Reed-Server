@@ -2,14 +2,19 @@ package org.yapp.apis.auth.usecase
 
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.auth.dto.request.*
+import org.yapp.apis.user.dto.response.CreateUserResponse
 import org.yapp.apis.auth.dto.response.TokenPairResponse
-import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.service.AppleAuthService
 import org.yapp.apis.auth.service.AuthTokenService
 import org.yapp.apis.auth.service.RefreshTokenService
-import org.yapp.apis.auth.service.UserAuthService
+import org.yapp.apis.auth.service.WithdrawService
 import org.yapp.apis.auth.strategy.AppleAuthCredentials
+import org.yapp.apis.auth.strategy.AuthCredentials
 import org.yapp.apis.auth.strategy.AuthStrategyResolver
+import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
+import org.yapp.apis.user.dto.request.FindUserIdentityRequest
+import org.yapp.apis.user.service.UserAccountService
+import org.yapp.apis.user.service.UserService
 import org.yapp.globalutils.annotation.UseCase
 import java.util.*
 
@@ -17,10 +22,12 @@ import java.util.*
 @Transactional(readOnly = true)
 class AuthUseCase(
     private val authStrategyResolver: AuthStrategyResolver,
-    private val userAuthService: UserAuthService,
+    private val userService: UserService,
+    private val userAccountService: UserAccountService,
     private val refreshTokenService: RefreshTokenService,
     private val authTokenService: AuthTokenService,
-    private val appleAuthService: AppleAuthService
+    private val appleAuthService: AppleAuthService,
+    private val withdrawService: WithdrawService
 ) {
     @Transactional
     fun signIn(socialLoginRequest: SocialLoginRequest): TokenPairResponse {
@@ -28,16 +35,10 @@ class AuthUseCase(
         val strategy = authStrategyResolver.resolve(credentials)
         val userCreateInfoResponse = strategy.authenticate(credentials)
 
-        val createUserResponse = userAuthService.findOrCreateUser(FindOrCreateUserRequest.from(userCreateInfoResponse))
+        val createUserResponse =
+            userAccountService.findOrCreateUser(FindOrCreateUserRequest.from(userCreateInfoResponse))
 
-        if (credentials is AppleAuthCredentials) {
-            appleAuthService.saveAppleRefreshTokenIfMissing(
-                SaveAppleRefreshTokenRequest.of(
-                    createUserResponse,
-                    credentials
-                )
-            )
-        }
+        handleAppleRefreshTokenIfNeeded(createUserResponse, credentials)
 
         return authTokenService.generateTokenPair(GenerateTokenPairRequest.from(createUserResponse))
     }
@@ -48,7 +49,7 @@ class AuthUseCase(
         authTokenService.deleteTokenForReissue(tokenRefreshRequest)
 
         val findUserIdentityRequest = FindUserIdentityRequest.from(userIdResponse)
-        val userAuthInfoResponse = userAuthService.findUserIdentityByUserId(findUserIdentityRequest)
+        val userAuthInfoResponse = userService.findUserIdentityByUserId(findUserIdentityRequest)
         val generateTokenPairRequest = GenerateTokenPairRequest.from(userAuthInfoResponse)
 
         return authTokenService.generateTokenPair(generateTokenPairRequest)
@@ -61,12 +62,19 @@ class AuthUseCase(
         authTokenService.deleteTokenForSignOut(deleteTokenRequest)
     }
 
-    fun getUserProfile(userId: UUID): UserProfileResponse {
-        return userAuthService.findUserProfileByUserId(userId)
+    @Transactional
+    fun withdraw(userId: UUID, request: WithdrawRequest) {
+        withdrawService.withdraw(userId, request)
     }
 
-    @Transactional
-    fun updateTermsAgreement(userId: UUID, termsAgreed: Boolean): UserProfileResponse {
-        return userAuthService.updateTermsAgreement(userId, termsAgreed)
+    private fun handleAppleRefreshTokenIfNeeded(
+        createUserResponse: CreateUserResponse,
+        credentials: AuthCredentials
+    ) {
+        if (credentials is AppleAuthCredentials) {
+            appleAuthService.saveAppleRefreshTokenIfMissing(
+                SaveAppleRefreshTokenRequest.of(createUserResponse, credentials)
+            )
+        }
     }
 }
