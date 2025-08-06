@@ -5,13 +5,15 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
+import org.yapp.apis.config.KakaoOauthProperties
 import org.yapp.infra.external.oauth.kakao.KakaoApi
 import org.yapp.infra.external.oauth.kakao.response.KakaoUnlinkResponse
 import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
 @Component
 class KakaoApiManager(
-    private val kakaoApi: KakaoApi
+    private val kakaoApi: KakaoApi,
+    private val kakaoOauthProperties: KakaoOauthProperties
 ) {
     private val log = KotlinLogging.logger {}
 
@@ -37,8 +39,8 @@ class KakaoApiManager(
             }
     }
 
-    fun unlink(adminKey: String, targetId: String): KakaoUnlinkResponse {
-        return kakaoApi.unlink(adminKey, targetId)
+    fun unlink(targetId: String): KakaoUnlinkResponse {
+        return kakaoApi.unlink(kakaoOauthProperties.adminKey, targetId)
             .onSuccess { response ->
                 log.info("Successfully unlinked Kakao user with targetId: $targetId, responseId: ${response.id}")
 
