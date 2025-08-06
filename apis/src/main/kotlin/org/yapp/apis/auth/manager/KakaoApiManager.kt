@@ -3,10 +3,10 @@ package org.yapp.apis.auth.manager
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpServerErrorException
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.infra.external.oauth.kakao.KakaoApi
+import org.yapp.infra.external.oauth.kakao.response.KakaoUnlinkResponse
 import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
 @Component
@@ -24,21 +24,44 @@ class KakaoApiManager(
                 log.error("Failed to fetch Kakao user info", exception)
 
                 when (exception) {
-                    is HttpClientErrorException -> {
-                        throw AuthException(
-                            AuthErrorCode.INVALID_OAUTH_TOKEN,
-                            "Invalid Kakao OAuth token."
-                        )
-                    }
+                    is HttpClientErrorException -> throw AuthException(
+                        AuthErrorCode.INVALID_OAUTH_TOKEN,
+                        "Invalid Kakao Access Token."
+                    )
 
-                    is HttpServerErrorException, is Exception -> {
-                        throw AuthException(
-                            AuthErrorCode.OAUTH_SERVER_ERROR,
-                            "Failed to communicate with Kakao server."
-                        )
-                    }
+                    else -> throw AuthException(
+                        AuthErrorCode.OAUTH_SERVER_ERROR,
+                        "Failed to communicate with Kakao server."
+                    )
+                }
+            }
+    }
 
-                    else -> throw exception
+    fun unlink(adminKey: String, targetId: String): KakaoUnlinkResponse {
+        return kakaoApi.unlink(adminKey, targetId)
+            .onSuccess { response ->
+                log.info("Successfully unlinked Kakao user with targetId: $targetId, responseId: ${response.id}")
+
+                if (response.id != targetId) {
+                    throw AuthException(
+                        AuthErrorCode.KAKAO_UNLINK_RESPONSE_MISMATCH,
+                        "Kakao unlink response ID does not match target ID. Expected: $targetId, Actual: ${response.id}"
+                    )
+                }
+            }
+            .getOrElse { exception ->
+                log.error("Failed to unlink Kakao user with targetId: $targetId", exception)
+
+                when (exception) {
+                    is HttpClientErrorException -> throw AuthException(
+                        AuthErrorCode.KAKAO_UNLINK_FAILED,
+                        "Failed to unlink Kakao user due to client error: ${exception.message}"
+                    )
+
+                    else -> throw AuthException(
+                        AuthErrorCode.OAUTH_SERVER_ERROR,
+                        "Failed to unlink Kakao user due to server error: ${exception.message}"
+                    )
                 }
             }
     }
