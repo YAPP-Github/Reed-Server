@@ -1,8 +1,8 @@
 package org.yapp.apis.book.dto.response
 
 import org.yapp.apis.util.AuthorExtractor
-import org.yapp.domain.userbook.BookStatus
 import org.yapp.apis.util.IsbnConverter
+import org.yapp.domain.userbook.BookStatus
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 
 data class BookSearchResponse private constructor(
@@ -35,7 +35,7 @@ data class BookSearchResponse private constructor(
                 query = response.query,
                 searchCategoryId = response.searchCategoryId,
                 searchCategoryName = response.searchCategoryName,
-                books = response.item.map {
+                books = response.item?.mapNotNull {
                     BookSummary.of(
                         isbn = it.isbn,
                         isbn13 = it.isbn13,
@@ -44,7 +44,7 @@ data class BookSearchResponse private constructor(
                         publisher = it.publisher,
                         coverImageUrl = it.cover
                     )
-                }
+                } ?: emptyList()
             )
         }
     }
@@ -69,11 +69,15 @@ data class BookSearchResponse private constructor(
                 author: String?,
                 publisher: String?,
                 coverImageUrl: String
-            ): BookSummary {
+            ): BookSummary? {
                 require(!title.isNullOrBlank()) { "Title is required" }
 
+                val finalIsbn = isbn13?.takeIf { it.isNotBlank() } 
+                    ?: isbn?.takeIf { it.isNotBlank() }?.let { IsbnConverter.toIsbn13(it) } 
+                    ?: return null
+
                 return BookSummary(
-                    isbn13 = isbn13 ?: IsbnConverter.toIsbn13(isbn) ?: throw IllegalArgumentException("Either isbn13 or isbn must be provided"),
+                    isbn13 = finalIsbn,
                     title = title,
                     author = author,
                     publisher = publisher,
