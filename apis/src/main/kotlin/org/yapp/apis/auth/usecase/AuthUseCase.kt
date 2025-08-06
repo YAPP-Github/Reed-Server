@@ -5,14 +5,14 @@ import org.yapp.apis.auth.dto.request.*
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.service.*
-import org.yapp.apis.auth.strategy.signin.AppleAuthCredentials
-import org.yapp.apis.auth.strategy.signin.SignInCredentials
+import org.yapp.apis.auth.service.AuthTokenService
+import org.yapp.apis.auth.service.RefreshTokenService
+import org.yapp.apis.auth.service.UserSignInService
+import org.yapp.apis.auth.service.UserWithdrawalService
 import org.yapp.apis.auth.strategy.signin.SignInStrategyResolver
 import org.yapp.apis.auth.strategy.withdraw.WithdrawStrategyResolver
 import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
 import org.yapp.apis.user.dto.request.FindUserIdentityRequest
-import org.yapp.apis.user.dto.response.CreateUserResponse
 import org.yapp.apis.user.service.UserAccountService
 import org.yapp.apis.user.service.UserService
 import org.yapp.globalutils.annotation.UseCase
@@ -29,18 +29,15 @@ class AuthUseCase(
     private val userWithdrawalService: UserWithdrawalService,
     private val refreshTokenService: RefreshTokenService,
     private val authTokenService: AuthTokenService,
-    private val appleAuthService: AppleAuthService,
 ) {
-    @Transactional
     fun signIn(socialLoginRequest: SocialLoginRequest): TokenPairResponse {
         val credentials = SocialLoginRequest.toCredentials(socialLoginRequest)
         val strategy = signInStrategyResolver.resolve(credentials)
         val userCreateInfoResponse = strategy.authenticate(credentials)
 
-        val createUserResponse =
-            userSignInService.findOrCreateUser(FindOrCreateUserRequest.from(userCreateInfoResponse))
-
-        handleAppleRefreshTokenIfNeeded(createUserResponse, credentials)
+        val createUserResponse = userSignInService.processSignIn(
+            FindOrCreateUserRequest.from(userCreateInfoResponse), credentials
+        )
 
         return authTokenService.generateTokenPair(GenerateTokenPairRequest.from(createUserResponse))
     }
@@ -77,15 +74,5 @@ class AuthUseCase(
         strategy.withdraw(WithdrawStrategyRequest.from(withdrawTargetUserResponse))
 
         userWithdrawalService.processWithdrawal(userId)
-    }
-
-    private fun handleAppleRefreshTokenIfNeeded(
-        createUserResponse: CreateUserResponse,
-        credentials: SignInCredentials
-    ) {
-        if (credentials is AppleAuthCredentials) {
-            val request = SaveAppleRefreshTokenRequest.of(createUserResponse, credentials)
-            appleAuthService.saveAppleRefreshTokenIfMissing(request)
-        }
     }
 }
