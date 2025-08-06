@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class AladinSearchResponse internal constructor(
+data class AladinSearchResponse(
     @JsonProperty("version") val version: String?,
     @JsonProperty("title") val title: String?,
     @JsonProperty("link") val link: String?,
@@ -20,7 +20,7 @@ data class AladinSearchResponse internal constructor(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class AladinSearchItem internal constructor(
+data class AladinSearchItem(
     @JsonProperty("title") val title: String,
     @JsonProperty("link") val link: String,
     @JsonProperty("author") val author: String?,
