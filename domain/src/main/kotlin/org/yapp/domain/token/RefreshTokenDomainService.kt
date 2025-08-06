@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @DomainService
-class TokenDomainRedisService(
+class RefreshTokenDomainService(
     private val refreshTokenRepository: RefreshTokenRepository
 ) {
     fun saveRefreshToken(userId: UUID, refreshToken: String, expiration: Long): Token {

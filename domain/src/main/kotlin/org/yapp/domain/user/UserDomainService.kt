@@ -5,6 +5,7 @@ import org.yapp.domain.user.exception.UserNotFoundException
 import org.yapp.domain.user.vo.UserAuthVO
 import org.yapp.domain.user.vo.UserIdentityVO
 import org.yapp.domain.user.vo.UserProfileVO
+import org.yapp.domain.user.vo.WithdrawTargetUserVO
 import org.yapp.globalutils.annotation.DomainService
 
 import java.util.*
@@ -21,6 +22,11 @@ class UserDomainService(
     fun findUserIdentityById(id: UUID): UserIdentityVO {
         val user = userRepository.findById(id) ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
         return UserIdentityVO.newInstance(user)
+    }
+
+    fun findWithdrawUserById(id: UUID): WithdrawTargetUserVO {
+        val user = userRepository.findById(id) ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+        return WithdrawTargetUserVO.newInstance(user)
     }
 
     fun findUserByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): UserAuthVO? {
@@ -85,5 +91,12 @@ class UserDomainService(
         val updatedUser = userRepository.save(user.updateAppleRefreshToken(refreshToken))
 
         return UserIdentityVO.newInstance(updatedUser)
+    }
+
+    fun deleteUser(userId: UUID) {
+        val user = userRepository.findById(userId)
+            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+
+        userRepository.deleteById(user.id.value)
     }
 }

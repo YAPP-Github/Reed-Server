@@ -32,16 +32,16 @@ class AuthTokenService(
         return TokenPairResponse.of(accessToken, refreshTokenResponse.refreshToken)
     }
 
-    fun validateAndGetUserIdFromRefreshToken(@Valid tokenRefreshRequest: TokenRefreshRequest): UserIdResponse {
+    fun validateAndGetUserIdFromRefreshToken(tokenRefreshRequest: TokenRefreshRequest): UserIdResponse {
         refreshTokenService.validateRefreshToken(tokenRefreshRequest.validRefreshToken())
         return refreshTokenService.getUserIdByToken(tokenRefreshRequest)
     }
 
-    fun deleteTokenForReissue(@Valid tokenRefreshRequest: TokenRefreshRequest) {
+    fun deleteRefreshTokenForReissue(tokenRefreshRequest: TokenRefreshRequest) {
         refreshTokenService.deleteRefreshTokenByToken(tokenRefreshRequest.validRefreshToken())
     }
 
-    fun deleteTokenForSignOut(@Valid deleteTokenRequest: DeleteTokenRequest) {
+    fun deleteRefreshTokenForSignOutOrWithdraw(@Valid deleteTokenRequest: DeleteTokenRequest) {
         refreshTokenService.deleteRefreshTokenByToken(deleteTokenRequest.validRefreshToken())
     }
 }

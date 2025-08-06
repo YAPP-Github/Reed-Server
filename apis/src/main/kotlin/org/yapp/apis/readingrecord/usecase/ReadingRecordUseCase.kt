@@ -3,11 +3,11 @@ package org.yapp.apis.readingrecord.usecase
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
-import org.yapp.apis.auth.service.UserAuthService
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.apis.readingrecord.service.ReadingRecordService
+import org.yapp.apis.user.service.UserService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.globalutils.annotation.UseCase
 import java.util.*
@@ -16,7 +16,7 @@ import java.util.*
 @Transactional(readOnly = true)
 class ReadingRecordUseCase(
     private val readingRecordService: ReadingRecordService,
-    private val userAuthService: UserAuthService,
+    private val userService: UserService,
     private val userBookService: UserBookService,
 ) {
     @Transactional
@@ -25,7 +25,7 @@ class ReadingRecordUseCase(
         userBookId: UUID,
         request: CreateReadingRecordRequest
     ): ReadingRecordResponse {
-        userAuthService.validateUserExists(userId)
+        userService.validateUserExists(userId)
         userBookService.validateUserBookExists(userBookId, userId)
 
         return readingRecordService.createReadingRecord(
@@ -39,7 +39,7 @@ class ReadingRecordUseCase(
         userId: UUID,
         readingRecordId: UUID
     ): ReadingRecordResponse {
-        userAuthService.validateUserExists(userId)
+        userService.validateUserExists(userId)
 
         return readingRecordService.getReadingRecordDetail(
             userId = userId,
@@ -53,7 +53,7 @@ class ReadingRecordUseCase(
         sort: ReadingRecordSortType?,
         pageable: Pageable
     ): Page<ReadingRecordResponse> {
-        userAuthService.validateUserExists(userId)
+        userService.validateUserExists(userId)
         userBookService.validateUserBookExists(userBookId, userId)
 
         return readingRecordService.getReadingRecordsByDynamicCondition(

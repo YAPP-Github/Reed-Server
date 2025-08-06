@@ -35,4 +35,23 @@ class AppleApiManager(
             )
         }
     }
+
+    fun revokeToken(appleRefreshToken: String) {
+        val clientSecret = appleClientSecretGenerator.generateClientSecret()
+
+        appleApi.revokeAppleToken(
+            clientId = properties.clientId,
+            clientSecret = clientSecret,
+            token = appleRefreshToken,
+            tokenTypeHint = "refresh_token"
+        ).onSuccess {
+            log.info { "Successfully revoked Apple token." }
+        }.onFailure { originalError ->
+            log.error(originalError) { "Failed to revoke Apple token." }
+            throw AuthException(
+                AuthErrorCode.OAUTH_SERVER_ERROR,
+                "Failed to revoke Apple token: ${originalError.message}"
+            )
+        }
+    }
 }

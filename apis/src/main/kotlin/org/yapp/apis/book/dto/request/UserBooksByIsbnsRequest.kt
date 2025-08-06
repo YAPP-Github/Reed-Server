@@ -1,4 +1,4 @@
-package org.yapp.apis.auth.dto.request
+package org.yapp.apis.book.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotEmpty
@@ -25,8 +25,6 @@ data class UserBooksByIsbnsRequest private constructor(
     val isbns: List<String>? = null
 
 ) {
-
-
     fun validUserId(): UUID = userId!!
     fun validIsbns(): List<String> = isbns!!
 

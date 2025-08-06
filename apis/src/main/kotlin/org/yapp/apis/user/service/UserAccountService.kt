@@ -1,46 +1,22 @@
-package org.yapp.apis.auth.service
+package org.yapp.apis.user.service
 
 import jakarta.validation.Valid
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import org.yapp.apis.auth.dto.request.FindOrCreateUserRequest
-import org.yapp.apis.auth.dto.request.FindUserIdentityRequest
-import org.yapp.apis.auth.dto.response.CreateUserResponse
-import org.yapp.apis.auth.dto.response.UserAuthInfoResponse
-import org.yapp.apis.auth.dto.response.UserProfileResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
+import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
+import org.yapp.apis.user.dto.response.CreateUserResponse
+import org.yapp.apis.user.dto.response.WithdrawTargetUserResponse
 import org.yapp.domain.user.UserDomainService
 import org.yapp.domain.user.vo.UserAuthVO
 import java.util.*
 
 @Service
 @Validated
-class UserAuthService(
+class UserAccountService(
     private val userDomainService: UserDomainService
 ) {
-    fun findUserProfileByUserId(userId: UUID): UserProfileResponse {
-        val userProfile = userDomainService.findUserProfileById(userId)
-        return UserProfileResponse.from(userProfile)
-    }
-
-    fun updateTermsAgreement(userId: UUID, termsAgreed: Boolean): UserProfileResponse {
-        validateUserExists(userId)
-        val updatedUserProfile = userDomainService.updateTermsAgreement(userId, termsAgreed)
-        return UserProfileResponse.from(updatedUserProfile)
-    }
-
-    fun validateUserExists(userId: UUID) {
-        if (!userDomainService.existsActiveUserByIdAndDeletedAtIsNull(userId)) {
-            throw AuthException(AuthErrorCode.USER_NOT_FOUND, "User not found: $userId")
-        }
-    }
-
-    fun findUserIdentityByUserId(@Valid findUserIdentityRequest: FindUserIdentityRequest): UserAuthInfoResponse {
-        val userIdentity = userDomainService.findUserIdentityById(findUserIdentityRequest.validUserId())
-        return UserAuthInfoResponse.from(userIdentity)
-    }
-
     fun findOrCreateUser(@Valid findOrCreateUserRequest: FindOrCreateUserRequest): CreateUserResponse {
         userDomainService.findUserByProviderTypeAndProviderId(
             findOrCreateUserRequest.validProviderType(),
@@ -59,6 +35,19 @@ class UserAuthService(
 
         val createdUser = createNewUser(findOrCreateUserRequest)
         return CreateUserResponse.from(createdUser)
+    }
+
+    fun findWithdrawUserById(userId: UUID): WithdrawTargetUserResponse {
+        val withdrawTargetUserVO = userDomainService.findWithdrawUserById(userId)
+        return WithdrawTargetUserResponse.from(withdrawTargetUserVO)
+    }
+
+    fun withdrawUser(userId: UUID) {
+        userDomainService.deleteUser(userId)
+    }
+
+    fun updateAppleRefreshToken(userId: UUID, refreshToken: String) {
+        userDomainService.updateAppleRefreshToken(userId, refreshToken)
     }
 
     private fun createNewUser(@Valid findOrCreateUserRequest: FindOrCreateUserRequest): UserAuthVO {

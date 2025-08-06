@@ -36,7 +36,7 @@ class AppleApi(
         }
     }
     
-    fun revokeToken(
+    fun revokeAppleToken(
         clientId: String,
         clientSecret: String,
         token: String,

@@ -7,20 +7,20 @@ import org.yapp.apis.auth.dto.request.TokenGenerateRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.RefreshTokenResponse
 import org.yapp.apis.auth.dto.response.UserIdResponse
-import org.yapp.domain.token.TokenDomainRedisService
+import org.yapp.domain.token.RefreshTokenDomainService
 import java.util.*
 
 @Service
 @Validated
 class RefreshTokenService(
-    private val tokenDomainRedisService: TokenDomainRedisService,
+    private val refreshTokenDomainService: RefreshTokenDomainService,
 ) {
     fun deleteRefreshTokenByToken(token: String) {
-        tokenDomainRedisService.deleteRefreshTokenByToken(token)
+        refreshTokenDomainService.deleteRefreshTokenByToken(token)
     }
 
     fun saveRefreshToken(@Valid tokenGenerateRequest: TokenGenerateRequest): RefreshTokenResponse {
-        val token = tokenDomainRedisService.saveRefreshToken(
+        val token = refreshTokenDomainService.saveRefreshToken(
             tokenGenerateRequest.validUserId(),
             tokenGenerateRequest.validRefreshToken(),
             tokenGenerateRequest.validExpiration()
@@ -29,16 +29,16 @@ class RefreshTokenService(
     }
 
     fun getRefreshTokenByUserId(userId: UUID): RefreshTokenResponse {
-        val token = tokenDomainRedisService.getRefreshTokenByUserId(userId)
+        val token = refreshTokenDomainService.getRefreshTokenByUserId(userId)
         return RefreshTokenResponse.from(token)
     }
 
     fun validateRefreshToken(refreshToken: String) {
-        tokenDomainRedisService.validateRefreshTokenByToken(refreshToken)
+        refreshTokenDomainService.validateRefreshTokenByToken(refreshToken)
     }
 
     fun getUserIdByToken(@Valid tokenRefreshRequest: TokenRefreshRequest): UserIdResponse {
-        val userId = tokenDomainRedisService.getUserIdByToken(tokenRefreshRequest.validRefreshToken())
+        val userId = refreshTokenDomainService.getUserIdByToken(tokenRefreshRequest.validRefreshToken())
         return UserIdResponse.from(userId)
     }
 }
