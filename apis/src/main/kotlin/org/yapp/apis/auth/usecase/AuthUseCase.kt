@@ -5,9 +5,7 @@ import org.yapp.apis.auth.dto.request.*
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.service.AppleAuthService
-import org.yapp.apis.auth.service.AuthTokenService
-import org.yapp.apis.auth.service.RefreshTokenService
+import org.yapp.apis.auth.service.*
 import org.yapp.apis.auth.strategy.signin.AppleAuthCredentials
 import org.yapp.apis.auth.strategy.signin.SignInCredentials
 import org.yapp.apis.auth.strategy.signin.SignInStrategyResolver
@@ -27,6 +25,8 @@ class AuthUseCase(
     private val withdrawStrategyResolver: WithdrawStrategyResolver,
     private val userService: UserService,
     private val userAccountService: UserAccountService,
+    private val userSignInService: UserSignInService,
+    private val userWithdrawalService: UserWithdrawalService,
     private val refreshTokenService: RefreshTokenService,
     private val authTokenService: AuthTokenService,
     private val appleAuthService: AppleAuthService,
@@ -38,7 +38,7 @@ class AuthUseCase(
         val userCreateInfoResponse = strategy.authenticate(credentials)
 
         val createUserResponse =
-            userAccountService.findOrCreateUser(FindOrCreateUserRequest.from(userCreateInfoResponse))
+            userSignInService.findOrCreateUser(FindOrCreateUserRequest.from(userCreateInfoResponse))
 
         handleAppleRefreshTokenIfNeeded(createUserResponse, credentials)
 
@@ -63,7 +63,6 @@ class AuthUseCase(
         authTokenService.deleteRefreshTokenForSignOutOrWithdraw(DeleteTokenRequest.from(refreshTokenResponse))
     }
 
-    @Transactional
     fun withdraw(userId: UUID, withdrawRequest: WithdrawRequest) {
         val withdrawTargetUserResponse = userAccountService.findWithdrawUserById(userId)
 
@@ -77,9 +76,7 @@ class AuthUseCase(
         val strategy = withdrawStrategyResolver.resolve(withdrawRequest.validProviderType())
         strategy.withdraw(WithdrawStrategyRequest.from(withdrawTargetUserResponse))
 
-        val refreshTokenResponse = refreshTokenService.getRefreshTokenByUserId(userId)
-        authTokenService.deleteRefreshTokenForSignOutOrWithdraw(DeleteTokenRequest.from(refreshTokenResponse))
-        userAccountService.withdrawUser(userId)
+        userWithdrawalService.processWithdrawal(userId)
     }
 
     private fun handleAppleRefreshTokenIfNeeded(
