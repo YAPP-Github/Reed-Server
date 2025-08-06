@@ -109,7 +109,6 @@ interface AuthControllerApi {
     )
     @DeleteMapping("/withdraw")
     fun withdraw(
-        @AuthenticationPrincipal userId: UUID,
-        @Valid @RequestBody request: WithdrawRequest
+        @AuthenticationPrincipal userId: UUID
     ): ResponseEntity<Unit>
 }
