@@ -10,6 +10,8 @@ import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.apis.book.dto.response.BookSearchResponse
 import org.yapp.apis.book.exception.BookErrorCode
 import org.yapp.apis.book.exception.BookException
+import org.yapp.apis.util.IsbnConverter
+import org.yapp.globalutils.validator.IsbnValidator
 import org.yapp.infra.external.aladin.AladinApi
 import org.yapp.infra.external.aladin.request.AladinBookLookupRequest
 import org.yapp.infra.external.aladin.request.AladinBookSearchRequest
@@ -42,7 +44,31 @@ class AladinBookQueryService(
                 log.error("Failed to call Aladin search API for request: '$request'", exception)
                 throw BookException(BookErrorCode.ALADIN_API_SEARCH_FAILED, exception.message)
             }
-        return BookSearchResponse.from(response)
+
+        val filteredItems = response.item.filter { item ->
+            val isbn13 = item.isbn13?.takeIf { it.isNotBlank() } 
+                ?: item.isbn?.let { IsbnConverter.toIsbn13(it) }
+            
+            isbn13?.let { 
+                IsbnValidator.isValidIsbn(it) && !it.startsWith("K", ignoreCase = true)
+            } ?: false
+        }
+
+        val filteredResponse = AladinSearchResponse(
+            version = response.version,
+            title = response.title,
+            link = response.link,
+            pubDate = response.pubDate,
+            totalResults = filteredItems.size,
+            startIndex = response.startIndex,
+            itemsPerPage = response.itemsPerPage,
+            query = response.query,
+            searchCategoryId = response.searchCategoryId,
+            searchCategoryName = response.searchCategoryName,
+            item = filteredItems
+        )
+
+        return BookSearchResponse.from(filteredResponse)
     }
 
     override fun getBookDetail(@Valid request: BookDetailRequest): BookDetailResponse {

@@ -26,10 +26,14 @@ data class BookDetailResponse private constructor(
 
     companion object {
         private const val DEFAULT_MAX_PAGE_COUNT = 4032
-        
+
         fun from(response: AladinBookDetailResponse, userBookStatus: BookStatus = BookStatus.BEFORE_REGISTRATION): BookDetailResponse {
             val item = response.item.firstOrNull()
                 ?: throw IllegalArgumentException("No book item found in detail response.")
+
+            val isbn13 = item.isbn13?.takeIf { it.isNotBlank() }
+                ?: IsbnConverter.toIsbn13(item.isbn?.takeIf { it.isNotBlank() })
+                ?: throw IllegalArgumentException("Either isbn13 or isbn must be provided")
 
             return BookDetailResponse(
                 version = response.version,
@@ -39,7 +43,7 @@ data class BookDetailResponse private constructor(
                 pubDate = item.pubDate ?: "",
                 description = item.description ?: "",
                 mallType = item.mallType,
-                isbn13 = item.isbn13 ?: IsbnConverter.toIsbn13(item.isbn) ?: throw IllegalArgumentException("Either isbn13 or isbn must be provided"),
+                isbn13 = isbn13,
                 coverImageUrl = item.cover,
                 categoryName = item.categoryName,
                 publisher = item.publisher ?: "",

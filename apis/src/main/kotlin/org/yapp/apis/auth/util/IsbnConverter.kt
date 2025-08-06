@@ -11,13 +11,8 @@ object IsbnConverter {
 
     fun toIsbn13(isbn10: String?): String? {
         val sanitized = isbn10?.replace("-", "")?.uppercase()
-
-        if (sanitized.isNullOrBlank() || sanitized.length != ISBN10_LENGTH) {
-            return null
-        }
-        if (!sanitized.matches(Regex(RegexUtils.ISBN10_PATTERN))) {
-            return null
-        }
+            ?.takeIf { it.length == ISBN10_LENGTH && it.matches(Regex(RegexUtils.ISBN10_PATTERN)) }
+            ?: return null
 
         val stem = ISBN13_PREFIX + sanitized.substring(0, ISBN10_LENGTH - 1)
 
