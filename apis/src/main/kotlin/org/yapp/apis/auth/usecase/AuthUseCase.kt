@@ -5,10 +5,9 @@ import org.yapp.apis.auth.dto.request.*
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.service.AuthTokenService
-import org.yapp.apis.auth.service.RefreshTokenService
-import org.yapp.apis.auth.service.UserSignInService
-import org.yapp.apis.auth.service.UserWithdrawalService
+import org.yapp.apis.auth.service.*
+import org.yapp.apis.auth.strategy.signin.AppleAuthCredentials
+import org.yapp.apis.auth.strategy.signin.SignInCredentials
 import org.yapp.apis.auth.strategy.signin.SignInStrategyResolver
 import org.yapp.apis.auth.strategy.withdraw.WithdrawStrategyResolver
 import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
@@ -29,14 +28,18 @@ class AuthUseCase(
     private val userWithdrawalService: UserWithdrawalService,
     private val refreshTokenService: RefreshTokenService,
     private val authTokenService: AuthTokenService,
+    private val appleAuthService: AppleAuthService
 ) {
     fun signIn(socialLoginRequest: SocialLoginRequest): TokenPairResponse {
         val credentials = SocialLoginRequest.toCredentials(socialLoginRequest)
         val strategy = signInStrategyResolver.resolve(credentials)
         val userCreateInfoResponse = strategy.authenticate(credentials)
 
+        val appleRefreshToken = fetchAppleRefreshTokenIfNeeded(credentials)
+
         val createUserResponse = userSignInService.processSignIn(
-            FindOrCreateUserRequest.from(userCreateInfoResponse), credentials
+            FindOrCreateUserRequest.from(userCreateInfoResponse),
+            appleRefreshToken
         )
 
         return authTokenService.generateTokenPair(GenerateTokenPairRequest.from(createUserResponse))
@@ -74,5 +77,12 @@ class AuthUseCase(
         strategy.withdraw(WithdrawStrategyRequest.from(withdrawTargetUserResponse))
 
         userWithdrawalService.processWithdrawal(userId)
+    }
+
+    private fun fetchAppleRefreshTokenIfNeeded(credentials: SignInCredentials): String? {
+        if (credentials is AppleAuthCredentials) {
+            return appleAuthService.fetchAppleOauthTokens(credentials.authorizationCode).refreshToken
+        }
+        return null
     }
 }

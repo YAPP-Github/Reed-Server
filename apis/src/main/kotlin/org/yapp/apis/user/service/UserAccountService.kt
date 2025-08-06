@@ -46,6 +46,10 @@ class UserAccountService(
         userDomainService.deleteUser(userId)
     }
 
+    fun updateAppleRefreshToken(userId: UUID, refreshToken: String) {
+        userDomainService.updateAppleRefreshToken(userId, refreshToken)
+    }
+
     private fun createNewUser(@Valid findOrCreateUserRequest: FindOrCreateUserRequest): UserAuthVO {
         val email = findOrCreateUserRequest.getOrDefaultEmail()
         val nickname = findOrCreateUserRequest.getOrDefaultNickname()

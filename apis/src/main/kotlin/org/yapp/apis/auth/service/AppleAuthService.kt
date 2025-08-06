@@ -1,28 +1,23 @@
 package org.yapp.apis.auth.service
 
-import jakarta.validation.Valid
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import org.yapp.apis.auth.dto.request.SaveAppleRefreshTokenRequest
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.manager.AppleApiManager
-import org.yapp.domain.user.UserDomainService
+import org.yapp.infra.external.oauth.apple.response.AppleTokenResponse
 
 @Service
 @Validated
 class AppleAuthService(
     private val appleApiManager: AppleApiManager,
-    private val userDomainService: UserDomainService
 ) {
-    fun saveAppleRefreshTokenIfMissing(@Valid request: SaveAppleRefreshTokenRequest) {
-        if (request.appleRefreshToken == null) {
-            val tokenResponse = appleApiManager.fetchAppleOauthTokens(request.validAuthorizationCode())
+    fun fetchAppleOauthTokens(authorizationCode: String): AppleTokenResponse {
+        val tokenResponse = appleApiManager.fetchAppleOauthTokens(authorizationCode)
 
-            val refreshToken = tokenResponse.refreshToken
-                ?: throw AuthException(AuthErrorCode.MISSING_APPLE_REFRESH_TOKEN)
+        tokenResponse.refreshToken
+            ?: throw AuthException(AuthErrorCode.MISSING_APPLE_REFRESH_TOKEN)
 
-            userDomainService.updateAppleRefreshToken(request.validUserId(), refreshToken)
-        }
+        return tokenResponse
     }
 }
