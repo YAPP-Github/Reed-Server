@@ -2,6 +2,7 @@ package org.yapp.apis.auth.service
 
 import jakarta.validation.Valid
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
 import org.yapp.apis.user.dto.response.CreateUserResponse
@@ -11,7 +12,7 @@ import org.yapp.apis.user.service.UserAccountService
 class UserSignInService(
     private val userAccountService: UserAccountService,
 ) {
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun processSignIn(
         @Valid request: FindOrCreateUserRequest,
         appleRefreshToken: String?
