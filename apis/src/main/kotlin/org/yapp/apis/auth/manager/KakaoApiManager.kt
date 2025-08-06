@@ -43,13 +43,7 @@ class KakaoApiManager(
         return kakaoApi.unlink(kakaoOauthProperties.adminKey, targetId)
             .onSuccess { response ->
                 log.info("Successfully unlinked Kakao user with targetId: $targetId, responseId: ${response.id}")
-
-                if (response.id != targetId) {
-                    throw AuthException(
-                        AuthErrorCode.KAKAO_UNLINK_RESPONSE_MISMATCH,
-                        "Kakao unlink response ID does not match target ID. Expected: $targetId, Actual: ${response.id}"
-                    )
-                }
+                validateUnlinkResponse(response, targetId)
             }
             .getOrElse { exception ->
                 log.error("Failed to unlink Kakao user with targetId: $targetId", exception)
@@ -66,5 +60,14 @@ class KakaoApiManager(
                     )
                 }
             }
+    }
+
+    private fun validateUnlinkResponse(response: KakaoUnlinkResponse, expectedTargetId: String) {
+        if (response.id != expectedTargetId) {
+            throw AuthException(
+                AuthErrorCode.KAKAO_UNLINK_RESPONSE_MISMATCH,
+                "Kakao unlink response ID does not match target ID"
+            )
+        }
     }
 }
