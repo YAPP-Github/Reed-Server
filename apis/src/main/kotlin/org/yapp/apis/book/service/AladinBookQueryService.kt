@@ -49,7 +49,9 @@ class AladinBookQueryService(
             val isbn13 = item.isbn13?.takeIf { it.isNotBlank() } 
                 ?: item.isbn?.let { IsbnConverter.toIsbn13(it) }
             
-            isbn13?.let { IsbnValidator.isValidIsbn(it) } ?: false
+            isbn13?.let { 
+                IsbnValidator.isValidIsbn(it) && !it.startsWith("K", ignoreCase = true)
+            } ?: false
         }
 
         val filteredResponse = AladinSearchResponse(
