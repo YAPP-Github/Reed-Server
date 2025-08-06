@@ -1,6 +1,7 @@
 package org.yapp.infra.external.oauth.kakao
 
 import org.springframework.stereotype.Component
+import org.yapp.infra.external.oauth.kakao.response.KakaoUnlinkResponse
 import org.yapp.infra.external.oauth.kakao.response.KakaoUserInfo
 
 @Component
@@ -15,6 +16,12 @@ class KakaoApi(
         return runCatching {
             val response = kakaoRestClient.getUserInfo(BEARER_PREFIX + accessToken)
             KakaoUserInfo.from(response)
+        }
+    }
+
+    fun unlink(adminKey: String, targetId: String): Result<KakaoUnlinkResponse> {
+        return runCatching {
+            kakaoRestClient.unlink(adminKey, targetId)
         }
     }
 }

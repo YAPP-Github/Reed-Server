@@ -3,8 +3,6 @@ package org.yapp.apis.auth.usecase
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.auth.dto.request.*
 import org.yapp.apis.auth.dto.response.TokenPairResponse
-import org.yapp.apis.auth.exception.AuthErrorCode
-import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.service.*
 import org.yapp.apis.auth.strategy.signin.AppleAuthCredentials
 import org.yapp.apis.auth.strategy.signin.SignInCredentials
@@ -63,17 +61,9 @@ class AuthUseCase(
         authTokenService.deleteRefreshTokenForSignOutOrWithdraw(DeleteTokenRequest.from(refreshTokenResponse))
     }
 
-    fun withdraw(userId: UUID, withdrawRequest: WithdrawRequest) {
+    fun withdraw(userId: UUID) {
         val withdrawTargetUserResponse = userAccountService.findWithdrawUserById(userId)
-
-        if (withdrawTargetUserResponse.providerType != withdrawRequest.validProviderType()) {
-            throw AuthException(
-                AuthErrorCode.PROVIDER_TYPE_MISMATCH,
-                "The provider type in the request does not match the user's actual provider type."
-            )
-        }
-
-        val strategy = withdrawStrategyResolver.resolve(withdrawRequest.validProviderType())
+        val strategy = withdrawStrategyResolver.resolve(withdrawTargetUserResponse.providerType)
         strategy.withdraw(WithdrawStrategyRequest.from(withdrawTargetUserResponse))
 
         userWithdrawalService.processWithdrawal(userId)

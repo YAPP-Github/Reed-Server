@@ -6,7 +6,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
-import org.yapp.apis.auth.dto.request.WithdrawRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
 import org.yapp.apis.auth.usecase.AuthUseCase
 import java.util.*
@@ -37,10 +36,9 @@ class AuthController(
 
     @DeleteMapping("/withdraw")
     override fun withdraw(
-        @AuthenticationPrincipal userId: UUID,
-        @Valid @RequestBody request: WithdrawRequest
+        @AuthenticationPrincipal userId: UUID
     ): ResponseEntity<Unit> {
-        authUseCase.withdraw(userId, request)
+        authUseCase.withdraw(userId)
         return ResponseEntity.noContent().build()
     }
 }

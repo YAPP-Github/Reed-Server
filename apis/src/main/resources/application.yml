@@ -79,6 +79,8 @@ aladin:
     ttb-key: dummy-aladin-key
 
 oauth:
+  kakao:
+    admin-key: DUMMYADMINKEY
   apple:
     client-id: dummy.client.id
     key-id: DUMMYKEYID

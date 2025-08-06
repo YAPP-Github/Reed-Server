@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
-import org.yapp.apis.auth.dto.request.WithdrawRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
 import org.yapp.globalutils.exception.ErrorResponse
 import java.util.*
@@ -109,7 +108,6 @@ interface AuthControllerApi {
     )
     @DeleteMapping("/withdraw")
     fun withdraw(
-        @AuthenticationPrincipal userId: UUID,
-        @Valid @RequestBody request: WithdrawRequest
+        @AuthenticationPrincipal userId: UUID
     ): ResponseEntity<Unit>
 }
