@@ -12,9 +12,9 @@ class UserWithdrawalService(
 ) {
     @Transactional
     fun processWithdrawal(userId: UUID) {
+        userAccountService.withdrawUser(userId)
+
         val refreshTokenResponse = refreshTokenService.getRefreshTokenByUserId(userId)
         refreshTokenService.deleteRefreshTokenByToken(refreshTokenResponse.refreshToken)
-
-        userAccountService.withdrawUser(userId)
     }
 }
