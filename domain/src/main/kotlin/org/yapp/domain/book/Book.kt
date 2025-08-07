@@ -80,7 +80,7 @@ data class Book private constructor(
     value class Isbn13(val value: String) {
         companion object {
             fun newInstance(value: String): Isbn13 {
-                require(IsbnValidator.isValidIsbn(value)) { "ISBN must be a 10 or 13-digit number." }
+                require(IsbnValidator.isValidIsbn13(value)) { "ISBN must be a 10 or 13-digit number." }
                 return Isbn13(value)
             }
         }
