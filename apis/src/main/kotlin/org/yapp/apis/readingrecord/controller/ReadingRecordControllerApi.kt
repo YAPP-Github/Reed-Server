@@ -14,17 +14,13 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
+import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.globalutils.exception.ErrorResponse
-import java.util.UUID
+import java.util.*
 
 @Tag(name = "Reading Records", description = "독서 기록 관련 API")
 @RequestMapping("/api/v1/reading-records")
@@ -110,4 +106,28 @@ interface ReadingRecordControllerApi {
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         @Parameter(description = "페이지네이션 정보 (페이지 번호, 페이지 크기, 정렬 방식)") pageable: Pageable
     ): ResponseEntity<Page<ReadingRecordResponse>>
+
+    @Operation(
+        summary = "씨앗 통계 조회",
+        description = "사용자가 모은 감정 태그별 씨앗 개수를 조회합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "씨앗 통계 조회 성공",
+                content = [Content(schema = Schema(implementation = SeedStatsResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "사용자를 찾을 수 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @GetMapping("/{userBookId}/seed/stats")
+    fun getReadingRecordSeedStats(
+        @AuthenticationPrincipal userId: UUID,
+        @PathVariable userBookId: UUID
+    ): ResponseEntity<SeedStatsResponse>
 }
