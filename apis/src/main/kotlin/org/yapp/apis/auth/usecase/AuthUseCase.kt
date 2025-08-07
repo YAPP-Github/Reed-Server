@@ -16,7 +16,6 @@ import org.yapp.globalutils.annotation.UseCase
 import java.util.*
 
 @UseCase
-@Transactional(readOnly = true)
 class AuthUseCase(
     private val signInStrategyResolver: SignInStrategyResolver,
     private val withdrawStrategyResolver: WithdrawStrategyResolver,
@@ -28,6 +27,7 @@ class AuthUseCase(
     private val authTokenService: AuthTokenService,
     private val appleAuthService: AppleAuthService
 ) {
+    // 추후 Redis 저장을 비동기로 처리하고 실패 시 재시도 로직 도입
     fun signIn(socialLoginRequest: SocialLoginRequest): TokenPairResponse {
         val credentials = SocialLoginRequest.toCredentials(socialLoginRequest)
         val strategy = signInStrategyResolver.resolve(credentials)
