@@ -7,7 +7,7 @@ import java.util.UUID
 
 @Schema(
     name = "UserBooksByIsbn13sRequest",
-    description = "Request DTO for finding user books by user ID and a list of ISBNs"
+    description = "Request DTO for finding user books by user ID and a list of ISBN13s"
 )
 data class UserBooksByIsbn13sRequest private constructor(
     @Schema(
