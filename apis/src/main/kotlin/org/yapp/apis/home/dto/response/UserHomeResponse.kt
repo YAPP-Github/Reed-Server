@@ -7,8 +7,9 @@ import java.util.*
 data class UserHomeResponse private constructor(
     val recentBooks: List<RecentBookResponse>
 ) {
-    data class RecentBookResponse(
+    data class RecentBookResponse private constructor(
         val userBookId: UUID,
+        val isbn: String,
         val title: String,
         val author: String,
         val publisher: String,
@@ -20,6 +21,7 @@ data class UserHomeResponse private constructor(
             fun from(userBookInfo: HomeBookVO): RecentBookResponse {
                 return RecentBookResponse(
                     userBookId = userBookInfo.id.value,
+                    isbn = userBookInfo.bookIsbn13.value,
                     title = userBookInfo.title,
                     author = userBookInfo.author,
                     publisher = userBookInfo.publisher,
