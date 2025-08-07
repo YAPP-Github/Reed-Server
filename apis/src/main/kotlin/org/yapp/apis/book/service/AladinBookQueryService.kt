@@ -67,7 +67,7 @@ class AladinBookQueryService(
         return BookSearchResponse.from(filteredResponse)
     }
 
-    override fun getBookDetail(@Valid request: BookDetailRequest): BookDetailResponse {
+    override fun getBookDetail(request: BookDetailRequest): BookDetailResponse {
         log.info("Service - Converting BookDetailRequest to AladinBookLookupRequest and calling Aladin API for book detail lookup.")
         val aladinLookupRequest = AladinBookLookupRequest.from(request.validIsbn13())
         val response: AladinBookDetailResponse = aladinApi.lookupBook(aladinLookupRequest)
