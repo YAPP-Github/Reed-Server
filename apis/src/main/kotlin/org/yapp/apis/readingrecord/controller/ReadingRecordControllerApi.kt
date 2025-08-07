@@ -109,7 +109,7 @@ interface ReadingRecordControllerApi {
 
     @Operation(
         summary = "씨앗 통계 조회",
-        description = "사용자가 모은 감정 태그별 씨앗 개수를 조회합니다."
+        description = "사용자가 등록한 책에 기록된 씨앗 개수를 조회합니다."
     )
     @ApiResponses(
         value = [
