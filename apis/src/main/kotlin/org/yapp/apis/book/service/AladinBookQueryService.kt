@@ -16,6 +16,7 @@ import org.yapp.infra.external.aladin.AladinApi
 import org.yapp.infra.external.aladin.request.AladinBookLookupRequest
 import org.yapp.infra.external.aladin.request.AladinBookSearchRequest
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
+import org.yapp.infra.external.aladin.response.AladinSearchItem
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 
 @Service
@@ -46,12 +47,7 @@ class AladinBookQueryService(
             }
 
         val filteredItems = response.item.filter { item ->
-            val isbn13 = item.isbn13?.takeIf { it.isNotBlank() } 
-                ?: item.isbn?.let { IsbnConverter.toIsbn13(it) }
-            
-            isbn13?.let { 
-                IsbnValidator.isValidIsbn(it) && !it.startsWith("K", ignoreCase = true)
-            } ?: false
+            getValidAndFilteredIsbn13(item) != null
         }
 
         val filteredResponse = AladinSearchResponse(
@@ -83,5 +79,18 @@ class AladinBookQueryService(
                 throw BookException(BookErrorCode.ALADIN_API_LOOKUP_FAILED, exception.message)
             }
         return BookDetailResponse.from(response)
+    }
+
+
+    private fun getValidAndFilteredIsbn13(item: AladinSearchItem): String? {
+        val primaryIsbn13 = item.isbn13
+            ?.takeIf { it.isNotBlank() && IsbnValidator.isValidIsbn13(it) }
+
+        val convertedIsbn13 = item.isbn
+            ?.takeIf { it.isNotBlank() && IsbnValidator.isValidIsbn10(it) }
+            ?.let { validIsbn10 -> IsbnConverter.toIsbn13(validIsbn10) }
+            ?.takeIf { IsbnValidator.isValidIsbn13(it) }
+
+        return primaryIsbn13 ?: convertedIsbn13
     }
 }
