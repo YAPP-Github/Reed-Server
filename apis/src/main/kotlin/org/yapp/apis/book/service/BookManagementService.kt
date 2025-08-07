@@ -14,7 +14,7 @@ class BookManagementService(
 ) {
     fun findOrCreateBook(@Valid request: BookCreateRequest): BookCreateResponse {
         val bookInfoVO = bookDomainService.findOrCreate(
-            request.validIsbn(),
+            request.validIsbn13(),
             request.validTitle(),
             request.validAuthor(),
             request.validPublisher(),

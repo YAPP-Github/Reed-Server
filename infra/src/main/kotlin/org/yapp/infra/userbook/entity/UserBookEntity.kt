@@ -4,10 +4,9 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
-import jakarta.persistence.Index
-import org.yapp.infra.common.BaseTimeEntity
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
+import org.yapp.infra.common.BaseTimeEntity
 import java.sql.Types
 import java.util.*
 
@@ -35,8 +34,8 @@ class UserBookEntity(
     @JdbcTypeCode(Types.VARCHAR)
     val bookId: UUID,
 
-    @Column(name = "book_isbn", nullable = false)
-    val bookIsbn: String,
+    @Column(name = "book_isbn", nullable = false, unique = true)
+    val bookIsbn13: String,
 
     coverImageUrl: String,
     publisher: String,
@@ -74,7 +73,7 @@ class UserBookEntity(
         id = UserBook.Id.newInstance(this.id),
         userId = UserBook.UserId.newInstance(this.userId),
         bookId = UserBook.BookId.newInstance(this.bookId),
-        bookIsbn = UserBook.BookIsbn.newInstance(this.bookIsbn),
+        bookIsbn13 = UserBook.BookIsbn13.newInstance(this.bookIsbn13),
         coverImageUrl = this.coverImageUrl,
         publisher = this.publisher,
         title = this.title,
@@ -92,7 +91,7 @@ class UserBookEntity(
                 id = userBook.id.value,
                 userId = userBook.userId.value,
                 bookId = userBook.bookId.value,
-                bookIsbn = userBook.bookIsbn.value,
+                bookIsbn13 = userBook.bookIsbn13.value,
                 coverImageUrl = userBook.coverImageUrl,
                 publisher = userBook.publisher,
                 title = userBook.title,

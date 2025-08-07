@@ -10,7 +10,7 @@ import org.hibernate.annotations.SQLRestriction
 import org.yapp.domain.book.Book
 import org.yapp.infra.common.BaseTimeEntity
 import java.sql.Types
-import java.util.UUID
+import java.util.*
 
 @Entity
 @Table(name = "books")
@@ -23,7 +23,7 @@ class BookEntity private constructor(
     val id: UUID,
 
     @Column(length = 13, updatable = false, nullable = false, unique = true)
-    val isbn: String,
+    val isbn13: String,
 
     title: String,
     author: String,
@@ -57,10 +57,9 @@ class BookEntity private constructor(
     var description: String? = description
         protected set
 
-
     fun toDomain(): Book = Book.reconstruct(
         id = Book.Id.newInstance(this.id),
-        isbn = Book.Isbn.newInstance(this.isbn),
+        isbn13 = Book.Isbn13.newInstance(this.isbn13),
         title = title,
         author = author,
         publisher = publisher,
@@ -75,7 +74,7 @@ class BookEntity private constructor(
     companion object {
         fun fromDomain(book: Book): BookEntity = BookEntity(
             id = book.id.value,
-            isbn = book.isbn.value,
+            isbn13 = book.isbn13.value,
             title = book.title,
             author = book.author,
             publisher = book.publisher,

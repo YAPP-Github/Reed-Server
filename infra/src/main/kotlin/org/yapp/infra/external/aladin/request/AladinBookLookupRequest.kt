@@ -17,10 +17,10 @@ data class AladinBookLookupRequest private constructor(
 
     companion object {
         fun from(
-            itemId: String,
+            isbn13: String,
         ): AladinBookLookupRequest {
             return AladinBookLookupRequest(
-                itemId = itemId,
+                itemId = isbn13,
                 itemIdType = "ISBN13",
                 cover = BookCoverSize.BIG.apiValue
             )

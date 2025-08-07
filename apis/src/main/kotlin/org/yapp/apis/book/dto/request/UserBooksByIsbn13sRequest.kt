@@ -6,10 +6,10 @@ import jakarta.validation.constraints.NotNull
 import java.util.UUID
 
 @Schema(
-    name = "UserBooksByIsbnsRequest",
+    name = "UserBooksByIsbn13sRequest",
     description = "Request DTO for finding user books by user ID and a list of ISBNs"
 )
-data class UserBooksByIsbnsRequest private constructor(
+data class UserBooksByIsbn13sRequest private constructor(
     @Schema(
         description = "사용자 ID",
         example = "1"
@@ -22,15 +22,15 @@ data class UserBooksByIsbnsRequest private constructor(
         example = "[\"9788966262429\", \"9791190412351\"]"
     )
     @field:NotEmpty(message = "isbns는 비어있을 수 없습니다.")
-    val isbns: List<String>? = null
+    val isbn13s: List<String>? = null
 
 ) {
     fun validUserId(): UUID = userId!!
-    fun validIsbns(): List<String> = isbns!!
+    fun validIsbn13s(): List<String> = isbn13s!!
 
     companion object {
-        fun of(userId: UUID, isbns: List<String>): UserBooksByIsbnsRequest {
-            return UserBooksByIsbnsRequest(userId = userId, isbns = isbns)
+        fun of(userId: UUID, isbn13s: List<String>): UserBooksByIsbn13sRequest {
+            return UserBooksByIsbn13sRequest(userId = userId, isbn13s = isbn13s)
         }
     }
 }

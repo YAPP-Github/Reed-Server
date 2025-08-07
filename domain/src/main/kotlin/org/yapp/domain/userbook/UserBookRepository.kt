@@ -7,18 +7,13 @@ import java.util.*
 
 
 interface UserBookRepository {
-
-    fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook?
+    fun findByUserIdAndBookIsbn13(userId: UUID, isbn13: String): UserBook?
     fun findByBookIdAndUserId(bookId: UUID, userId: UUID): UserBook?
     fun existsByIdAndUserId(id: UUID, userId: UUID): Boolean
     fun findById(id: UUID): UserBook?
-
     fun save(userBook: UserBook): UserBook
-
     fun findAllByUserId(userId: UUID): List<UserBook>
-
-    fun findAllByUserIdAndBookIsbnIn(userId: UUID, bookIsbns: List<String>): List<UserBook>
-
+    fun findAllByUserIdAndBookIsbn13In(userId: UUID, bookIsbn13s: List<String>): List<UserBook>
     fun findUserBooksByDynamicCondition(
         userId: UUID,
         status: BookStatus?,
@@ -36,6 +31,4 @@ interface UserBookRepository {
         limit: Int,
         excludeIds: Set<UUID>
     ): List<UserBook>
-
-    
 }

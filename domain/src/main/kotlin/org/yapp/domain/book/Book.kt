@@ -7,7 +7,7 @@ import java.util.*
 
 data class Book private constructor(
     val id: Id,
-    val isbn: Isbn,
+    val isbn13: Isbn13,
     val title: String,
     val author: String,
     val publisher: String,
@@ -20,7 +20,7 @@ data class Book private constructor(
 ) {
     companion object {
         fun create(
-            isbn: String,
+            isbn13: String,
             title: String,
             author: String,
             publisher: String,
@@ -30,7 +30,7 @@ data class Book private constructor(
         ): Book {
             return Book(
                 id = Id.newInstance(UuidGenerator.create()),
-                isbn = Isbn.newInstance(isbn),
+                isbn13 = Isbn13.newInstance(isbn13),
                 title = title,
                 author = author,
                 publisher = publisher,
@@ -42,7 +42,7 @@ data class Book private constructor(
 
         fun reconstruct(
             id: Id,
-            isbn: Isbn,
+            isbn13: Isbn13,
             title: String,
             author: String,
             publisher: String,
@@ -55,7 +55,7 @@ data class Book private constructor(
         ): Book {
             return Book(
                 id = id,
-                isbn = isbn,
+                isbn13 = isbn13,
                 title = title,
                 author = author,
                 publisher = publisher,
@@ -77,11 +77,11 @@ data class Book private constructor(
     }
 
     @JvmInline
-    value class Isbn(val value: String) {
+    value class Isbn13(val value: String) {
         companion object {
-            fun newInstance(value: String): Isbn {
+            fun newInstance(value: String): Isbn13 {
                 require(IsbnValidator.isValidIsbn(value)) { "ISBN must be a 10 or 13-digit number." }
-                return Isbn(value)
+                return Isbn13(value)
             }
         }
     }

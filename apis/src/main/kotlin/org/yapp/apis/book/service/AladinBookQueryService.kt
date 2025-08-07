@@ -73,10 +73,10 @@ class AladinBookQueryService(
 
     override fun getBookDetail(@Valid request: BookDetailRequest): BookDetailResponse {
         log.info("Service - Converting BookDetailRequest to AladinBookLookupRequest and calling Aladin API for book detail lookup.")
-        val aladinLookupRequest = AladinBookLookupRequest.from(request.validIsbn())
+        val aladinLookupRequest = AladinBookLookupRequest.from(request.validIsbn13())
         val response: AladinBookDetailResponse = aladinApi.lookupBook(aladinLookupRequest)
             .onSuccess { response ->
-                log.info("Aladin lookup successful for itemId: '${aladinLookupRequest.itemId}', title: ${response.item?.firstOrNull()?.title}")
+                log.info("Aladin lookup successful for itemId: '${aladinLookupRequest.itemId}', title: ${response.item.firstOrNull()?.title}")
             }
             .getOrElse { exception ->
                 log.error("Failed to call Aladin lookup API for request: '$request'", exception)
