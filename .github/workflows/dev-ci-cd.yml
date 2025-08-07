@@ -79,7 +79,7 @@ jobs:
             ./deploy.sh
 
       - name: Send Discord notification on success
-        uses: tsickert/discord-webhook@b217a69
+        uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
         if: success()
         continue-on-error: true
         with:
@@ -93,7 +93,7 @@ jobs:
           embed-color: 65280
 
       - name: Send Discord notification on failure
-        uses: tsickert/discord-webhook@b217a69
+        uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
         if: failure()
         continue-on-error: true
         with:
