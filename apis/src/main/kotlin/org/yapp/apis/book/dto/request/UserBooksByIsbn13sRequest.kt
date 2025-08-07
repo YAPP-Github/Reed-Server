@@ -21,7 +21,7 @@ data class UserBooksByIsbn13sRequest private constructor(
         description = "도서 ISBN 목록",
         example = "[\"9788966262429\", \"9791190412351\"]"
     )
-    @field:NotEmpty(message = "isbns는 비어있을 수 없습니다.")
+    @field:NotEmpty(message = "isbn13 리스트는 비어있을 수 없습니다.")
     val isbn13s: List<String>? = null
 
 ) {
