@@ -101,7 +101,7 @@ interface BookControllerApi {
             ),
             ApiResponse(
                 responseCode = "404",
-                description = "존재하지 않는 책 (ISBN 오류)",
+                description = "존재하지 않는 책 (ISBN13 오류)",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             )
         ]

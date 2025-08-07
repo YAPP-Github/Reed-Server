@@ -17,7 +17,7 @@ class BookDomainService(
     }
 
     fun findOrCreate(
-        isbn: String,
+        isbn13: String,
         title: String,
         author: String,
         publisher: String,
@@ -25,9 +25,9 @@ class BookDomainService(
         publicationYear: Int? = null,
         description: String? = null
     ): BookInfoVO {
-        return findByIsbnOrNull(isbn) ?: run {
+        return findByIsbn13OrNull(isbn13) ?: run {
             val newBook = Book.create(
-                isbn = isbn,
+                isbn13 = isbn13,
                 title = title,
                 author = author,
                 publisher = publisher,
@@ -40,14 +40,8 @@ class BookDomainService(
         }
     }
 
-    private fun findByIsbnOrNull(isbn: String): BookInfoVO? {
-        val book = bookRepository.findByIsbn(isbn)
-        return book?.let { BookInfoVO.newInstance(it) }
-    }
-
-
     fun save(
-        isbn: String,
+        isbn13: String,
         title: String,
         author: String,
         publisher: String,
@@ -55,12 +49,12 @@ class BookDomainService(
         publicationYear: Int? = null,
         description: String? = null,
     ): BookInfoVO {
-        if (bookRepository.existsByIsbn(isbn)) {
+        if (bookRepository.existsByIsbn13(isbn13)) {
             throw BookAlreadyExistsException(BookErrorCode.BOOK_ALREADY_EXISTS)
         }
 
         val book = Book.create(
-            isbn = isbn,
+            isbn13 = isbn13,
             title = title,
             author = author,
             publisher = publisher,
@@ -71,5 +65,10 @@ class BookDomainService(
 
         val savedBook = bookRepository.save(book)
         return BookInfoVO.newInstance(savedBook)
+    }
+
+    private fun findByIsbn13OrNull(isbn13: String): BookInfoVO? {
+        val book = bookRepository.findByIsbn13(isbn13)
+        return book?.let { BookInfoVO.newInstance(it) }
     }
 }

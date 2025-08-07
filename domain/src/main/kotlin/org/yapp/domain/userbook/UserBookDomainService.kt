@@ -15,18 +15,18 @@ class UserBookDomainService(
     fun upsertUserBook(
         userId: UUID,
         bookId: UUID,
-        bookIsbn: String,
+        bookIsbn13: String,
         bookTitle: String,
         bookAuthor: String,
         bookPublisher: String,
         bookCoverImageUrl: String,
         status: BookStatus
     ): UserBookInfoVO {
-        val userBook = userBookRepository.findByUserIdAndBookIsbn(userId, bookIsbn)?.updateStatus(status)
+        val userBook = userBookRepository.findByUserIdAndBookIsbn13(userId, bookIsbn13)?.updateStatus(status)
             ?: UserBook.create(
                 userId = userId,
                 bookId = bookId,
-                bookIsbn = bookIsbn,
+                bookIsbn13 = bookIsbn13,
                 title = bookTitle,
                 author = bookAuthor,
                 publisher = bookPublisher,
@@ -49,16 +49,16 @@ class UserBookDomainService(
         return page.map { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
     }
 
-    fun findAllByUserIdAndBookIsbnIn(userId: UUID, isbns: List<String>): List<UserBookInfoVO> {
-        if (isbns.isEmpty()) {
+    fun findAllByUserIdAndBookIsbn13In(userId: UUID, isbn13s: List<String>): List<UserBookInfoVO> {
+        if (isbn13s.isEmpty()) {
             return emptyList()
         }
-        val userBooks = userBookRepository.findAllByUserIdAndBookIsbnIn(userId, isbns)
+        val userBooks = userBookRepository.findAllByUserIdAndBookIsbn13In(userId, isbn13s)
         return userBooks.map { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
     }
 
-    fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBookInfoVO? {
-        val userBook = userBookRepository.findByUserIdAndBookIsbn(userId, isbn)
+    fun findByUserIdAndBookIsbn13(userId: UUID, isbn13: String): UserBookInfoVO? {
+        val userBook = userBookRepository.findByUserIdAndBookIsbn13(userId, isbn13)
         return userBook?.let { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
     }
 

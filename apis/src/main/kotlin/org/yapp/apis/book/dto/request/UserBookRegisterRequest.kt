@@ -3,22 +3,28 @@ package org.yapp.apis.book.dto.request
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.globalutils.util.RegexUtils
 
 @Schema(
     title = "사용자 도서 등록 요청",
     description = "사용자의 서재에 도서를 등록하거나 상태를 변경하는 요청"
 )
 data class UserBookRegisterRequest private constructor(
-    @field:NotBlank(message = "ISBN은 필수입니다.")
+    @field:NotBlank(message = "ISBN13은 비어 있을 수 없습니다.")
+    @field:Pattern(
+        regexp = RegexUtils.ISBN13_PATTERN,
+        message = "유효한 13자리 ISBN13 형식이 아닙니다."
+    )
     @Schema(
-        description = "등록할 책의 13자리 ISBN 코드",
+        description = "등록할 책의 13자리 ISBN13 코드",
         example = "9788932473901",
         required = true,
         minLength = 13,
         maxLength = 13
     )
-    val bookIsbn: String? = null,
+    val isbn13: String? = null,
 
     @field:NotNull(message = "도서 상태는 필수입니다.")
     @Schema(
@@ -30,6 +36,6 @@ data class UserBookRegisterRequest private constructor(
     )
     val bookStatus: BookStatus? = null
 ) {
-    fun validBookIsbn(): String = bookIsbn!!
+    fun validIsbn13(): String = isbn13!!
     fun validBookStatus(): BookStatus = bookStatus!!
 }

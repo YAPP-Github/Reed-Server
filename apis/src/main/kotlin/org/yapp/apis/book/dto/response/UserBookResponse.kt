@@ -9,7 +9,7 @@ import java.util.UUID
 data class UserBookResponse private constructor(
     val userBookId: UUID,
     val userId: UUID,
-    val bookIsbn: String,
+    val isbn13: String,
     val bookTitle: String,
     val bookAuthor: String,
     val status: BookStatus,
@@ -26,7 +26,7 @@ data class UserBookResponse private constructor(
             return UserBookResponse(
                 userBookId = userBook.id.value,
                 userId = userBook.userId.value,
-                bookIsbn = userBook.bookIsbn.value,
+                isbn13 = userBook.bookIsbn13.value,
                 bookTitle = userBook.title,
                 bookAuthor = BookDataValidator.removeParenthesesFromAuthor(userBook.author),
                 status = userBook.status,

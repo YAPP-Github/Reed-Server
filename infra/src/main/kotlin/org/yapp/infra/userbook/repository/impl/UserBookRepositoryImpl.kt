@@ -17,8 +17,8 @@ class UserBookRepositoryImpl(
     private val jpaUserBookRepository: JpaUserBookRepository
 ) : UserBookRepository {
 
-    override fun findByUserIdAndBookIsbn(userId: UUID, isbn: String): UserBook? {
-        return jpaUserBookRepository.findByUserIdAndBookIsbn(userId, isbn)?.toDomain()
+    override fun findByUserIdAndBookIsbn13(userId: UUID, isbn13: String): UserBook? {
+        return jpaUserBookRepository.findByUserIdAndBookIsbn13(userId, isbn13)?.toDomain()
     }
 
     override fun findByBookIdAndUserId(bookId: UUID, userId: UUID): UserBook? {
@@ -42,11 +42,11 @@ class UserBookRepositoryImpl(
         return jpaUserBookRepository.findAllByUserId(userId).map { it.toDomain() }
     }
 
-    override fun findAllByUserIdAndBookIsbnIn(
+    override fun findAllByUserIdAndBookIsbn13In(
         userId: UUID,
         bookIsbns: List<String>
     ): List<UserBook> {
-        return jpaUserBookRepository.findAllByUserIdAndBookIsbnIn(userId, bookIsbns)
+        return jpaUserBookRepository.findAllByUserIdAndBookIsbn13In(userId, bookIsbns)
             .map { it.toDomain() }
     }
 

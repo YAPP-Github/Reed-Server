@@ -1,26 +1,28 @@
 package org.yapp.apis.book.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
-import jakarta.validation.constraints.Max
-import jakarta.validation.constraints.Min
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Size
+import jakarta.validation.constraints.*
 import org.yapp.apis.book.dto.response.BookDetailResponse
+import org.yapp.globalutils.util.RegexUtils
 
 @Schema(
     title = "책 생성 요청",
     description = "시스템에 새로운 책 정보를 생성하는 요청 (주로 내부 API에서 사용)"
 )
 data class BookCreateRequest private constructor(
-    @field:NotBlank(message = "ISBN은 필수입니다.")
+    @field:NotBlank(message = "ISBN13은 필수입니다.")
+    @field:Pattern(
+        regexp = RegexUtils.ISBN13_PATTERN,
+        message = "유효한 13자리 ISBN13 형식이 아닙니다."
+    )
     @Schema(
-        description = "책의 13자리 ISBN 코드",
+        description = "책의 13자리 ISBN13 코드",
         example = "9788932473901",
         required = true,
         minLength = 13,
         maxLength = 13
     )
-    val isbn: String? = null,
+    val isbn13: String? = null,
 
     @field:NotBlank(message = "제목은 필수입니다.")
     @field:Size(max = 500, message = "제목은 500자 이내여야 합니다.")
@@ -81,26 +83,25 @@ data class BookCreateRequest private constructor(
     )
     val description: String? = null
 ) {
-    fun validIsbn(): String = isbn!!
+    fun validIsbn13(): String = isbn13!!
     fun validTitle(): String = title!!
     fun validAuthor(): String = author!!
     fun validPublisher(): String = publisher!!
     fun validCoverImageUrl(): String = coverImageUrl!!
 
     companion object {
-
-        fun from(bookDetail: BookDetailResponse): BookCreateRequest {
-            val finalIsbn = bookDetail.isbn13
-            ?: throw IllegalArgumentException("ISBN이 존재하지 않습니다.")
+        fun from(bookDetailResponse: BookDetailResponse): BookCreateRequest {
+            val finalIsbn13 = bookDetailResponse.isbn13
+            ?: throw IllegalArgumentException("ISBN13이 존재하지 않습니다.")
 
             return BookCreateRequest(
-                isbn = finalIsbn,
-                title = bookDetail.title,
-                author = bookDetail.author,
-                publisher = bookDetail.publisher,
-                publicationYear = parsePublicationYear(bookDetail.pubDate),
-                coverImageUrl = bookDetail.coverImageUrl,
-                description = bookDetail.description,
+                isbn13 = finalIsbn13,
+                title = bookDetailResponse.title,
+                author = bookDetailResponse.author,
+                publisher = bookDetailResponse.publisher,
+                publicationYear = parsePublicationYear(bookDetailResponse.pubDate),
+                coverImageUrl = bookDetailResponse.coverImageUrl,
+                description = bookDetailResponse.description,
             )
         }
 

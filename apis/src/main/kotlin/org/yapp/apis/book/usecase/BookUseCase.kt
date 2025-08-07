@@ -4,10 +4,11 @@ package org.yapp.apis.book.usecase
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
-import org.yapp.apis.book.dto.request.UserBooksByIsbnsRequest
+import org.yapp.apis.book.dto.request.UserBooksByIsbn13sRequest
 import org.yapp.apis.book.dto.request.*
 import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.apis.book.dto.response.BookSearchResponse
+import org.yapp.apis.book.dto.response.BookSearchResponse.*
 import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.service.BookManagementService
@@ -50,7 +51,7 @@ class BookUseCase(
         val isbn13 = bookDetailResponse.isbn13
             ?: return bookDetailResponse.withUserBookStatus(BookStatus.BEFORE_REGISTRATION)
 
-        val userBookStatus = userBookService.findUserBookStatusByIsbn(userId, isbn13)
+        val userBookStatus = userBookService.findUserBookStatusByIsbn13(userId, isbn13)
             ?: BookStatus.BEFORE_REGISTRATION
 
         return bookDetailResponse.withUserBookStatus(userBookStatus)
@@ -63,7 +64,7 @@ class BookUseCase(
     ): UserBookResponse {
         userService.validateUserExists(userId)
 
-        val bookDetailResponse = bookQueryService.getBookDetail(BookDetailRequest.from(request.validBookIsbn()))
+        val bookDetailResponse = bookQueryService.getBookDetail(BookDetailRequest.from(request.validIsbn13()))
         val bookCreateResponse = bookManagementService.findOrCreateBook(BookCreateRequest.from(bookDetailResponse))
         val upsertUserBookRequest = UpsertUserBookRequest.of(
             userId = userId,
@@ -88,36 +89,33 @@ class BookUseCase(
     }
 
     private fun mergeWithUserBookStatus(
-        searchedBooks: List<BookSearchResponse.BookSummary>,
+        searchedBooks: List<BookSummary>,
         userId: UUID
-    ): List<BookSearchResponse.BookSummary> {
+    ): List<BookSummary> {
         if (searchedBooks.isEmpty()) {
             return emptyList()
         }
 
-        val isbn13List = searchedBooks.map { it.isbn13 }
-        val userBookStatusMap = getUserBookStatusMap(isbn13List, userId)
+        val isbn13s = searchedBooks.map { it.isbn13 }
+        val userBookStatusMap = getUserBookStatusMap(isbn13s, userId)
 
         return searchedBooks.map { bookSummary ->
-            val userStatus = userBookStatusMap[bookSummary.isbn13]
-            if (userStatus != null) {
-                bookSummary.updateStatus(userStatus)
-            } else {
-                bookSummary
-            }
+            userBookStatusMap[bookSummary.isbn13]
+                ?.let { bookSummary.updateStatus(it) }
+                ?: bookSummary
         }
     }
 
     private fun getUserBookStatusMap(
-        isbn13List: List<String>,
+        isbn13s: List<String>,
         userId: UUID
     ): Map<String, BookStatus> {
-        val userBooksResponse = userBookService.findAllByUserIdAndBookIsbnIn(
-            UserBooksByIsbnsRequest.of(userId, isbn13List)
+        val userBooksResponse = userBookService.findAllByUserIdAndBookIsbn13In(
+            UserBooksByIsbn13sRequest.of(userId, isbn13s)
         )
 
         return userBooksResponse.associate { userBook ->
-            userBook.bookIsbn to userBook.status
+            userBook.isbn13 to userBook.status
         }
     }
 }

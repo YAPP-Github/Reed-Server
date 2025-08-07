@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import org.yapp.apis.book.dto.request.UserBooksByIsbnsRequest
+import org.yapp.apis.book.dto.request.UserBooksByIsbn13sRequest
 import org.yapp.apis.book.dto.request.UpsertUserBookRequest
 import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
@@ -25,7 +25,7 @@ class UserBookService(
         val userBookInfoVO = userBookDomainService.upsertUserBook(
             upsertUserBookRequest.validUserId(),
             upsertUserBookRequest.validBookId(),
-            upsertUserBookRequest.validBookIsbn(),
+            upsertUserBookRequest.validBookIsbn13(),
             upsertUserBookRequest.validBookTitle(),
             upsertUserBookRequest.validBookAuthor(),
             upsertUserBookRequest.validBookPublisher(),
@@ -44,16 +44,16 @@ class UserBookService(
         }
     }
 
-    fun findAllByUserIdAndBookIsbnIn(@Valid userBooksByIsbnsRequest: UserBooksByIsbnsRequest): List<UserBookResponse> {
-        val userBooks = userBookDomainService.findAllByUserIdAndBookIsbnIn(
-            userBooksByIsbnsRequest.validUserId(),
-            userBooksByIsbnsRequest.validIsbns(),
+    fun findAllByUserIdAndBookIsbn13In(@Valid userBooksByIsbn13sRequest: UserBooksByIsbn13sRequest): List<UserBookResponse> {
+        val userBooks = userBookDomainService.findAllByUserIdAndBookIsbn13In(
+            userBooksByIsbn13sRequest.validUserId(),
+            userBooksByIsbn13sRequest.validIsbn13s(),
         )
         return userBooks.map { UserBookResponse.from(it) }
     }
 
-    fun findUserBookStatusByIsbn(userId: UUID, isbn: String): BookStatus? {
-        val userBook = userBookDomainService.findByUserIdAndBookIsbn(userId, isbn)
+    fun findUserBookStatusByIsbn13(userId: UUID, isbn13: String): BookStatus? {
+        val userBook = userBookDomainService.findByUserIdAndBookIsbn13(userId, isbn13)
         return userBook?.status
     }
 

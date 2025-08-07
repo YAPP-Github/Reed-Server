@@ -3,9 +3,11 @@ package org.yapp.apis.book.dto.request
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 import org.yapp.apis.book.dto.response.BookCreateResponse
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.globalutils.util.RegexUtils
 import java.util.UUID
 
 @Schema(
@@ -31,15 +33,19 @@ data class UpsertUserBookRequest private constructor(
     )
     val bookId: UUID? = null,
 
-    @field:NotBlank(message = "책 ISBN은 필수입니다.")
+    @field:NotBlank(message = "책 ISBN13은 필수입니다.")
+    @field:Pattern(
+        regexp = RegexUtils.ISBN13_PATTERN,
+        message = "유효한 13자리 ISBN13 형식이 아닙니다."
+    )
     @Schema(
-        description = "책의 13자리 ISBN 코드",
+        description = "책의 13자리 ISBN13 코드",
         example = "9788932473901",
         required = true,
         minLength = 13,
         maxLength = 13
     )
-    val bookIsbn: String? = null,
+    val isbn13: String? = null,
 
     @field:NotBlank(message = "책 제목은 필수입니다.")
     @field:Size(max = 500, message = "책 제목은 500자 이내여야 합니다.")
@@ -94,7 +100,7 @@ data class UpsertUserBookRequest private constructor(
 ) {
     fun validUserId(): UUID = userId!!
     fun validBookId(): UUID = bookId!!
-    fun validBookIsbn(): String = bookIsbn!!
+    fun validBookIsbn13(): String = isbn13!!
     fun validBookTitle(): String = bookTitle!!
     fun validBookAuthor(): String = bookAuthor!!
     fun validBookPublisher(): String = bookPublisher!!
@@ -110,7 +116,7 @@ data class UpsertUserBookRequest private constructor(
             return UpsertUserBookRequest(
                 userId = userId,
                 bookId = bookCreateResponse.bookId,
-                bookIsbn = bookCreateResponse.isbn,
+                isbn13 = bookCreateResponse.isbn13,
                 bookTitle = bookCreateResponse.title,
                 bookAuthor = bookCreateResponse.author,
                 bookPublisher = bookCreateResponse.publisher,

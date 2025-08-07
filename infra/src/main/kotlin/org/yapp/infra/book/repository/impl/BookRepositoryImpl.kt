@@ -20,12 +20,12 @@ class BookRepositoryImpl(
         return jpaBookRepository.existsById(id)
     }
 
-    override fun findByIsbn(isbn: String): Book? {
-        return jpaBookRepository.findByIsbn(isbn)?.toDomain()
+    override fun findByIsbn13(isbn13: String): Book? {
+        return jpaBookRepository.findByIsbn13(isbn13)?.toDomain()
     }
 
-    override fun existsByIsbn(isbn: String): Boolean {
-        return jpaBookRepository.existsByIsbn(isbn)
+    override fun existsByIsbn13(isbn13: String): Boolean {
+        return jpaBookRepository.existsByIsbn13(isbn13)
     }
 
     override fun save(book: Book): Book {

@@ -9,7 +9,7 @@ data class UserBook private constructor(
     val id: Id,
     val userId: UserId,
     val bookId: BookId,
-    val bookIsbn: BookIsbn,
+    val bookIsbn13: BookIsbn13,
     val coverImageUrl: String,
     val publisher: String,
     val title: String,
@@ -28,12 +28,11 @@ data class UserBook private constructor(
         return this.copy(readingRecordCount = this.readingRecordCount + 1)
     }
 
-
     companion object {
         fun create(
             userId: UUID,
             bookId: UUID,
-            bookIsbn: String,
+            bookIsbn13: String,
             coverImageUrl: String,
             publisher: String,
             title: String,
@@ -44,7 +43,7 @@ data class UserBook private constructor(
                 id = Id.newInstance(UuidGenerator.create()),
                 userId = UserId.newInstance(userId),
                 bookId = BookId.newInstance(bookId),
-                bookIsbn = BookIsbn.newInstance(bookIsbn),
+                bookIsbn13 = BookIsbn13.newInstance(bookIsbn13),
                 coverImageUrl = coverImageUrl,
                 publisher = publisher,
                 title = title,
@@ -57,7 +56,7 @@ data class UserBook private constructor(
             id: Id,
             userId: UserId,
             bookId: BookId,
-            bookIsbn: BookIsbn,
+            bookIsbn13: BookIsbn13,
             coverImageUrl: String,
             publisher: String,
             title: String,
@@ -72,7 +71,7 @@ data class UserBook private constructor(
                 id = id,
                 userId = userId,
                 bookId = bookId,
-                bookIsbn = bookIsbn,
+                bookIsbn13 = bookIsbn13,
                 coverImageUrl = coverImageUrl,
                 publisher = publisher,
                 title = title,
@@ -108,11 +107,11 @@ data class UserBook private constructor(
     }
 
     @JvmInline
-    value class BookIsbn(val value: String) {
+    value class BookIsbn13(val value: String) {
         companion object {
-            fun newInstance(value: String): BookIsbn {
-                require(IsbnValidator.isValidIsbn(value)) { "ISBN must be a 10 or 13-digit number." }
-                return BookIsbn(value)
+            fun newInstance(value: String): BookIsbn13 {
+                require(IsbnValidator.isValidIsbn13(value)) { "ISBN13 must be a 13-digit number." }
+                return BookIsbn13(value)
             }
         }
     }

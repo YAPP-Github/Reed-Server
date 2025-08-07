@@ -4,7 +4,7 @@ import org.yapp.domain.book.Book
 
 data class BookInfoVO private constructor(
     val id: Book.Id,
-    val isbn: Book.Isbn,
+    val isbn13: Book.Isbn13,
     val title: String,
     val author: String,
     val publisher: String,
@@ -24,7 +24,7 @@ data class BookInfoVO private constructor(
         ): BookInfoVO {
             return BookInfoVO(
                 book.id,
-                book.isbn,
+                book.isbn13,
                 book.title,
                 book.author,
                 book.publisher,
