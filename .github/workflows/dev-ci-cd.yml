@@ -105,4 +105,3 @@ jobs:
             An error occurred during the workflow execution.
             [View Failed Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
           embed-color: 16711680
-      
