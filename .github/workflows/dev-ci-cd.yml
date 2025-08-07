@@ -79,8 +79,9 @@ jobs:
             ./deploy.sh
 
       - name: Send Discord notification on success
-        uses: tsickert/discord-webhook@v7.0.0
+        uses: tsickert/discord-webhook@b217a69
         if: success()
+        continue-on-error: true
         with:
           webhook-url: ${{ secrets.DEV_DEPLOY_DISCORD_WEBHOOK_URL }}
           embed-title: "✅ [${{ github.repository }}] Development Deploy Succeeded"
@@ -92,8 +93,9 @@ jobs:
           embed-color: 65280
 
       - name: Send Discord notification on failure
-        uses: tsickert/discord-webhook@v7.0.0
+        uses: tsickert/discord-webhook@b217a69
         if: failure()
+        continue-on-error: true
         with:
           webhook-url: ${{ secrets.DEV_DEPLOY_DISCORD_WEBHOOK_URL }}
           embed-title: "❌ [${{ github.repository }}] Development Deploy Failed"
