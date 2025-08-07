@@ -77,3 +77,30 @@ jobs:
             cd ~/deploy
             chmod +x ./deploy.sh
             ./deploy.sh
+
+      - name: Send Discord notification on success
+        uses: tsickert/discord-webhook@v7.0.0
+        if: success()
+        with:
+          webhook-url: ${{ secrets.DEV_DEPLOY_DISCORD_WEBHOOK_URL }}
+          embed-title: "✅ [${{ github.repository }}] Development Deploy Succeeded"
+          embed-description: |
+            **Commit**: `${{ github.sha }}`
+            **Author**: `${{ github.actor }}`
+            **Message**: `${{ github.event.head_commit.message }}`
+            [View Committed Changes](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+          embed-color: 65280
+
+      - name: Send Discord notification on failure
+        uses: tsickert/discord-webhook@v7.0.0
+        if: failure()
+        with:
+          webhook-url: ${{ secrets.DEV_DEPLOY_DISCORD_WEBHOOK_URL }}
+          embed-title: "❌ [${{ github.repository }}] Development Deploy Failed"
+          embed-description: |
+            **Commit**: `${{ github.sha }}`
+            **Author**: `${{ github.actor }}`
+            An error occurred during the workflow execution.
+            [View Failed Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          embed-color: 16711680
+      
