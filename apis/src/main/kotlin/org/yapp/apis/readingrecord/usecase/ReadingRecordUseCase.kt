@@ -71,6 +71,7 @@ class ReadingRecordUseCase(
         userBookId: UUID
     ): SeedStatsResponse {
         userService.validateUserExists(userId)
+        userBookService.validateUserBookExists(userBookId, userId)
         return readingRecordTagService.getSeedStatsByUserIdAndUserBookId(userId, userBookId)
     }
 }
