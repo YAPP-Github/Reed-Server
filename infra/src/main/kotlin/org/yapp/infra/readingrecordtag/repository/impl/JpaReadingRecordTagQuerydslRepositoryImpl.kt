@@ -20,8 +20,9 @@ class JpaReadingRecordTagQuerydslRepositoryImpl(
     private val userBook = QUserBookEntity.userBookEntity
     private val tag = QTagEntity.tagEntity
 
-    override fun countTagsByUserIdAndCategories(
+    override fun countTagsByUserIdAndUserBookIdAndCategories(
         userId: UUID,
+        userBookId: UUID,
         categories: List<String>
     ): Map<String, Int> {
         if (categories.isEmpty()) {
@@ -36,6 +37,7 @@ class JpaReadingRecordTagQuerydslRepositoryImpl(
             .join(tag).on(readingRecordTag.tagId.eq(tag.id))
             .where(
                 userBook.userIdEq(userId),
+                readingRecord.userBookIdEq(userBookId),
                 readingRecord.isNotDeleted(),
                 readingRecordTag.isNotDeleted(),
                 tag.nameIn(categories)
@@ -52,6 +54,10 @@ class JpaReadingRecordTagQuerydslRepositoryImpl(
 
     private fun QUserBookEntity.userIdEq(userId: UUID): BooleanExpression {
         return this.userId.eq(userId)
+    }
+
+    private fun QReadingRecordEntity.userBookIdEq(userBookId: UUID): BooleanExpression {
+        return this.userBookId.eq(userBookId)
     }
 
     private fun QReadingRecordEntity.isNotDeleted(): BooleanExpression {

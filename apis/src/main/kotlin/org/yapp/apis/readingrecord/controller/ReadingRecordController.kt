@@ -20,6 +20,7 @@ import org.yapp.apis.readingrecord.usecase.ReadingRecordUseCase
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import java.util.UUID
 import jakarta.validation.Valid
+import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
 
 @RestController
 @RequestMapping("/api/v1/reading-records")
@@ -68,5 +69,14 @@ class ReadingRecordController(
             pageable = pageable
         )
         return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/{userBookId}/seed/stats")
+    override fun getReadingRecordSeedStats(
+        @AuthenticationPrincipal userId: UUID,
+        @PathVariable userBookId: UUID
+    ): ResponseEntity<SeedStatsResponse> {
+        val stats = readingRecordUseCase.getSeedStats(userId, userBookId)
+        return ResponseEntity.ok(stats)
     }
 }

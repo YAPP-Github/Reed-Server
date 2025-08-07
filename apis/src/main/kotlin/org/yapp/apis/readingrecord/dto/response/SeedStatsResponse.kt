@@ -1,4 +1,4 @@
-package org.yapp.apis.seed.dto.response
+package org.yapp.apis.readingrecord.dto.response
 
 import org.yapp.domain.readingrecordtag.vo.TagStatsVO
 import org.yapp.globalutils.tag.GeneralEmotionTagCategory

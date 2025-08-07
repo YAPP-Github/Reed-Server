@@ -5,8 +5,8 @@ enum class GeneralEmotionTagCategory(
 ) {
     WARMTH("따뜻함"),
     JOY("즐거움"),
-    TENSION("긴장감"),
-    SADNESS("슬픔");
+    SADNESS("슬픔"),
+    REALIZATION("깨달음");
 
     companion object {
         private val BY_DISPLAY_NAME = entries.associateBy { it.displayName }
