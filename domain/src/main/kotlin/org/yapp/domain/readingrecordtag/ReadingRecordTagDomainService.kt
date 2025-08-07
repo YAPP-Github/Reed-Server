@@ -8,8 +8,12 @@ import java.util.*
 class ReadingRecordTagDomainService(
     private val readingRecordTagRepository: ReadingRecordTagRepository
 ) {
-    fun countTagsByUserIdAndCategories(userId: UUID, categories: List<String>): TagStatsVO {
-        val categoryStats = readingRecordTagRepository.countTagsByUserIdAndCategories(userId, categories)
+    fun countTagsByUserIdAndUserBookIdAndCategories(
+        userId: UUID,
+        userBookId: UUID,
+        categories: List<String>
+    ): TagStatsVO {
+        val categoryStats = readingRecordTagRepository.countTagsByUserIdAndUserBookIdAndCategories(userId, userBookId, categories)
         return TagStatsVO.newInstance(categoryStats)
     }
 }

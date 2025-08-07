@@ -1,21 +1,22 @@
-package org.yapp.apis.seed.service
+package org.yapp.apis.readingrecord.service
 
 import org.springframework.stereotype.Service
-import org.yapp.apis.seed.dto.response.SeedStatsResponse
+import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
 import org.yapp.domain.readingrecordtag.ReadingRecordTagDomainService
 import org.yapp.globalutils.tag.GeneralEmotionTagCategory
 import java.util.*
 
 @Service
-class SeedService(
+class ReadingRecordTagService(
     private val readingRecordTagDomainService: ReadingRecordTagDomainService
 ) {
-    fun getSeedStatsByUserId(userId: UUID): SeedStatsResponse {
-        val tagStatsVO = readingRecordTagDomainService.countTagsByUserIdAndCategories(
+    fun getSeedStatsByUserIdAndUserBookId(userId: UUID, userBookId: UUID): SeedStatsResponse {
+        val tagStatsVO = readingRecordTagDomainService.countTagsByUserIdAndUserBookIdAndCategories(
             userId = userId,
+            userBookId = userBookId,
             categories = GeneralEmotionTagCategory.entries.map { it.displayName }
         )
 
         return SeedStatsResponse.from(tagStatsVO)
     }
-} 
+}

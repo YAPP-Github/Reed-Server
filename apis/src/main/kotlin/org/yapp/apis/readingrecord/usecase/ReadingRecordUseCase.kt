@@ -6,7 +6,9 @@ import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
+import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
 import org.yapp.apis.readingrecord.service.ReadingRecordService
+import org.yapp.apis.readingrecord.service.ReadingRecordTagService
 import org.yapp.apis.user.service.UserService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.globalutils.annotation.UseCase
@@ -16,6 +18,7 @@ import java.util.*
 @Transactional(readOnly = true)
 class ReadingRecordUseCase(
     private val readingRecordService: ReadingRecordService,
+    private val readingRecordTagService: ReadingRecordTagService,
     private val userService: UserService,
     private val userBookService: UserBookService,
 ) {
@@ -61,5 +64,14 @@ class ReadingRecordUseCase(
             sort = sort,
             pageable = pageable
         )
+    }
+
+    fun getSeedStats(
+        userId: UUID,
+        userBookId: UUID
+    ): SeedStatsResponse {
+        userService.validateUserExists(userId)
+        userBookService.validateUserBookExists(userBookId, userId)
+        return readingRecordTagService.getSeedStatsByUserIdAndUserBookId(userId, userBookId)
     }
 }

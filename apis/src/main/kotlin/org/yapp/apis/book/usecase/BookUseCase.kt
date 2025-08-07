@@ -4,11 +4,10 @@ package org.yapp.apis.book.usecase
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
-import org.yapp.apis.book.dto.request.UserBooksByIsbn13sRequest
 import org.yapp.apis.book.dto.request.*
 import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.apis.book.dto.response.BookSearchResponse
-import org.yapp.apis.book.dto.response.BookSearchResponse.*
+import org.yapp.apis.book.dto.response.BookSearchResponse.BookSummary
 import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.service.BookManagementService
