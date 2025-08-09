@@ -84,13 +84,13 @@ class UserDomainService(
         return UserProfileVO.newInstance(updatedUser)
     }
 
-    fun updateAppleRefreshToken(userId: UUID, refreshToken: String): UserIdentityVO {
+    fun updateAppleRefreshToken(userId: UUID, refreshToken: String): UserAuthVO {
         val user = userRepository.findById(userId)
             ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
 
         val updatedUser = userRepository.save(user.updateAppleRefreshToken(refreshToken))
 
-        return UserIdentityVO.newInstance(updatedUser)
+        return UserAuthVO.newInstance(updatedUser)
     }
 
     fun deleteUser(userId: UUID) {

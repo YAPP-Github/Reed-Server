@@ -1,6 +1,7 @@
 package org.yapp.apis.user.service
 
 import jakarta.validation.Valid
+import org.yapp.apis.user.dto.request.SaveAppleRefreshTokenRequest
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
@@ -44,8 +45,13 @@ class UserAccountService(
         userDomainService.deleteUser(userId)
     }
 
-    fun updateAppleRefreshToken(userId: UUID, refreshToken: String) {
-        userDomainService.updateAppleRefreshToken(userId, refreshToken)
+    fun updateAppleRefreshToken(@Valid saveAppleRefreshTokenRequest: SaveAppleRefreshTokenRequest): CreateUserResponse {
+        val userAuthVO = userDomainService.updateAppleRefreshToken(
+            saveAppleRefreshTokenRequest.validUserId(),
+            saveAppleRefreshTokenRequest.validAppleRefreshToken()
+        )
+
+        return CreateUserResponse.from(userAuthVO)
     }
 
     private fun createNewUser(@Valid findOrCreateUserRequest: FindOrCreateUserRequest): UserAuthVO {

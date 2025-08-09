@@ -1,11 +1,10 @@
-package org.yapp.apis.auth.dto.request
+package org.yapp.apis.user.dto.request
 
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import org.yapp.apis.user.dto.response.CreateUserResponse
-import org.yapp.apis.auth.strategy.signin.AppleAuthCredentials
-import java.util.UUID
+import java.util.*
 
 @Schema(
     name = "SaveAppleRefreshTokenRequest",
@@ -20,30 +19,23 @@ data class SaveAppleRefreshTokenRequest private constructor(
     val userId: UUID? = null,
 
     @Schema(
-        description = "Authorization code from Apple OAuth process",
-        example = "cdef1234-abcd-5678-efgh-9012ijklmnop"
-    )
-    @field:NotBlank(message = "authorizationCode must not be blank")
-    val authorizationCode: String? = null,
-
-    @Schema(
         description = "Apple refresh token, nullable if not issued yet",
         example = "apple-refresh-token-example"
     )
+    @field:NotBlank(message = "appleRefreshToken must not be blank")
     val appleRefreshToken: String? = null
 ) {
     fun validUserId(): UUID = userId!!
-    fun validAuthorizationCode(): String = authorizationCode!!
+    fun validAppleRefreshToken(): String = appleRefreshToken!!
 
     companion object {
         fun of(
             userResponse: CreateUserResponse,
-            credentials: AppleAuthCredentials
+            appleRefreshToken: String
         ): SaveAppleRefreshTokenRequest {
             return SaveAppleRefreshTokenRequest(
                 userId = userResponse.id,
-                authorizationCode = credentials.authorizationCode,
-                appleRefreshToken = userResponse.appleRefreshToken
+                appleRefreshToken = appleRefreshToken
             )
         }
     }

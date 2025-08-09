@@ -4,6 +4,7 @@ import jakarta.validation.Valid
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
+import org.yapp.apis.user.dto.request.SaveAppleRefreshTokenRequest
 import org.yapp.apis.user.dto.response.CreateUserResponse
 import org.yapp.apis.user.service.UserAccountService
 import org.yapp.globalutils.annotation.ApplicationService
@@ -17,12 +18,15 @@ class UserSignInService(
         @Valid request: FindOrCreateUserRequest,
         appleRefreshToken: String?
     ): CreateUserResponse {
-        val createUserResponse = userAccountService.findOrCreateUser(request)
+        val initialUserResponse = userAccountService.findOrCreateUser(request)
 
-        appleRefreshToken?.let {
-            userAccountService.updateAppleRefreshToken(createUserResponse.id, it)
-        }
-
-        return createUserResponse
+        return appleRefreshToken?.let { token ->
+            userAccountService.updateAppleRefreshToken(
+                SaveAppleRefreshTokenRequest.of(
+                    initialUserResponse,
+                    token
+                )
+            )
+        } ?: initialUserResponse
     }
 }
