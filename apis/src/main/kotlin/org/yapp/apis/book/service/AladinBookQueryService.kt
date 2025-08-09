@@ -52,7 +52,7 @@ class AladinBookQueryService(
             title = response.title,
             link = response.link,
             pubDate = response.pubDate,
-            totalResults = filteredItems.size,
+            totalResults = response.totalResults,
             startIndex = response.startIndex,
             itemsPerPage = response.itemsPerPage,
             query = response.query,
