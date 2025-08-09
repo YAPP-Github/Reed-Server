@@ -71,8 +71,10 @@ class AuthUseCase(
 
     private fun fetchAppleRefreshTokenIfNeeded(credentials: SignInCredentials): String? {
         if (credentials is AppleAuthCredentials) {
-            return appleAuthService.fetchAppleOauthTokens(credentials.authorizationCode).refreshToken
+            val tokenResponse = appleAuthService.fetchAppleOauthTokens(credentials.authorizationCode)
+            return tokenResponse.refreshToken
         }
+
         return null
     }
 }
