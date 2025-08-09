@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import org.yapp.apis.book.util.AuthorExtractor
 import org.yapp.apis.book.util.IsbnConverter
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.globalutils.validator.BookDataValidator
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 
 @Schema(
@@ -17,6 +18,12 @@ data class BookSearchResponse private constructor(
 
     @field:Schema(description = "검색 결과 제목", example = "데미안")
     val title: String?,
+
+    @field:Schema(
+        description = "검색 결과 링크",
+        example = "http://www.aladin.co.kr/shop/wsarch.aspx?SearchTarget=Book&query=%EC%95%84%EB%B0%94%EC%9D%98+%ED%95%B4%EB%B0%A9%EC%9D%BC%EC%A7%80&partner=openAPI"
+    )
+    val link: String?,
 
     @field:Schema(description = "출간일", example = "2025-07-30")
     val pubDate: String?,
@@ -51,6 +58,7 @@ data class BookSearchResponse private constructor(
             return BookSearchResponse(
                 version = response.version,
                 title = response.title,
+                link = response.link,
                 pubDate = response.pubDate,
                 totalResults = response.totalResults,
                 startIndex = response.startIndex,
@@ -63,7 +71,6 @@ data class BookSearchResponse private constructor(
                         isbn = it.isbn,
                         isbn13 = it.isbn13,
                         title = it.title,
-                        link = it.link,
                         author = AuthorExtractor.extractAuthors(it.author),
                         publisher = it.publisher,
                         coverImageUrl = it.cover
@@ -81,12 +88,6 @@ data class BookSearchResponse private constructor(
 
         @field:Schema(description = "책 제목", example = "데미안")
         val title: String,
-
-        @field:Schema(
-            description = "검색 결과 상세 페이지 링크",
-            example = "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=367872613&amp;partner=openAPI&amp;start=api"
-        )
-        val link: String?,
 
         @field:Schema(description = "저자", example = "헤르만 헤세")
         val author: String?,
@@ -112,7 +113,6 @@ data class BookSearchResponse private constructor(
                 isbn: String?,
                 isbn13: String?,
                 title: String?,
-                link: String?,
                 author: String?,
                 publisher: String?,
                 coverImageUrl: String
@@ -123,9 +123,8 @@ data class BookSearchResponse private constructor(
                     isbn13 = isbn13 ?: IsbnConverter.toIsbn13(isbn)
                     ?: throw IllegalArgumentException("Either isbn13 or isbn must be provided"),
                     title = title,
-                    link = link,
                     author = author,
-                    publisher = publisher,
+                    publisher = publisher?.let { BookDataValidator.removeParenthesesFromPublisher(it) },
                     coverImageUrl = coverImageUrl,
                     userBookStatus = BookStatus.BEFORE_REGISTRATION
                 )

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import org.yapp.apis.book.util.AuthorExtractor
 import org.yapp.apis.book.util.IsbnConverter
 import org.yapp.domain.userbook.BookStatus
+import org.yapp.globalutils.validator.BookDataValidator
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 
 @Schema(
@@ -86,7 +87,7 @@ data class BookDetailResponse private constructor(
                 isbn13 = isbn13,
                 coverImageUrl = item.cover,
                 categoryName = item.categoryName,
-                publisher = item.publisher ?: "",
+                publisher = item.publisher?.let { BookDataValidator.removeParenthesesFromPublisher(it) } ?: "",
                 totalPage = item.subInfo.itemPage ?: DEFAULT_MAX_PAGE_COUNT,
                 userBookStatus = userBookStatus
             )
