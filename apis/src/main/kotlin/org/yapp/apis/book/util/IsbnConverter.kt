@@ -1,4 +1,4 @@
-package org.yapp.apis.util
+package org.yapp.apis.book.util
 
 import org.yapp.globalutils.util.RegexUtils
 

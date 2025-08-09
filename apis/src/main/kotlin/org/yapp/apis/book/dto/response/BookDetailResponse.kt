@@ -1,7 +1,7 @@
 package org.yapp.apis.book.dto.response
 
-import org.yapp.apis.util.AuthorExtractor
-import org.yapp.apis.util.IsbnConverter
+import org.yapp.apis.book.util.AuthorExtractor
+import org.yapp.apis.book.util.IsbnConverter
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 
