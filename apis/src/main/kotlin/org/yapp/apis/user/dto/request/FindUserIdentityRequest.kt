@@ -10,7 +10,7 @@ import java.util.*
     description = "Request DTO to retrieve user identity information using userId"
 )
 data class FindUserIdentityRequest private constructor(
-    @Schema(
+    @field:Schema(
         description = "User ID (UUID format)",
         example = "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
     )

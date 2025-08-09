@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.yapp.apis.auth.dto.request.SocialLoginRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.AuthResponse
+import org.yapp.globalutils.annotation.DisableSwaggerSecurity
 import org.yapp.globalutils.exception.ErrorResponse
 import java.util.*
 
 @Tag(name = "Authentication", description = "인증 관련 API")
 interface AuthControllerApi {
 
+    @DisableSwaggerSecurity
     @Operation(
         summary = "소셜 로그인",
         description = "카카오 또는 애플 계정으로 로그인합니다. 사용자가 존재하지 않으면 자동으로 회원가입됩니다."
@@ -47,6 +49,7 @@ interface AuthControllerApi {
     @PostMapping("/signin")
     fun signIn(@RequestBody @Valid request: SocialLoginRequest): ResponseEntity<AuthResponse>
 
+    @DisableSwaggerSecurity
     @Operation(
         summary = "토큰 갱신",
         description = "리프레시 토큰을 사용하여 액세스 토큰을 갱신합니다. 새로운 액세스 토큰과 리프레시 토큰을 반환합니다."

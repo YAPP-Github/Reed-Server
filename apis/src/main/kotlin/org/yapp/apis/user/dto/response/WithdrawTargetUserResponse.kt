@@ -11,16 +11,16 @@ import java.util.UUID
 )
 data class WithdrawTargetUserResponse private constructor(
 
-    @Schema(description = "사용자 ID")
+    @field:Schema(description = "사용자 ID")
     val id: UUID,
 
-    @Schema(description = "소셜 로그인 제공사 타입")
+    @field:Schema(description = "소셜 로그인 제공사 타입")
     val providerType: ProviderType,
 
-    @Schema(description = "소셜 제공사로부터 발급받은 고유 ID")
+    @field:Schema(description = "소셜 제공사로부터 발급받은 고유 ID")
     val providerId: String,
 
-    @Schema(description = "Apple Refresh Token (애플 회원 탈퇴 시 필요, 카카오는 null)")
+    @field:Schema(description = "Apple Refresh Token (애플 회원 탈퇴 시 필요, 카카오는 null)")
     val appleRefreshToken: String? = null
 ) {
     companion object {

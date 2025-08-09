@@ -2,17 +2,14 @@ package org.yapp.apis.readingrecord.service
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.domain.readingrecord.ReadingRecordDomainService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
+import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
-
-@Service
-@Validated
+@ApplicationService
 class ReadingRecordService(
     private val readingRecordDomainService: ReadingRecordDomainService,
 ) {

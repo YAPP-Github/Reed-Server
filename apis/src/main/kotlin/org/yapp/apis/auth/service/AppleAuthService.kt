@@ -1,14 +1,12 @@
 package org.yapp.apis.auth.service
 
-import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.manager.AppleApiManager
+import org.yapp.globalutils.annotation.ApplicationService
 import org.yapp.infra.external.oauth.apple.response.AppleTokenResponse
 
-@Service
-@Validated
+@ApplicationService
 class AppleAuthService(
     private val appleApiManager: AppleApiManager,
 ) {

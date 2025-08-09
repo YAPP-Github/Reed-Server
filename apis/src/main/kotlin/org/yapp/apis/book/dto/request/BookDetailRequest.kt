@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern
 import org.yapp.globalutils.util.RegexUtils
 
 @Schema(
-    title = "책 상세 정보 요청",
+    name = "BookDetailRequest",
     description = "특정 ISBN13을 통한 책 상세 정보 조회 요청"
 )
 data class BookDetailRequest private constructor(
@@ -15,7 +15,7 @@ data class BookDetailRequest private constructor(
         regexp = RegexUtils.ISBN13_PATTERN,
         message = "유효한 13자리 ISBN13 형식이 아닙니다."
     )
-    @Schema(
+    @field:Schema(
         description = "조회할 책의 13자리 ISBN 코드",
         example = "9788932473901",
         required = true,

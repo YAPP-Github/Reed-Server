@@ -1,8 +1,6 @@
 package org.yapp.apis.auth.service
 
 import jakarta.validation.Valid
-import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
 import org.yapp.apis.auth.dto.request.DeleteTokenRequest
 import org.yapp.apis.auth.dto.request.GenerateTokenPairRequest
 import org.yapp.apis.auth.dto.request.TokenGenerateRequest
@@ -10,9 +8,9 @@ import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.dto.response.UserIdResponse
 import org.yapp.gateway.jwt.JwtTokenService
+import org.yapp.globalutils.annotation.ApplicationService
 
-@Service
-@Validated
+@ApplicationService
 class AuthTokenService(
     private val refreshTokenService: RefreshTokenService,
     private val jwtTokenService: JwtTokenService

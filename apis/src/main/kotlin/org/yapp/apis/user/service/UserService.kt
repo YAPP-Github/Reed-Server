@@ -1,19 +1,17 @@
 package org.yapp.apis.user.service
 
 import jakarta.validation.Valid
-import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
-import org.yapp.apis.user.dto.request.FindUserIdentityRequest
-import org.yapp.apis.user.dto.response.UserAuthInfoResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
+import org.yapp.apis.user.dto.request.FindUserIdentityRequest
 import org.yapp.apis.user.dto.request.TermsAgreementRequest
+import org.yapp.apis.user.dto.response.UserAuthInfoResponse
 import org.yapp.apis.user.dto.response.UserProfileResponse
 import org.yapp.domain.user.UserDomainService
+import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
-@Service
-@Validated
+@ApplicationService
 class UserService(
     private val userDomainService: UserDomainService
 ) {

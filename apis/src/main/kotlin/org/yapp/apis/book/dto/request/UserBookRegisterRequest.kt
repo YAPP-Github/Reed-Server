@@ -8,7 +8,7 @@ import org.yapp.domain.userbook.BookStatus
 import org.yapp.globalutils.util.RegexUtils
 
 @Schema(
-    title = "사용자 도서 등록 요청",
+    name = "UserBookRegisterRequest",
     description = "사용자의 서재에 도서를 등록하거나 상태를 변경하는 요청"
 )
 data class UserBookRegisterRequest private constructor(
@@ -17,7 +17,7 @@ data class UserBookRegisterRequest private constructor(
         regexp = RegexUtils.ISBN13_PATTERN,
         message = "유효한 13자리 ISBN13 형식이 아닙니다."
     )
-    @Schema(
+    @field:Schema(
         description = "등록할 책의 13자리 ISBN13 코드",
         example = "9788932473901",
         required = true,
@@ -27,7 +27,7 @@ data class UserBookRegisterRequest private constructor(
     val isbn13: String? = null,
 
     @field:NotNull(message = "도서 상태는 필수입니다.")
-    @Schema(
+    @field:Schema(
         description = "사용자의 도서 읽기 상태",
         example = "READING",
         required = true,

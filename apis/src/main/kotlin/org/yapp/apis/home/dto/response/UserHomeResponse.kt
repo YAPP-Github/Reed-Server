@@ -6,10 +6,11 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Schema(
-    description = "사용자 홈 화면 응답 DTO", name = "UserHomeResponse"
+    name = "UserHomeResponse",
+    description = "사용자 홈 화면 응답 DTO"
 )
 data class UserHomeResponse private constructor(
-    @Schema(
+    @field:Schema(
         description = "사용자가 최근에 읽은 책 목록", name = "recentBooks"
     ) val recentBooks: List<RecentBookResponse>
 ) {
@@ -17,42 +18,42 @@ data class UserHomeResponse private constructor(
         description = "최근 읽은 책 한 권의 상세 정보", name = "RecentBookResponse"
     )
     data class RecentBookResponse private constructor(
-        @Schema(
+        @field:Schema(
             description = "사용자 서재에 등록된 책의 고유 ID",
             example = "123e4567-e89b-12d3-a456-426614174000",
         ) val userBookId: UUID,
 
-        @Schema(
+        @field:Schema(
             description = "책의 ISBN-13",
             example = "9788960777330",
         ) val isbn13: String,
 
-        @Schema(
+        @field:Schema(
             description = "책 제목",
             example = "모던 자바스크립트 Deep Dive",
         ) val title: String,
 
-        @Schema(
+        @field:Schema(
             description = "저자",
             example = "이웅모",
         ) val author: String,
 
-        @Schema(
+        @field:Schema(
             description = "출판사",
             example = "위키북스",
         ) val publisher: String,
 
-        @Schema(
+        @field:Schema(
             description = "책 표지 이미지 URL",
             example = "https://image.aladin.co.kr/product/2523/21/cover/8960777330_1.jpg",
         ) val coverImageUrl: String,
 
-        @Schema(
+        @field:Schema(
             description = "마지막 독서 기록 시간",
             example = "2025-08-07T10:00:00",
         ) val lastRecordedAt: LocalDateTime,
 
-        @Schema(
+        @field:Schema(
             description = "해당 책에 대한 총 독서 기록 수",
             example = "12",
         ) val recordCount: Int

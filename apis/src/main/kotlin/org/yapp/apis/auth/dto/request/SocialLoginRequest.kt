@@ -14,7 +14,7 @@ import org.yapp.domain.user.ProviderType
     description = "DTO for social login requests"
 )
 data class SocialLoginRequest private constructor(
-    @Schema(
+    @field:Schema(
         description = "Type of social login provider",
         example = "KAKAO",
         required = true
@@ -22,7 +22,7 @@ data class SocialLoginRequest private constructor(
     @field:NotBlank(message = "Provider type is required")
     val providerType: String? = null,
 
-    @Schema(
+    @field:Schema(
         description = "OAuth token issued by the social provider",
         example = "eyJ...",
         required = true
@@ -30,7 +30,7 @@ data class SocialLoginRequest private constructor(
     @field:NotBlank(message = "OAuth token is required")
     val oauthToken: String? = null,
 
-    @Schema(
+    @field:Schema(
         description = "Authorization code used to issue Apple access/refresh tokens (required only for Apple login)",
         example = "c322a426...",
         required = false

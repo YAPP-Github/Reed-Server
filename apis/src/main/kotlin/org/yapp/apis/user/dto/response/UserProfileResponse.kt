@@ -11,31 +11,31 @@ import java.util.UUID
 )
 data class UserProfileResponse(
 
-    @Schema(
+    @field:Schema(
         description = "Unique identifier of the user",
         example = "c4d46ff7-9f1b-4c5f-8262-9fa2f982a7f4"
     )
     val id: UUID,
 
-    @Schema(
+    @field:Schema(
         description = "User email address",
         example = "user@example.com"
     )
     val email: String,
 
-    @Schema(
+    @field:Schema(
         description = "User nickname",
         example = "HappyPanda"
     )
     val nickname: String,
 
-    @Schema(
+    @field:Schema(
         description = "Social login provider type",
         example = "KAKAO"
     )
     val provider: ProviderType,
 
-    @Schema(
+    @field:Schema(
         description = "Whether the user has agreed to the terms of service",
         example = "false"
     )

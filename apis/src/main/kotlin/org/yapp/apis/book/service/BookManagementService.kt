@@ -1,14 +1,12 @@
 package org.yapp.apis.book.service
 
 import jakarta.validation.Valid
-import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
 import org.yapp.apis.book.dto.request.BookCreateRequest
 import org.yapp.apis.book.dto.response.BookCreateResponse
 import org.yapp.domain.book.BookDomainService
+import org.yapp.globalutils.annotation.ApplicationService
 
-@Service
-@Validated
+@ApplicationService
 class BookManagementService(
     private val bookDomainService: BookDomainService
 ) {

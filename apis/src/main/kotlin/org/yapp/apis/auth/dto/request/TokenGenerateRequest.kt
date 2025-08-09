@@ -11,15 +11,15 @@ import java.util.*
 )
 data class TokenGenerateRequest private constructor(
     @field:NotNull(message = "userId must not be null")
-    @Schema(description = "User ID", example = "f6b7d490-1b1a-4b9f-8e8e-27f8e3a5dafa")
+    @field:Schema(description = "User ID", example = "f6b7d490-1b1a-4b9f-8e8e-27f8e3a5dafa")
     val userId: UUID? = null,
 
     @field:NotBlank(message = "refreshToken must not be blank")
-    @Schema(description = "Generated refresh token", example = "eyJhbGciOiJIUzI1NiIsInR...")
+    @field:Schema(description = "Generated refresh token", example = "eyJhbGciOiJIUzI1NiIsInR...")
     val refreshToken: String? = null,
 
     @field:NotNull(message = "expiration must not be null")
-    @Schema(description = "Refresh token expiration time (in seconds)", example = "2592000")
+    @field:Schema(description = "Refresh token expiration time (in seconds)", example = "2592000")
     val expiration: Long? = null
 ) {
     fun validUserId() = userId!!

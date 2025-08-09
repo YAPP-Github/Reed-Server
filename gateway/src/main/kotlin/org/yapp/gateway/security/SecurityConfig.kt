@@ -49,9 +49,6 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers(*WHITELIST_URLS).permitAll()
                 it.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                it.requestMatchers("/api/v1/user/**").hasAnyRole("USER", "ADMIN")
-                it.requestMatchers("/api/v1/auth/**").authenticated()
-                it.requestMatchers("/api/v1/books/**").authenticated()
                 it.anyRequest().authenticated()
             }
 

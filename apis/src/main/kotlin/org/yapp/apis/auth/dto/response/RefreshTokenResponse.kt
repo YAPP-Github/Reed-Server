@@ -8,7 +8,7 @@ import org.yapp.domain.token.RefreshToken.Token
     description = "Response DTO containing the issued refresh token"
 )
 data class RefreshTokenResponse(
-    @Schema(description = "The refresh token string", example = "eyJhbGciOiJIUz...")
+    @field:Schema(description = "The refresh token string", example = "eyJhbGciOiJIUz...")
     val refreshToken: String
 ) {
     companion object {

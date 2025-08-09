@@ -3,10 +3,8 @@ package org.yapp.apis.book.service
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
-import org.yapp.apis.book.dto.request.UserBooksByIsbn13sRequest
 import org.yapp.apis.book.dto.request.UpsertUserBookRequest
+import org.yapp.apis.book.dto.request.UserBooksByIsbn13sRequest
 import org.yapp.apis.book.dto.response.UserBookPageResponse
 import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.exception.UserBookErrorCode
@@ -14,10 +12,10 @@ import org.yapp.apis.book.exception.UserBookException
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookDomainService
 import org.yapp.domain.userbook.UserBookSortType
+import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
-@Service
-@Validated
+@ApplicationService
 class UserBookService(
     private val userBookDomainService: UserBookDomainService
 ) {

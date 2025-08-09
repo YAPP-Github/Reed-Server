@@ -1,4 +1,4 @@
-package org.yapp.apis.util
+package org.yapp.apis.book.util
 
 object AuthorExtractor {
     private const val AUTHOR_MARKER = "(지은이)"

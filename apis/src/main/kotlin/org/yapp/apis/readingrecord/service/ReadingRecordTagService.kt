@@ -1,12 +1,12 @@
 package org.yapp.apis.readingrecord.service
 
-import org.springframework.stereotype.Service
 import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
 import org.yapp.domain.readingrecordtag.ReadingRecordTagDomainService
+import org.yapp.globalutils.annotation.ApplicationService
 import org.yapp.globalutils.tag.GeneralEmotionTagCategory
 import java.util.*
 
-@Service
+@ApplicationService
 class ReadingRecordTagService(
     private val readingRecordTagDomainService: ReadingRecordTagDomainService
 ) {
