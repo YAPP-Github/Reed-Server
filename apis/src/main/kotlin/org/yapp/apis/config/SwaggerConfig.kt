@@ -11,6 +11,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.AnnotatedElementUtils
+import org.springframework.core.annotation.Order
 import org.yapp.globalutils.annotation.DisableSwaggerSecurity
 
 @Configuration
@@ -54,13 +57,25 @@ class SwaggerConfig(
     }
 
     @Bean
+    @Order(Ordered.LOWEST_PRECEDENCE)
     fun securityOperationCustomizer(): OperationCustomizer {
         return OperationCustomizer { operation, handlerMethod ->
-            val disableSwaggerSecurity: DisableSwaggerSecurity? =
-                handlerMethod.getMethodAnnotation(DisableSwaggerSecurity::class.java)
+            val method = handlerMethod.method
+            val hasOnMethod = AnnotatedElementUtils
+                .findMergedAnnotation(method, DisableSwaggerSecurity::class.java) != null
 
-            if (disableSwaggerSecurity != null) {
-                operation.security = listOf()
+            val hasOnInterface = if (!hasOnMethod) {
+                handlerMethod.beanType.interfaces
+                    .flatMap { it.methods.asIterable() }
+                    .any { ifaceMethod ->
+                        ifaceMethod.name == method.name &&
+                                ifaceMethod.parameterTypes.contentEquals(method.parameterTypes) &&
+                                ifaceMethod.isAnnotationPresent(DisableSwaggerSecurity::class.java)
+                    }
+            } else false
+
+            if (hasOnMethod || hasOnInterface) {
+                operation.security = emptyList()
             }
 
             operation
