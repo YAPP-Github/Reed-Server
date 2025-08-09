@@ -46,7 +46,7 @@ data class UserBookResponse private constructor(
     @Schema(description = "수정 일시 (ISO_LOCAL_DATE_TIME 형식)", example = "2025-08-10T10:15:30")
     val updatedAt: String,
 
-    @Schema(description = "독서 기록 개수", example = "15")
+    @Schema(description = "독서 기록 개수", example = "15", minimum = "0")
     val recordCount: Int,
 ) {
     companion object {
