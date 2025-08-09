@@ -12,7 +12,7 @@ data class SeedStatsResponse private constructor(
 
     @field:Schema(
         description = "각 감정 카테고리의 통계 리스트",
-        example = "[{\"name\":\"따뜻함\",\"count\":3},{\"name\":\"즐거움\",\"count\":1}]"
+        example = "[{\"name\":\"따뜻함\",\"count\":3},{\"name\":\"즐거움\",\"count\":1},{\"name\":\"슬픔\",\"count\":0},{\"name\":\"깨달음\",\"count\":0}]"
     )
     val categories: List<SeedCategoryStats>
 ) {
