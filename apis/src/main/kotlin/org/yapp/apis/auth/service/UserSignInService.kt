@@ -15,18 +15,17 @@ class UserSignInService(
 ) {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun processSignIn(
-        @Valid request: FindOrCreateUserRequest,
-        appleRefreshToken: String?
+        @Valid request: FindOrCreateUserRequest, appleRefreshToken: String?
     ): CreateUserResponse {
         val initialUserResponse = userAccountService.findOrCreateUser(request)
 
-        return appleRefreshToken?.let { token ->
-            userAccountService.updateAppleRefreshToken(
-                SaveAppleRefreshTokenRequest.of(
-                    initialUserResponse,
-                    token
+        return appleRefreshToken.takeIf { !it.isNullOrBlank() }
+            ?.let { token ->
+                userAccountService.updateAppleRefreshToken(
+                    SaveAppleRefreshTokenRequest.of(
+                        initialUserResponse, token
+                    )
                 )
-            )
-        } ?: initialUserResponse
+            } ?: initialUserResponse
     }
 }
