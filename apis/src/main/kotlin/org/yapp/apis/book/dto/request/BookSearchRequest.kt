@@ -11,14 +11,14 @@ import jakarta.validation.constraints.NotBlank
 )
 data class BookSearchRequest private constructor(
     @field:NotBlank(message = "검색어는 필수입니다.")
-    @Schema(
+    @field:Schema(
         description = "검색할 키워드 (제목, 저자, 출판사 등)",
         example = "해리포터",
         required = true
     )
     val query: String? = null,
 
-    @Schema(
+    @field:Schema(
         description = "검색 유형",
         example = "Title",
         allowableValues = ["Title", "Author", "Publisher", "Keyword"],
@@ -26,7 +26,7 @@ data class BookSearchRequest private constructor(
     )
     val queryType: String? = null,
 
-    @Schema(
+    @field:Schema(
         description = "검색 대상",
         example = "Book",
         allowableValues = ["Book", "Foreign", "Music", "DVD"],
@@ -36,7 +36,7 @@ data class BookSearchRequest private constructor(
 
     @field:Min(value = 1, message = "최대 결과 수는 1 이상이어야 합니다.")
     @field:Max(value = 100, message = "최대 결과 수는 100 이하여야 합니다.")
-    @Schema(
+    @field:Schema(
         description = "한 번에 가져올 최대 결과 수 (1-100)",
         example = "10",
         minimum = "1",
@@ -46,7 +46,7 @@ data class BookSearchRequest private constructor(
     val maxResults: Int? = null,
 
     @field:Min(value = 1, message = "시작 인덱스는 1 이상이어야 합니다.")
-    @Schema(
+    @field:Schema(
         description = "검색 시작 인덱스 (페이징)",
         example = "1",
         minimum = "1",
@@ -54,7 +54,7 @@ data class BookSearchRequest private constructor(
     )
     val start: Int? = null,
 
-    @Schema(
+    @field:Schema(
         description = "정렬 방식",
         example = "Accuracy",
         allowableValues = ["Accuracy", "PublishTime", "Title", "SalesPoint"],
@@ -62,7 +62,7 @@ data class BookSearchRequest private constructor(
     )
     val sort: String? = null,
 
-    @Schema(
+    @field:Schema(
         description = "카테고리 ID (0: 전체)",
         example = "0",
         defaultValue = "0"

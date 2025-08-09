@@ -12,14 +12,14 @@ import java.util.UUID
     description = "Request DTO to generate a new pair of access and refresh tokens"
 )
 data class GenerateTokenPairRequest private constructor(
-    @Schema(
+    @field:Schema(
         description = "User ID",
         example = "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
     )
     @field:NotNull(message = "userId must not be null")
     val userId: UUID? = null,
 
-    @Schema(
+    @field:Schema(
         description = "User role",
         example = "USER"
     )

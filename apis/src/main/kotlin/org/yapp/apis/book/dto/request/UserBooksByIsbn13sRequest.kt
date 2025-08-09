@@ -10,14 +10,14 @@ import java.util.UUID
     description = "Request DTO for finding user books by user ID and a list of ISBN13s"
 )
 data class UserBooksByIsbn13sRequest private constructor(
-    @Schema(
+    @field:Schema(
         description = "사용자 ID",
         example = "1"
     )
     @field:NotNull(message = "userId는 필수입니다.")
     val userId: UUID? = null,
 
-    @Schema(
+    @field:Schema(
         description = "도서 ISBN 목록",
         example = "[\"9788966262429\", \"9791190412351\"]"
     )

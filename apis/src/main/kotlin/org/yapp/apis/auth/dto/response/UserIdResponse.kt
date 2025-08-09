@@ -9,7 +9,7 @@ import java.util.*
     description = "Response DTO that contains the user ID extracted from a refresh token"
 )
 data class UserIdResponse(
-    @Schema(description = "User ID", example = "a1b2c3d4-e5f6-7890-1234-56789abcdef0")
+    @field:Schema(description = "User ID", example = "a1b2c3d4-e5f6-7890-1234-56789abcdef0")
     val userId: UUID
 ) {
     companion object {

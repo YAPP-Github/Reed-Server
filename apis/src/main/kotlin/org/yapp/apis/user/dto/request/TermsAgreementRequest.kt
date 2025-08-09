@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull
     description = "Request to update terms agreement status"
 )
 data class TermsAgreementRequest private constructor(
-    @Schema(
+    @field:Schema(
         description = "Whether the user agrees to the terms of service",
         example = "true",
         required = true

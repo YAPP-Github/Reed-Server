@@ -10,7 +10,7 @@ import org.yapp.globalutils.tag.GeneralEmotionTagCategory
 )
 data class SeedStatsResponse private constructor(
 
-    @Schema(
+    @field:Schema(
         description = "각 감정 카테고리의 통계 리스트",
         example = "[{\"name\":\"따뜻함\",\"count\":3},{\"name\":\"즐거움\",\"count\":1}]"
     )
@@ -23,15 +23,16 @@ data class SeedStatsResponse private constructor(
     )
     data class SeedCategoryStats private constructor(
 
-        @Schema(
+        @field:Schema(
             description = "감정 카테고리 이름",
             example = "따뜻함"
         )
         val name: String,
 
-        @Schema(
+        @field:Schema(
             description = "해당 감정 카테고리의 씨앗 개수",
-            example = "3"
+            example = "3",
+            minimum = "0"
         )
         val count: Int
     ) {

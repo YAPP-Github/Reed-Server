@@ -11,14 +11,14 @@ import java.util.*
     description = "Request DTO for saving Apple refresh token with user ID and authorization code"
 )
 data class SaveAppleRefreshTokenRequest private constructor(
-    @Schema(
+    @field:Schema(
         description = "Unique identifier of the user",
         example = "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
     )
     @field:NotNull(message = "userId must not be null")
     val userId: UUID? = null,
 
-    @Schema(
+    @field:Schema(
         description = "Apple refresh token, nullable if not issued yet",
         example = "apple-refresh-token-example"
     )

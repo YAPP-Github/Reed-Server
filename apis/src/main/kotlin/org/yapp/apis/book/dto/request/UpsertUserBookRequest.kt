@@ -16,7 +16,7 @@ import java.util.UUID
 )
 data class UpsertUserBookRequest private constructor(
     @field:NotNull(message = "사용자 ID는 필수입니다.")
-    @Schema(
+    @field:Schema(
         description = "사용자 고유 식별자",
         example = "550e8400-e29b-41d4-a716-446655440000",
         required = true,
@@ -25,7 +25,7 @@ data class UpsertUserBookRequest private constructor(
     val userId: UUID? = null,
 
     @field:NotNull(message = "책 ID는 필수입니다.")
-    @Schema(
+    @field:Schema(
         description = "책 고유 식별자",
         example = "550e8400-e29b-41d4-a716-446655440001",
         required = true,
@@ -38,7 +38,7 @@ data class UpsertUserBookRequest private constructor(
         regexp = RegexUtils.ISBN13_PATTERN,
         message = "유효한 13자리 ISBN13 형식이 아닙니다."
     )
-    @Schema(
+    @field:Schema(
         description = "책의 13자리 ISBN13 코드",
         example = "9788932473901",
         required = true,
@@ -49,7 +49,7 @@ data class UpsertUserBookRequest private constructor(
 
     @field:NotBlank(message = "책 제목은 필수입니다.")
     @field:Size(max = 500, message = "책 제목은 500자 이내여야 합니다.")
-    @Schema(
+    @field:Schema(
         description = "책 제목",
         example = "해리 포터와 마법사의 돌",
         required = true,
@@ -59,7 +59,7 @@ data class UpsertUserBookRequest private constructor(
 
     @field:NotBlank(message = "저자는 필수입니다.")
     @field:Size(max = 200, message = "저자는 200자 이내여야 합니다.")
-    @Schema(
+    @field:Schema(
         description = "저자명",
         example = "J.K. 롤링",
         required = true,
@@ -69,7 +69,7 @@ data class UpsertUserBookRequest private constructor(
 
     @field:NotBlank(message = "출판사는 필수입니다.")
     @field:Size(max = 200, message = "출판사는 200자 이내여야 합니다.")
-    @Schema(
+    @field:Schema(
         description = "출판사명",
         example = "문학수첩",
         required = true,
@@ -79,7 +79,7 @@ data class UpsertUserBookRequest private constructor(
 
     @field:NotBlank(message = "표지 이미지 URL은 필수입니다.")
     @field:Size(max = 2048, message = "표지 이미지 URL은 2048자 이내여야 합니다.")
-    @Schema(
+    @field:Schema(
         description = "책 표지 이미지 URL",
         example = "https://image.aladin.co.kr/product/123/45/cover/1234567890123.jpg",
         required = true,
@@ -89,7 +89,7 @@ data class UpsertUserBookRequest private constructor(
     val bookCoverImageUrl: String? = null,
 
     @field:NotNull(message = "도서 상태는 필수입니다.")
-    @Schema(
+    @field:Schema(
         description = "사용자의 도서 읽기 상태",
         example = "READING",
         required = true,

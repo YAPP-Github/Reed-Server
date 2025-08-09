@@ -12,33 +12,33 @@ import org.yapp.domain.user.ProviderType
     description = "Request DTO for finding an existing user or creating a new one during social login"
 )
 data class FindOrCreateUserRequest private constructor(
-    @Schema(
+    @field:Schema(
         description = "사용자 이메일",
         example = "user@example.com", nullable = true)
     val email: String? = null,
 
-    @Schema(
+    @field:Schema(
         description = "사용자 닉네임",
         example = "코딩하는곰",
         nullable = true
     )
     val nickname: String? = null,
 
-    @Schema(
+    @field:Schema(
         description = "사용자 프로필 이미지 URL",
         example = "https://example.com/image.jpg",
         nullable = true
     )
     val profileImageUrl: String? = null,
 
-    @Schema(
+    @field:Schema(
         description = "소셜 로그인 제공자",
         example = "KAKAO"
     )
     @field:NotNull(message = "providerType은 필수입니다.")
     val providerType: ProviderType? = null,
 
-    @Schema(
+    @field:Schema(
         description = "소셜 제공자에서 발급한 식별자",
         example = "12345678901234567890"
     )

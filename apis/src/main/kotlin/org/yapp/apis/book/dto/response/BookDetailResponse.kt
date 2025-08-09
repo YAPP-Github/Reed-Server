@@ -12,49 +12,49 @@ import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 )
 data class BookDetailResponse private constructor(
 
-    @Schema(description = "알라딘 API 응답 버전", example = "20131101")
+    @field:Schema(description = "알라딘 API 응답 버전", example = "20131101")
     val version: String?,
 
-    @Schema(description = "책 제목", example = "데미안")
+    @field:Schema(description = "책 제목", example = "데미안")
     val title: String,
 
-    @Schema(
+    @field:Schema(
         description = "검색 결과 상세 페이지 링크",
         example = "https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=368017530&amp;partner=openAPI"
     )
     val link: String,
 
-    @Schema(description = "저자", example = "헤르만 헤세")
+    @field:Schema(description = "저자", example = "헤르만 헤세")
     val author: String?,
 
-    @Schema(description = "출간일", example = "2025-07-30")
+    @field:Schema(description = "출간일", example = "2025-07-30")
     val pubDate: String,
 
-    @Schema(description = "책 설명", example = "인간의 성장과 자아 탐구를 다룬 소설")
+    @field:Schema(description = "책 설명", example = "인간의 성장과 자아 탐구를 다룬 소설")
     val description: String,
 
-    @Schema(description = "ISBN-13 번호", example = "9791164053353")
+    @field:Schema(description = "ISBN-13 번호", example = "9791164053353")
     val isbn13: String?,
 
-    @Schema(description = "쇼핑몰 타입", example = "BOOK")
+    @field:Schema(description = "쇼핑몰 타입", example = "BOOK")
     val mallType: String,
 
-    @Schema(
+    @field:Schema(
         description = "책 표지 이미지 URL",
         example = "https://image.aladin.co.kr/product/36801/75/coversum/k692030806_1.jpg"
     )
     val coverImageUrl: String,
 
-    @Schema(description = "카테고리명", example = "국내도서>소설/시/희곡>독일소설")
+    @field:Schema(description = "카테고리명", example = "국내도서>소설/시/희곡>독일소설")
     val categoryName: String,
 
-    @Schema(description = "출판사", example = "북하우스")
+    @field:Schema(description = "출판사", example = "북하우스")
     val publisher: String?,
 
-    @Schema(description = "총 페이지 수", example = "344")
+    @field:Schema(description = "총 페이지 수", example = "344")
     val totalPage: Int?,
 
-    @Schema(description = "사용자의 책 상태", example = "BEFORE_REGISTRATION")
+    @field:Schema(description = "사용자의 책 상태", example = "BEFORE_REGISTRATION")
     val userBookStatus: BookStatus
 ) {
     fun withUserBookStatus(newUserBookStatus: BookStatus): BookDetailResponse {

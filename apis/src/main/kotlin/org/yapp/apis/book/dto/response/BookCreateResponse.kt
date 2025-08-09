@@ -10,22 +10,22 @@ import java.util.UUID
 )
 data class BookCreateResponse private constructor(
 
-    @Schema(description = "등록된 책의 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
+    @field:Schema(description = "등록된 책의 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
     val bookId: UUID,
 
-    @Schema(description = "ISBN-13 번호", example = "9791164053353")
+    @field:Schema(description = "ISBN-13 번호", example = "9791164053353")
     val isbn13: String,
 
-    @Schema(description = "책 제목", example = "데미안")
+    @field:Schema(description = "책 제목", example = "데미안")
     val title: String,
 
-    @Schema(description = "저자", example = "헤르만 헤세")
+    @field:Schema(description = "저자", example = "헤르만 헤세")
     val author: String,
 
-    @Schema(description = "출판사", example = "북하우스")
+    @field:Schema(description = "출판사", example = "북하우스")
     val publisher: String,
 
-    @Schema(description = "책 표지 이미지 URL", example = "https://image.aladin.co.kr/product/36801/75/coversum/k692030806_1.jpg")
+    @field:Schema(description = "책 표지 이미지 URL", example = "https://image.aladin.co.kr/product/36801/75/coversum/k692030806_1.jpg")
     val coverImageUrl: String
 ) {
     companion object {

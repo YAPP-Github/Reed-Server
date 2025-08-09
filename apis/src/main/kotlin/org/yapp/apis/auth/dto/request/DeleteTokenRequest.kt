@@ -10,7 +10,7 @@ import org.yapp.apis.auth.dto.response.RefreshTokenResponse
 )
 data class DeleteTokenRequest private constructor(
     @field:NotBlank(message = "Refresh token must not be blank.")
-    @Schema(description = "Refresh token to be deleted", example = "eyJhbGciOiJIUz...")
+    @field:Schema(description = "Refresh token to be deleted", example = "eyJhbGciOiJIUz...")
     val refreshToken: String? = null
 ) {
     fun validRefreshToken() = refreshToken!!

@@ -15,7 +15,7 @@ data class BookDetailRequest private constructor(
         regexp = RegexUtils.ISBN13_PATTERN,
         message = "유효한 13자리 ISBN13 형식이 아닙니다."
     )
-    @Schema(
+    @field:Schema(
         description = "조회할 책의 13자리 ISBN 코드",
         example = "9788932473901",
         required = true,

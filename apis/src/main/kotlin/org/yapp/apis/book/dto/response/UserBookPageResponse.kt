@@ -9,22 +9,19 @@ import org.springframework.data.domain.Page
 )
 data class UserBookPageResponse private constructor(
 
-    @Schema(
-        description = "페이징된 책 목록",
-        implementation = UserBookResponse::class
-    )
+    @field:Schema(description = "페이징된 책 목록")
     val books: Page<UserBookResponse>,
 
-    @Schema(description = "읽기 전 상태의 책 개수", example = "5")
+    @field:Schema(description = "읽기 전 상태의 책 개수", example = "5")
     val beforeReadingCount: Long,
 
-    @Schema(description = "현재 읽고 있는 책 개수", example = "3")
+    @field:Schema(description = "현재 읽고 있는 책 개수", example = "3")
     val readingCount: Long,
 
-    @Schema(description = "완독한 책 개수", example = "10")
+    @field:Schema(description = "완독한 책 개수", example = "10")
     val completedCount: Long,
 
-    @Schema(description = "전체 책 개수", example = "18")
+    @field:Schema(description = "전체 책 개수", example = "18")
     val totalCount: Long
 ) {
     companion object {

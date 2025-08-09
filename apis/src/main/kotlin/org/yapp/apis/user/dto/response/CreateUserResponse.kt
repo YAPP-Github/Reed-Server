@@ -10,19 +10,19 @@ import java.util.*
     description = "Response DTO returned after successful user registration"
 )
 data class CreateUserResponse private constructor(
-    @Schema(
+    @field:Schema(
         description = "사용자 ID",
         example = "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
     )
     val id: UUID,
 
-    @Schema(
+    @field:Schema(
         description = "사용자 역할",
         example = "USER"
     )
     val role: Role,
 
-    @Schema(
+    @field:Schema(
         description = "Apple Refresh Token (Apple 유저인 경우에만 존재)",
         nullable = true
     )

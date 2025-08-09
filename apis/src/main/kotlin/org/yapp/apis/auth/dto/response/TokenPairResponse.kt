@@ -8,13 +8,13 @@ import io.swagger.v3.oas.annotations.media.Schema
 )
 data class TokenPairResponse private constructor(
 
-    @Schema(
+    @field:Schema(
         description = "Access token for user authorization",
         example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
     )
     val accessToken: String,
 
-    @Schema(
+    @field:Schema(
         description = "Refresh token to get new access token",
         example = "dGhpc2lzYXJlZnJlc2h0b2tlbg=="
     )
