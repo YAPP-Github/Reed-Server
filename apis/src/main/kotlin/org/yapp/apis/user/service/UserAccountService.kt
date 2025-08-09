@@ -1,8 +1,6 @@
 package org.yapp.apis.user.service
 
 import jakarta.validation.Valid
-import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
@@ -10,10 +8,10 @@ import org.yapp.apis.user.dto.response.CreateUserResponse
 import org.yapp.apis.user.dto.response.WithdrawTargetUserResponse
 import org.yapp.domain.user.UserDomainService
 import org.yapp.domain.user.vo.UserAuthVO
+import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
-@Service
-@Validated
+@ApplicationService
 class UserAccountService(
     private val userDomainService: UserDomainService
 ) {

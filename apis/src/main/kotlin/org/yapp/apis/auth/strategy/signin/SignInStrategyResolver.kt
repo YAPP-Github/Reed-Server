@@ -1,10 +1,10 @@
 package org.yapp.apis.auth.strategy.signin
 
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Component
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 
-@Service
+@Component
 class SignInStrategyResolver(
     private val strategies: List<SignInStrategy>
 ) {

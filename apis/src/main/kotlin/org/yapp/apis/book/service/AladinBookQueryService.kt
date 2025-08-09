@@ -1,8 +1,6 @@
 package org.yapp.apis.book.service
 
 import mu.KotlinLogging
-import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
 import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
 import org.yapp.apis.book.dto.response.BookDetailResponse
@@ -10,6 +8,7 @@ import org.yapp.apis.book.dto.response.BookSearchResponse
 import org.yapp.apis.book.exception.BookErrorCode
 import org.yapp.apis.book.exception.BookException
 import org.yapp.apis.book.util.IsbnConverter
+import org.yapp.globalutils.annotation.ApplicationService
 import org.yapp.globalutils.validator.IsbnValidator
 import org.yapp.infra.external.aladin.AladinApi
 import org.yapp.infra.external.aladin.request.AladinBookLookupRequest
@@ -18,8 +17,7 @@ import org.yapp.infra.external.aladin.response.AladinBookDetailResponse
 import org.yapp.infra.external.aladin.response.AladinSearchItem
 import org.yapp.infra.external.aladin.response.AladinSearchResponse
 
-@Service
-@Validated
+@ApplicationService
 class AladinBookQueryService(
     private val aladinApi: AladinApi
 ) : BookQueryService {

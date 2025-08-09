@@ -1,14 +1,14 @@
 package org.yapp.apis.auth.service
 
 import jakarta.validation.Valid
-import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
 import org.yapp.apis.user.dto.response.CreateUserResponse
 import org.yapp.apis.user.service.UserAccountService
+import org.yapp.globalutils.annotation.ApplicationService
 
-@Service
+@ApplicationService
 class UserSignInService(
     private val userAccountService: UserAccountService,
 ) {

@@ -1,17 +1,15 @@
 package org.yapp.apis.auth.service
 
 import jakarta.validation.Valid
-import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
 import org.yapp.apis.auth.dto.request.TokenGenerateRequest
 import org.yapp.apis.auth.dto.request.TokenRefreshRequest
 import org.yapp.apis.auth.dto.response.RefreshTokenResponse
 import org.yapp.apis.auth.dto.response.UserIdResponse
 import org.yapp.domain.token.RefreshTokenDomainService
+import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
-@Service
-@Validated
+@ApplicationService
 class RefreshTokenService(
     private val refreshTokenDomainService: RefreshTokenDomainService,
 ) {

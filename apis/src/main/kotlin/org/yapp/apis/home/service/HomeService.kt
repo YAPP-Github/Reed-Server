@@ -1,12 +1,12 @@
 package org.yapp.apis.home.service
 
-import org.springframework.stereotype.Service
 import org.yapp.apis.home.dto.response.UserHomeResponse
 import org.yapp.domain.userbook.UserBookDomainService
 import org.yapp.domain.userbook.vo.HomeBookVO
+import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
-@Service
+@ApplicationService
 class HomeService(
     private val userBookDomainService: UserBookDomainService
 ) {
