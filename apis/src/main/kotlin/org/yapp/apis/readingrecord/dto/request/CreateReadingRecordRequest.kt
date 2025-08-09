@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
 @Schema(
+    name = "CreateReadingRecordRequest",
     description = "독서 기록 생성 요청",
     example = """
         {

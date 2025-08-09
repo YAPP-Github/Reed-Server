@@ -8,7 +8,7 @@ import org.yapp.domain.userbook.BookStatus
 import org.yapp.globalutils.util.RegexUtils
 
 @Schema(
-    title = "사용자 도서 등록 요청",
+    name = "UserBookRegisterRequest",
     description = "사용자의 서재에 도서를 등록하거나 상태를 변경하는 요청"
 )
 data class UserBookRegisterRequest private constructor(

@@ -11,7 +11,7 @@ import org.yapp.globalutils.util.RegexUtils
 import java.util.UUID
 
 @Schema(
-    title = "사용자 도서 생성/수정 요청",
+    name = "UpsertUserBookRequest",
     description = "사용자 서재에 도서를 생성하거나 기존 도서 정보를 수정하는 내부 API 요청 (주로 내부 서비스에서 사용)"
 )
 data class UpsertUserBookRequest private constructor(

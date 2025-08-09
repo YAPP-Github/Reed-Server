@@ -6,7 +6,10 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 
-@Schema(description = "독서 기록 응답")
+@Schema(
+    name = "ReadingRecordResponse",
+    description = "독서 기록 응답"
+)
 data class ReadingRecordResponse private constructor(
     @Schema(description = "독서 기록 ID", example = "123e4567-e89b-12d3-a456-426614174000")
     val id: UUID,

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern
 import org.yapp.globalutils.util.RegexUtils
 
 @Schema(
-    title = "책 상세 정보 요청",
+    name = "BookDetailRequest",
     description = "특정 ISBN13을 통한 책 상세 정보 조회 요청"
 )
 data class BookDetailRequest private constructor(

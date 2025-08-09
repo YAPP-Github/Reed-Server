@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 
 @Schema(
-    title = "책 검색 요청",
+    name = "BookSearchRequest",
     description = "알라딘 API를 통한 책 검색 요청 정보"
 )
 data class BookSearchRequest private constructor(

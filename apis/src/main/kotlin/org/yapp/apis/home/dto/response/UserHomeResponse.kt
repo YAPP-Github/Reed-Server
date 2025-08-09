@@ -6,7 +6,8 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Schema(
-    description = "사용자 홈 화면 응답 DTO", name = "UserHomeResponse"
+    name = "UserHomeResponse",
+    description = "사용자 홈 화면 응답 DTO"
 )
 data class UserHomeResponse private constructor(
     @Schema(

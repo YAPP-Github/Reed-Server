@@ -6,7 +6,7 @@ import org.yapp.apis.book.dto.response.BookDetailResponse
 import org.yapp.globalutils.util.RegexUtils
 
 @Schema(
-    title = "책 생성 요청",
+    name = "BookCreateRequest",
     description = "시스템에 새로운 책 정보를 생성하는 요청 (주로 내부 API에서 사용)"
 )
 data class BookCreateRequest private constructor(
