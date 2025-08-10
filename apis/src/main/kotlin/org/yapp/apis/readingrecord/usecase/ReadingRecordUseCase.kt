@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
+import org.yapp.apis.readingrecord.dto.response.ReadingRecordPageResponse // Added import
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
 import org.yapp.apis.readingrecord.service.ReadingRecordService
@@ -55,15 +56,16 @@ class ReadingRecordUseCase(
         userBookId: UUID,
         sort: ReadingRecordSortType?,
         pageable: Pageable
-    ): Page<ReadingRecordResponse> {
+    ): ReadingRecordPageResponse {
         userService.validateUserExists(userId)
         userBookService.validateUserBookExists(userBookId, userId)
 
-        return readingRecordService.getReadingRecordsByDynamicCondition(
+        val page = readingRecordService.getReadingRecordsByDynamicCondition( // Stored in a variable
             userBookId = userBookId,
             sort = sort,
             pageable = pageable
         )
+        return ReadingRecordPageResponse.from(page) // Converted to new DTO
     }
 
     fun getSeedStats(

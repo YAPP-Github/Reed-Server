@@ -50,19 +50,32 @@ class AladinBookQueryService(
             validIsbn13?.let { item.copy(isbn13 = it) }
         }
 
+        val cappedTotalResults = minOf(response.totalResults ?: 0, 200)
+        val currentFetchedCount = (request.start ?: 1) * (response.itemsPerPage ?: 0)
+
+        if (currentFetchedCount > 200) {
+            throw BookException(
+                BookErrorCode.ALADIN_API_RESULT_LIMIT
+            )
+        }
+
+        val isLastPage = currentFetchedCount >= cappedTotalResults
+
         val filteredResponse = AladinSearchResponse(
             version = response.version,
             title = response.title,
             link = response.link,
             pubDate = response.pubDate,
-            totalResults = transformedItems.size,
+            totalResults = cappedTotalResults,
             startIndex = response.startIndex,
             itemsPerPage = response.itemsPerPage,
             query = response.query,
             searchCategoryId = response.searchCategoryId,
             searchCategoryName = response.searchCategoryName,
             item = transformedItems
-        )
+        ).apply {
+            lastPage = isLastPage
+        }
 
         log.info { "After filtering - Full Response: $filteredResponse" }
 

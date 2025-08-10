@@ -46,6 +46,9 @@ data class BookSearchResponse private constructor(
     @field:Schema(description = "검색 카테고리 이름", example = "소설/시/희곡")
     val searchCategoryName: String?,
 
+    @field:Schema(description = "마지막 페이지 여부", example = "false")
+    val lastPage: Boolean,
+
     @field:Schema(description = "검색된 책 목록")
     val books: List<BookSummary>
 ) {
@@ -66,6 +69,7 @@ data class BookSearchResponse private constructor(
                 query = response.query,
                 searchCategoryId = response.searchCategoryId,
                 searchCategoryName = response.searchCategoryName,
+                lastPage = response.lastPage,
                 books = response.item.map {
                     BookSummary.of(
                         isbn = it.isbn,
