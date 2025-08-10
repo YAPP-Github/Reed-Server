@@ -24,7 +24,7 @@ class AladinBookQueryService(
     private val log = KotlinLogging.logger {}
 
     override fun searchBooks(request: BookSearchRequest): BookSearchResponse {
-        log.info("Service - Converting BookSearchRequest to AladinBookSearchRequest and calling Aladin API for book search.")
+        log.info { "Service - Converting BookSearchRequest to AladinBookSearchRequest and calling Aladin API for book search." }
         val aladinSearchRequest = AladinBookSearchRequest.of(
             request.validQuery(),
             request.queryType,
@@ -35,16 +35,19 @@ class AladinBookQueryService(
             request.categoryId
         )
         val response: AladinSearchResponse = aladinApi.searchBooks(aladinSearchRequest)
-            .onSuccess { response ->
-                log.info("Aladin search successful for query: '${request.query}', total results: ${response.totalResults}")
+            .onSuccess { res ->
+                log.info { "Aladin search successful for query: '${request.query}', total results: ${res.totalResults}" }
             }
             .getOrElse { exception ->
-                log.error("Failed to call Aladin search API for request: '$request'", exception)
+                log.error(exception) { "Failed to call Aladin search API for request: '$request'" }
                 throw BookException(BookErrorCode.ALADIN_API_SEARCH_FAILED, exception.message)
             }
 
-        val filteredItems = response.item.filter { item ->
-            getValidAndFilteredIsbn13(item) != null
+        log.info { "Before filtering - Full Response: $response" }
+
+        val transformedItems = response.item.mapNotNull { item ->
+            val validIsbn13 = getValidAndFilteredIsbn13(item)
+            validIsbn13?.let { item.copy(isbn13 = it) }
         }
 
         val filteredResponse = AladinSearchResponse(
@@ -52,14 +55,16 @@ class AladinBookQueryService(
             title = response.title,
             link = response.link,
             pubDate = response.pubDate,
-            totalResults = response.totalResults,
+            totalResults = transformedItems.size,
             startIndex = response.startIndex,
             itemsPerPage = response.itemsPerPage,
             query = response.query,
             searchCategoryId = response.searchCategoryId,
             searchCategoryName = response.searchCategoryName,
-            item = filteredItems
+            item = transformedItems
         )
+
+        log.info { "After filtering - Full Response: $filteredResponse" }
 
         return BookSearchResponse.from(filteredResponse)
     }
