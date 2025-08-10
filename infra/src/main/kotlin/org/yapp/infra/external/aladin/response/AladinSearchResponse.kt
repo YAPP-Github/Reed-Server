@@ -16,8 +16,7 @@ data class AladinSearchResponse(
     @JsonProperty("query") val query: String? = null,
     @JsonProperty("searchCategoryId") val searchCategoryId: Int? = null,
     @JsonProperty("searchCategoryName") val searchCategoryName: String? = null,
-    @JsonProperty("item") val item: List<AladinSearchItem> = emptyList(),
-    var lastPage: Boolean = false
+    @JsonProperty("item") val item: List<AladinSearchItem> = emptyList()
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

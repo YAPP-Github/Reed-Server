@@ -19,12 +19,6 @@ data class BookSearchResponse private constructor(
     @field:Schema(description = "검색 결과 제목", example = "데미안")
     val title: String?,
 
-    @field:Schema(
-        description = "검색 결과 링크",
-        example = "http://www.aladin.co.kr/shop/wsarch.aspx?SearchTarget=Book&query=%EC%95%84%EB%B0%94%EC%9D%98+%ED%95%B4%EB%B0%A9%EC%9D%BC%EC%A7%80&partner=openAPI"
-    )
-    val link: String?,
-
     @field:Schema(description = "출간일", example = "2025-07-30")
     val pubDate: String?,
 
@@ -57,11 +51,10 @@ data class BookSearchResponse private constructor(
     }
 
     companion object {
-        fun from(response: AladinSearchResponse): BookSearchResponse {
+        fun of(response: AladinSearchResponse, isLastPage: Boolean): BookSearchResponse { // Added isLastPage parameter
             return BookSearchResponse(
                 version = response.version,
                 title = response.title,
-                link = response.link,
                 pubDate = response.pubDate,
                 totalResults = response.totalResults,
                 startIndex = response.startIndex,
@@ -69,7 +62,7 @@ data class BookSearchResponse private constructor(
                 query = response.query,
                 searchCategoryId = response.searchCategoryId,
                 searchCategoryName = response.searchCategoryName,
-                lastPage = response.lastPage,
+                lastPage = isLastPage,
                 books = response.item.map {
                     BookSummary.of(
                         isbn = it.isbn,
@@ -77,7 +70,8 @@ data class BookSearchResponse private constructor(
                         title = it.title,
                         author = AuthorExtractor.extractAuthors(it.author),
                         publisher = it.publisher,
-                        coverImageUrl = it.cover
+                        coverImageUrl = it.cover,
+                        link = it.link
                     )
                 }
             )
@@ -105,6 +99,12 @@ data class BookSearchResponse private constructor(
         )
         val coverImageUrl: String,
 
+        @field:Schema(
+            description = "알라딘 도서 상세 페이지 링크",
+            example = "http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=3680175"
+        )
+        val link: String, // Added link field
+
         @field:Schema(description = "사용자의 책 상태", example = "BEFORE_REGISTRATION")
         val userBookStatus: BookStatus
     ) {
@@ -119,7 +119,8 @@ data class BookSearchResponse private constructor(
                 title: String?,
                 author: String?,
                 publisher: String?,
-                coverImageUrl: String
+                coverImageUrl: String,
+                link: String // Added link
             ): BookSummary {
                 require(!title.isNullOrBlank()) { "Title is required" }
 
@@ -130,6 +131,7 @@ data class BookSearchResponse private constructor(
                     author = author,
                     publisher = publisher?.let { BookDataValidator.removeParenthesesFromPublisher(it) },
                     coverImageUrl = coverImageUrl,
+                    link = link,
                     userBookStatus = BookStatus.BEFORE_REGISTRATION
                 )
             }

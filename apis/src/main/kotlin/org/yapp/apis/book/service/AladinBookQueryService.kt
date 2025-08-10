@@ -22,6 +22,7 @@ class AladinBookQueryService(
     private val aladinApi: AladinApi
 ) : BookQueryService {
     private val log = KotlinLogging.logger {}
+    private val MAX_ALADIN_RESULTS = 200 // Added constant
 
     override fun searchBooks(request: BookSearchRequest): BookSearchResponse {
         log.info { "Service - Converting BookSearchRequest to AladinBookSearchRequest and calling Aladin API for book search." }
@@ -50,10 +51,10 @@ class AladinBookQueryService(
             validIsbn13?.let { item.copy(isbn13 = it) }
         }
 
-        val cappedTotalResults = minOf(response.totalResults ?: 0, 200)
+        val cappedTotalResults = minOf(response.totalResults ?: 0, MAX_ALADIN_RESULTS)
         val currentFetchedCount = (request.start ?: 1) * (response.itemsPerPage ?: 0)
 
-        if (currentFetchedCount > 200) {
+        if (currentFetchedCount > MAX_ALADIN_RESULTS) {
             throw BookException(
                 BookErrorCode.ALADIN_API_RESULT_LIMIT
             )
@@ -66,20 +67,17 @@ class AladinBookQueryService(
             title = response.title,
             link = response.link,
             pubDate = response.pubDate,
-            totalResults = cappedTotalResults,
+            totalResults = response.totalResults,
             startIndex = response.startIndex,
             itemsPerPage = response.itemsPerPage,
             query = response.query,
             searchCategoryId = response.searchCategoryId,
             searchCategoryName = response.searchCategoryName,
             item = transformedItems
-        ).apply {
-            lastPage = isLastPage
-        }
-
+        )
         log.info { "After filtering - Full Response: $filteredResponse" }
 
-        return BookSearchResponse.from(filteredResponse)
+        return BookSearchResponse.of(filteredResponse, isLastPage) // Passed isLastPage
     }
 
     override fun getBookDetail(request: BookDetailRequest): BookDetailResponse {
