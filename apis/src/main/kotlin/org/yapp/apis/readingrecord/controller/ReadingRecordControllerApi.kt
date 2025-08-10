@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
+import org.yapp.apis.readingrecord.dto.response.ReadingRecordPageResponse
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
 import org.yapp.domain.readingrecord.ReadingRecordSortType
@@ -105,7 +106,7 @@ interface ReadingRecordControllerApi {
         @RequestParam(required = false) @Parameter(description = "정렬 방식 (PAGE_NUMBER_ASC, PAGE_NUMBER_DESC, CREATED_DATE_ASC, CREATED_DATE_DESC)") sort: ReadingRecordSortType?,
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         @Parameter(description = "페이지네이션 정보 (페이지 번호, 페이지 크기, 정렬 방식)") pageable: Pageable
-    ): ResponseEntity<Page<ReadingRecordResponse>>
+    ): ResponseEntity<ReadingRecordPageResponse>
 
     @Operation(
         summary = "씨앗 통계 조회",

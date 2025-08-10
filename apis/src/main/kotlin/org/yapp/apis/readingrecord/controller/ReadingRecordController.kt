@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
+import org.yapp.apis.readingrecord.dto.response.ReadingRecordPageResponse // Added import
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.apis.readingrecord.usecase.ReadingRecordUseCase
 import org.yapp.domain.readingrecord.ReadingRecordSortType
@@ -61,7 +62,7 @@ class ReadingRecordController(
         @RequestParam(required = false) sort: ReadingRecordSortType?,
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
-    ): ResponseEntity<Page<ReadingRecordResponse>> {
+    ): ResponseEntity<ReadingRecordPageResponse> {
         val response = readingRecordUseCase.getReadingRecordsByUserBookId(
             userId = userId,
             userBookId = userBookId,
