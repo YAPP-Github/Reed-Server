@@ -26,6 +26,7 @@ class JpaReadingRecordQuerydslRepositoryImpl(
     ): Page<ReadingRecordEntity> {
 
         val whereCondition = readingRecord.userBookId.eq(userBookId)
+            .and(readingRecord.deletedAt.isNull())
 
         val results = queryFactory
             .selectFrom(readingRecord)
