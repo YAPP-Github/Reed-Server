@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
+import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordPageResponse
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
@@ -131,4 +132,58 @@ interface ReadingRecordControllerApi {
         @AuthenticationPrincipal userId: UUID,
         @PathVariable userBookId: UUID
     ): ResponseEntity<SeedStatsResponse>
+
+    @Operation(
+        summary = "독서 기록 수정",
+        description = "독서 기록 ID로 독서 기록을 수정합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "독서 기록 수정 성공",
+                content = [Content(schema = Schema(implementation = ReadingRecordResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+
+            ApiResponse(
+                responseCode = "404",
+                description = "독서 기록을 찾을 수 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @PatchMapping("/{readingRecordId}")
+    fun updateReadingRecord(
+        @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
+        @PathVariable @Parameter(description = "수정할 독서 기록 ID") readingRecordId: UUID,
+        @Valid @RequestBody @Parameter(description = "독서 기록 수정 요청 객체") request: UpdateReadingRecordRequest
+    ): ResponseEntity<ReadingRecordResponse>
+
+    @Operation(
+        summary = "독서 기록 삭제",
+        description = "독서 기록 ID로 독서 기록을 삭제합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                description = "독서 기록 삭제 성공"
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "독서 기록을 찾을 수 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @DeleteMapping("/{readingRecordId}")
+    fun deleteReadingRecord(
+        @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
+        @PathVariable @Parameter(description = "삭제할 독서 기록 ID") readingRecordId: UUID
+    ): ResponseEntity<Void>
 }
