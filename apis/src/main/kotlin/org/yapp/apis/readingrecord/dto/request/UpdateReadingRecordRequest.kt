@@ -31,12 +31,7 @@ data class UpdateReadingRecordRequest private constructor(
     @field:Schema(description = "수정할 감상평", example = "수정된 감상평입니다.")
     val review: String?,
 
-    @field:Size(max = 1, message = "감정 태그는 최대 1개까지 가능합니다.")
+    @field:Size(max = 3, message = "감정 태그는 최대 3개까지 가능합니다.")
     @field:Schema(description = "수정할 감정 태그 목록", example = """["놀라움"]""")
     val emotionTags: List<@Size(max = 10, message = "감정 태그는 10자를 초과할 수 없습니다.") String>?
-) {
-    fun validPageNumber(): Int? = pageNumber
-    fun validQuote(): String? = quote
-    fun validReview(): String? = review
-    fun validEmotionTags(): List<String>? = emotionTags
-}
+)
