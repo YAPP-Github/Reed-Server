@@ -6,4 +6,5 @@ import java.util.*
 
 interface JpaReadingRecordTagRepository : JpaRepository<ReadingRecordTagEntity, UUID>, JpaReadingRecordTagQuerydslRepository {
     fun findByReadingRecordId(readingRecordId: UUID): List<ReadingRecordTagEntity>
+    fun deleteAllByReadingRecordId(readingRecordId: UUID)
 }

@@ -30,4 +30,6 @@ interface ReadingRecordRepository {
         sort: ReadingRecordSortType?,
         pageable: Pageable
     ): Page<ReadingRecord>
+
+    fun deleteById(id: UUID)
 }

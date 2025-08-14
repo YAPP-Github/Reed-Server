@@ -23,4 +23,8 @@ class ReadingRecordTagRepositoryImpl(
     override fun countTagsByUserIdAndUserBookIdAndCategories(userId: UUID, userBookId: UUID, categories: List<String>): Map<String, Int> {
         return jpaReadingRecordTagRepository.countTagsByUserIdAndUserBookIdAndCategories(userId, userBookId, categories)
     }
+
+    override fun deleteAllByReadingRecordId(readingRecordId: UUID) {
+        jpaReadingRecordTagRepository.deleteAllByReadingRecordId(readingRecordId)
+    }
 }
