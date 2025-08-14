@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.core.convert.converter.Converter
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.web.SecurityFilterChain
@@ -19,6 +20,7 @@ class SecurityConfig(
 ) {
     companion object {
         private val WHITELIST_URLS = arrayOf(
+            "/api/v1/books/search",
             "/api/v1/auth/refresh",
             "/api/v1/auth/signin",
             "/actuator/**",
