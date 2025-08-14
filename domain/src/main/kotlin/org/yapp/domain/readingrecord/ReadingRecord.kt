@@ -64,16 +64,12 @@ data class ReadingRecord private constructor(
         review: String?,
         emotionTags: List<String>?
     ): ReadingRecord {
-        return ReadingRecord(
-            id = this.id,
-            userBookId = this.userBookId,
+        return this.copy(
             pageNumber = pageNumber?.let { PageNumber.newInstance(it) } ?: this.pageNumber,
             quote = quote?.let { Quote.newInstance(it) } ?: this.quote,
             review = review?.let { Review.newInstance(it) } ?: this.review,
             emotionTags = emotionTags?.map { EmotionTag.newInstance(it) } ?: this.emotionTags,
-            createdAt = this.createdAt,
-            updatedAt = LocalDateTime.now(),
-            deletedAt = this.deletedAt
+            updatedAt = LocalDateTime.now()
         )
     }
 

@@ -102,7 +102,7 @@ class ReadingRecordController(
     override fun deleteReadingRecord(
         @AuthenticationPrincipal userId: UUID,
         @PathVariable readingRecordId: UUID
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Unit> {
         readingRecordUseCase.deleteReadingRecord(userId, readingRecordId)
         return ResponseEntity.noContent().build()
     }
