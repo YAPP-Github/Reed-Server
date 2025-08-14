@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Properties>
+        <!-- 색상 없는 기본 패턴 (파일용) -->
+        <Property name="FILE_LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [%X{traceId}] [%X{userId}] [%X{clientIp}] [%X{requestInfo}] %logger{36} - %msg%n
+        </Property>
+
+        <Property name="CONSOLE_LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=green bold, TRACE=blue} %style{[%thread]}{cyan} %style{[%X{traceId}]}{green} %style{[%X{userId}]}{magenta} %style{[%X{clientIp}]}{blue} %style{[%X{requestInfo}]}{yellow} %style{%logger{36}}{bright,white} - %msg%n
+        </Property>
+    </Properties>
+
+    <Appenders>
+        <!-- 콘솔 출력 - 색상 활성화 -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_LOG_PATTERN}" disableAnsi="false"/>
+        </Console>
+
+        <!-- 파일 출력 - 색상 없음 -->
+        <RollingFile name="FileAppender" fileName="logs/application.log"
+                     filePattern="logs/application-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- 내 애플리케이션 로거 -->
+        <Logger name="org.yapp" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+        </Logger>
+
+        <!-- 루트 로거 -->
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
