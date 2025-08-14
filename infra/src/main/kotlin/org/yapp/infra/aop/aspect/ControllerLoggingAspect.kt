@@ -1,7 +1,6 @@
 package org.yapp.infra.aop.aspect
 
 import jakarta.servlet.http.HttpServletRequest
-import mu.KotlinLogging
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
