@@ -1,6 +1,7 @@
 package org.yapp.infra.config.internal.async
 
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.ApplicationEventMulticaster
 import org.springframework.context.event.SimpleApplicationEventMulticaster
 import org.springframework.context.support.AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME
@@ -10,6 +11,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import java.util.concurrent.Executor
 import org.yapp.infra.InfraBaseConfig
 
+@Configuration
 @EnableAsync
 class AsyncConfig : InfraBaseConfig, AsyncConfigurer {
 
@@ -45,6 +47,7 @@ class AsyncConfig : InfraBaseConfig, AsyncConfigurer {
         executor.setThreadNamePrefix("async-")
         executor.setWaitForTasksToCompleteOnShutdown(true)
         executor.setAwaitTerminationSeconds(30)
+        executor.setTaskDecorator(MdcTaskDecorator())
         executor.initialize()
         return executor
     }
