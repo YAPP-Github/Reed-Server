@@ -12,6 +12,7 @@ interface UserBookRepository {
     fun existsByIdAndUserId(id: UUID, userId: UUID): Boolean
     fun findById(id: UUID): UserBook?
     fun save(userBook: UserBook): UserBook
+    fun deleteById(id: UUID)
     fun findAllByUserId(userId: UUID): List<UserBook>
     fun findAllByUserIdAndBookIsbn13In(userId: UUID, bookIsbn13s: List<String>): List<UserBook>
     fun findUserBooksByDynamicCondition(

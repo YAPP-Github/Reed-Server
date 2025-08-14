@@ -6,11 +6,13 @@ import org.yapp.domain.userbook.vo.HomeBookVO
 import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
 import org.yapp.globalutils.annotation.DomainService
+import org.yapp.domain.readingrecord.ReadingRecordRepository
 import java.util.*
 
 @DomainService
 class UserBookDomainService(
-    private val userBookRepository: UserBookRepository
+    private val userBookRepository: UserBookRepository,
+    private val readingRecordRepository: ReadingRecordRepository
 ) {
     fun upsertUserBook(
         userId: UUID,
@@ -75,6 +77,11 @@ class UserBookDomainService(
 
     fun existsByUserBookIdAndUserId(userBookId: UUID, userId: UUID): Boolean {
         return userBookRepository.existsByIdAndUserId(userBookId, userId)
+    }
+
+    fun deleteById(userBookId: UUID) {
+        readingRecordRepository.deleteAllByUserBookId(userBookId)
+        userBookRepository.deleteById(userBookId)
     }
 
     fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {
