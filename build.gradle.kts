@@ -55,6 +55,13 @@ subprojects {
         }
     }
 
+    dependencies {
+        configurations.all {
+            exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+        }
+        implementation(Dependencies.Spring.STARTER_LOG4J2)
+    }
+
     plugins.withId(Plugins.Kotlin.ALLOPEN) {
         extensions.configure<org.jetbrains.kotlin.allopen.gradle.AllOpenExtension> {
             annotation("jakarta.persistence.Entity")
@@ -71,6 +78,7 @@ subprojects {
                 "-Xconsistent-data-class-copy-visibility"
             )
             jvmTarget = Versions.JAVA_VERSION
+            kotlinOptions.javaParameters = true
         }
     }
 }
