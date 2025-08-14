@@ -24,6 +24,17 @@ spring:
       - classpath:db/migration
       - classpath:db/seed
 
+  cache:
+    type: simple
+
+logging:
+  aop:
+    service:
+      enabled: true
+      max-log-length: 1000
+    controller:
+      enabled: true
+
 ---
 spring:
   config:
