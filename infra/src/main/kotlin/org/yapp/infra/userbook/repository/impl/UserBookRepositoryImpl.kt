@@ -38,6 +38,10 @@ class UserBookRepositoryImpl(
         return savedEntity.toDomain()
     }
 
+    override fun deleteById(id: UUID) {
+        jpaUserBookRepository.deleteById(id)
+    }
+
     override fun findAllByUserId(userId: UUID): List<UserBook> {
         return jpaUserBookRepository.findAllByUserId(userId).map { it.toDomain() }
     }
