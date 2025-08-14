@@ -28,6 +28,10 @@ data class UserBook private constructor(
         return this.copy(readingRecordCount = this.readingRecordCount + 1)
     }
 
+    fun decreaseReadingRecordCount(): UserBook {
+        return this.copy(readingRecordCount = (this.readingRecordCount - 1).coerceAtLeast(0))
+    }
+
     companion object {
         fun create(
             userId: UUID,

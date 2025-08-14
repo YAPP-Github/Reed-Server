@@ -58,6 +58,21 @@ data class ReadingRecord private constructor(
         }
     }
 
+    fun update(
+        pageNumber: Int?,
+        quote: String?,
+        review: String?,
+        emotionTags: List<String>?
+    ): ReadingRecord {
+        return this.copy(
+            pageNumber = pageNumber?.let { PageNumber.newInstance(it) } ?: this.pageNumber,
+            quote = quote?.let { Quote.newInstance(it) } ?: this.quote,
+            review = review?.let { Review.newInstance(it) } ?: this.review,
+            emotionTags = emotionTags?.map { EmotionTag.newInstance(it) } ?: this.emotionTags,
+            updatedAt = LocalDateTime.now()
+        )
+    }
+
     @JvmInline
     value class Id(val value: UUID) {
         companion object {
@@ -113,5 +128,9 @@ data class ReadingRecord private constructor(
                 return EmotionTag(value)
             }
         }
+    }
+
+    fun delete(): ReadingRecord {
+        return this.copy(deletedAt = LocalDateTime.now())
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
+import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordPageResponse // Added import
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
@@ -75,5 +76,28 @@ class ReadingRecordUseCase(
         userService.validateUserExists(userId)
         userBookService.validateUserBookExists(userBookId, userId)
         return readingRecordTagService.getSeedStatsByUserIdAndUserBookId(userId, userBookId)
+    }
+
+    @Transactional
+    fun updateReadingRecord(
+        userId: UUID,
+        readingRecordId: UUID,
+        request: UpdateReadingRecordRequest
+    ): ReadingRecordResponse {
+        userService.validateUserExists(userId)
+
+        return readingRecordService.updateReadingRecord(
+            readingRecordId = readingRecordId,
+            request = request
+        )
+    }
+
+    @Transactional
+    fun deleteReadingRecord(
+        userId: UUID,
+        readingRecordId: UUID
+    ) {
+        userService.validateUserExists(userId)
+        readingRecordService.deleteReadingRecord(readingRecordId)
     }
 }
