@@ -87,6 +87,15 @@ class BookUseCase(
         return userBookService.findUserBooksByDynamicConditionWithStatusCounts(userId, status, sort, title, pageable)
     }
 
+    @Transactional
+    fun deleteBookFromMyLibrary(
+        userId: UUID,
+        userBookId: UUID
+    ) {
+        userService.validateUserExists(userId)
+        userBookService.deleteUserBook(userBookId, userId)
+    }
+
     private fun mergeWithUserBookStatus(
         searchedBooks: List<BookSummary>,
         userId: UUID

@@ -141,4 +141,24 @@ interface BookControllerApi {
         @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<UserBookPageResponse>
+
+    @Operation(summary = "내 서재에 저장한 도서 삭제", description = "내 서재에 저장한 도서를 삭제합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "204",
+                description = "성공적으로 도서를 삭제했습니다."
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "해당하는 도서를 찾을 수 없습니다.",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @DeleteMapping("/my-library/{userBookId}")
+    fun deleteBookFromMyLibrary(
+        @AuthenticationPrincipal userId: UUID,
+        @Parameter(description = "삭제할 도서 ID") @PathVariable userBookId: UUID
+    ): ResponseEntity<Unit>
 }
