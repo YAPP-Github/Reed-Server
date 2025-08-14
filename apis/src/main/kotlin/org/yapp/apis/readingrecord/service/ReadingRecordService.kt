@@ -53,10 +53,10 @@ class ReadingRecordService(
     ): ReadingRecordResponse {
         val readingRecordInfoVO = readingRecordDomainService.modifyReadingRecord(
             readingRecordId = readingRecordId,
-            pageNumber = request.pageNumber,
-            quote = request.quote,
-            review = request.review,
-            emotionTags = request.emotionTags
+            pageNumber = request.validPageNumber(),
+            quote = request.validQuote(),
+            review = request.validReview(),
+            emotionTags = request.validEmotionTags()
         )
         return ReadingRecordResponse.from(readingRecordInfoVO)
     }
