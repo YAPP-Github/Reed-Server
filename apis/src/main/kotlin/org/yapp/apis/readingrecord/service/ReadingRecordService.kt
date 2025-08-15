@@ -45,4 +45,8 @@ class ReadingRecordService(
         val page = readingRecordDomainService.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)
         return page.map { ReadingRecordResponse.from(it) }
     }
+
+    fun deleteAllByUserBookId(userBookId: UUID) {
+        readingRecordDomainService.deleteAllByUserBookId(userBookId)
+    }
 }

@@ -122,4 +122,7 @@ class ReadingRecordDomainService(
         }
     }
 
+    fun deleteAllByUserBookId(userBookId: UUID) {
+        readingRecordRepository.deleteAllByUserBookId(userBookId)
+    }
 }

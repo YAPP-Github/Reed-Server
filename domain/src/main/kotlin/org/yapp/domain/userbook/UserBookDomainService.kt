@@ -12,7 +12,6 @@ import java.util.*
 @DomainService
 class UserBookDomainService(
     private val userBookRepository: UserBookRepository,
-    private val readingRecordRepository: ReadingRecordRepository
 ) {
     fun upsertUserBook(
         userId: UUID,
@@ -80,7 +79,6 @@ class UserBookDomainService(
     }
 
     fun deleteById(userBookId: UUID) {
-        readingRecordRepository.deleteAllByUserBookId(userBookId)
         userBookRepository.deleteById(userBookId)
     }
 
@@ -110,7 +108,8 @@ class UserBookDomainService(
         return userBooks.map { userBook ->
             HomeBookVO.newInstance(
                 userBook = userBook,
-                lastRecordedAt = userBook.updatedAt ?: throw IllegalStateException("UserBook의 updatedAt이 null입니다: ${userBook.id}"),
+                lastRecordedAt = userBook.updatedAt
+                    ?: throw IllegalStateException("UserBook의 updatedAt이 null입니다: ${userBook.id}"),
                 recordCount = 0
             )
         }
