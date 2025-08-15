@@ -102,27 +102,67 @@ class ReadingRecordDomainService(
         sort: ReadingRecordSortType?,
         pageable: Pageable
     ): Page<ReadingRecordInfoVO> {
-        val page = readingRecordRepository.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)
+        return readingRecordRepository.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)
+            .map { buildReadingRecordInfoVO(it) }
+    }
 
-        // Get the UserBook entity to get the book thumbnail, title, and publisher
-        val userBook = userBookRepository.findById(userBookId)
-
-        return page.map { readingRecord ->
-            val readingRecordTags = readingRecordTagRepository.findByReadingRecordId(readingRecord.id.value)
-            val tagIds = readingRecordTags.map { it.tagId.value }
-            val tags = tagRepository.findByIds(tagIds)
-            ReadingRecordInfoVO.newInstance(
-                readingRecord = readingRecord,
-                emotionTags = tags.map { it.name },
-                bookTitle = userBook?.title,
-                bookPublisher = userBook?.publisher,
-                bookCoverImageUrl = userBook?.coverImageUrl,
-                author = userBook?.author
+    fun modifyReadingRecord(
+        readingRecordId: UUID,
+        pageNumber: Int?,
+        quote: String?,
+        review: String?,
+        emotionTags: List<String>?
+    ): ReadingRecordInfoVO {
+        val readingRecord = readingRecordRepository.findById(readingRecordId)
+            ?: throw ReadingRecordNotFoundException(
+                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
+                "Reading record not found with id: $readingRecordId"
             )
+
+        val updatedReadingRecord = readingRecord.update(
+            pageNumber = pageNumber,
+            quote = quote,
+            review = review,
+            emotionTags = emotionTags
+        )
+
+        val savedReadingRecord = readingRecordRepository.save(updatedReadingRecord)
+
+        // Update emotion tags
+        if (emotionTags != null) {
+            readingRecordTagRepository.deleteAllByReadingRecordId(readingRecordId)
+            val tags = emotionTags.map { tagName ->
+                tagRepository.findByName(tagName) ?: tagRepository.save(Tag.create(tagName))
+            }
+            val newReadingRecordTags = tags.map {
+                ReadingRecordTag.create(
+                    readingRecordId = savedReadingRecord.id.value,
+                    tagId = it.id.value
+                )
+            }
+            readingRecordTagRepository.saveAll(newReadingRecordTags)
         }
+
+        return buildReadingRecordInfoVO(savedReadingRecord)
     }
 
     fun deleteAllByUserBookId(userBookId: UUID) {
         readingRecordRepository.deleteAllByUserBookId(userBookId)
+    }
+    fun deleteReadingRecord(readingRecordId: UUID) {
+        val readingRecord = readingRecordRepository.findById(readingRecordId)
+            ?: throw ReadingRecordNotFoundException(
+                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
+                "Reading record not found with id: $readingRecordId"
+            )
+
+        val userBook = userBookRepository.findById(readingRecord.userBookId.value)
+            ?: throw UserBookNotFoundException(
+                UserBookErrorCode.USER_BOOK_NOT_FOUND,
+                "User book not found with id: ${readingRecord.userBookId.value}"
+            )
+
+        readingRecordRepository.deleteById(readingRecordId)
+        userBookRepository.save(userBook.decreaseReadingRecordCount())
     }
 }

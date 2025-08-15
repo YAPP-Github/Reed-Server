@@ -51,7 +51,6 @@ interface BookControllerApi {
     )
     @GetMapping("/search")
     fun searchBooks(
-        @AuthenticationPrincipal userId: UUID,
         @Valid @Parameter(description = "도서 검색 요청 객체") request: BookSearchRequest
     ): ResponseEntity<BookSearchResponse>
 

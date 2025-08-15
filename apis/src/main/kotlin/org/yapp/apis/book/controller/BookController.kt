@@ -35,10 +35,9 @@ class BookController(
 
     @GetMapping("/search")
     override fun searchBooks(
-        @AuthenticationPrincipal userId: UUID,
         @Valid @ModelAttribute request: BookSearchRequest
     ): ResponseEntity<BookSearchResponse> {
-        val response = bookUseCase.searchBooks(request, userId)
+        val response = bookUseCase.searchBooks(request)
         return ResponseEntity.ok(response)
     }
 

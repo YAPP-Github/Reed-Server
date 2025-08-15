@@ -31,13 +31,10 @@ class BookUseCase(
     private val readingRecordService: ReadingRecordService
 ) {
     fun searchBooks(
-        request: BookSearchRequest,
-        userId: UUID
+        request: BookSearchRequest
     ): BookSearchResponse {
-        userService.validateUserExists(userId)
-
         val searchResponse = bookQueryService.searchBooks(request)
-        val booksWithUserStatus = mergeWithUserBookStatus(searchResponse.books, userId)
+        val booksWithUserStatus = mergeWithUserBookStatus(searchResponse.books, null)
 
         return searchResponse.withUpdatedBooks(booksWithUserStatus)
     }
@@ -101,10 +98,10 @@ class BookUseCase(
 
     private fun mergeWithUserBookStatus(
         searchedBooks: List<BookSummary>,
-        userId: UUID
+        userId: UUID?
     ): List<BookSummary> {
-        if (searchedBooks.isEmpty()) {
-            return emptyList()
+        if (userId == null || searchedBooks.isEmpty()) {
+            return searchedBooks
         }
 
         val isbn13s = searchedBooks.map { it.isbn13 }
@@ -119,8 +116,9 @@ class BookUseCase(
 
     private fun getUserBookStatusMap(
         isbn13s: List<String>,
-        userId: UUID
+        userId: UUID?
     ): Map<String, BookStatus> {
+        if (userId == null) return emptyMap()
         val userBooksResponse = userBookService.findAllByUserIdAndBookIsbn13In(
             UserBooksByIsbn13sRequest.of(userId, isbn13s)
         )

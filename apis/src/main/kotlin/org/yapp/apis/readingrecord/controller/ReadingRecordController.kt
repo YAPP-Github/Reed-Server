@@ -7,14 +7,17 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
+import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordPageResponse // Added import
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.apis.readingrecord.usecase.ReadingRecordUseCase
@@ -79,5 +82,28 @@ class ReadingRecordController(
     ): ResponseEntity<SeedStatsResponse> {
         val stats = readingRecordUseCase.getSeedStats(userId, userBookId)
         return ResponseEntity.ok(stats)
+    }
+
+    @PatchMapping("/{readingRecordId}")
+    override fun updateReadingRecord(
+        @AuthenticationPrincipal userId: UUID,
+        @PathVariable readingRecordId: UUID,
+        @Valid @RequestBody request: UpdateReadingRecordRequest
+    ): ResponseEntity<ReadingRecordResponse> {
+        val response = readingRecordUseCase.updateReadingRecord(
+            userId = userId,
+            readingRecordId = readingRecordId,
+            request = request
+        )
+        return ResponseEntity.ok(response)
+    }
+
+    @DeleteMapping("/{readingRecordId}")
+    override fun deleteReadingRecord(
+        @AuthenticationPrincipal userId: UUID,
+        @PathVariable readingRecordId: UUID
+    ): ResponseEntity<Unit> {
+        readingRecordUseCase.deleteReadingRecord(userId, readingRecordId)
+        return ResponseEntity.noContent().build()
     }
 }

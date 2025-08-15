@@ -3,6 +3,7 @@ package org.yapp.apis.readingrecord.service
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
+import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.domain.readingrecord.ReadingRecordDomainService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
@@ -48,5 +49,24 @@ class ReadingRecordService(
 
     fun deleteAllByUserBookId(userBookId: UUID) {
         readingRecordDomainService.deleteAllByUserBookId(userBookId)
+    }
+    fun updateReadingRecord(
+        readingRecordId: UUID,
+        request: UpdateReadingRecordRequest
+    ): ReadingRecordResponse {
+        val readingRecordInfoVO = readingRecordDomainService.modifyReadingRecord(
+            readingRecordId = readingRecordId,
+            pageNumber = request.validPageNumber(),
+            quote = request.validQuote(),
+            review = request.validReview(),
+            emotionTags = request.validEmotionTags()
+        )
+        return ReadingRecordResponse.from(readingRecordInfoVO)
+    }
+
+    fun deleteReadingRecord(
+        readingRecordId: UUID
+    ) {
+        readingRecordDomainService.deleteReadingRecord(readingRecordId)
     }
 }

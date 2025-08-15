@@ -56,4 +56,8 @@ class ReadingRecordRepositoryImpl(
         val page = jpaReadingRecordRepository.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)
         return page.map { it.toDomain() }
     }
+
+    override fun deleteById(id: UUID) {
+        jpaReadingRecordRepository.deleteById(id)
+    }
 }
