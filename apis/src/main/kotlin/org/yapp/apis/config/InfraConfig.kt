@@ -13,6 +13,7 @@ import org.yapp.infra.InfraBaseConfigGroup
         InfraBaseConfigGroup.REST_CLIENT,
         InfraBaseConfigGroup.QUERY_DSL,
         InfraBaseConfigGroup.PAGE,
+        InfraBaseConfigGroup.AOP
     ]
 )
 class InfraConfig

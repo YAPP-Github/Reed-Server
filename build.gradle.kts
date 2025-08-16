@@ -48,11 +48,20 @@ subprojects {
     apply(plugin = Plugins.Kotlin.JPA)
     apply(plugin = Plugins.Kotlin.JVM)
     apply(plugin = Plugins.JACOCO)
+    apply(plugin = Plugins.Kotlin.KAPT)
 
     java {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(Versions.JAVA_VERSION.toInt()))
         }
+    }
+
+    configurations.all {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    }
+
+    dependencies {
+        implementation(Dependencies.Spring.STARTER_LOG4J2)
     }
 
     plugins.withId(Plugins.Kotlin.ALLOPEN) {
@@ -71,6 +80,7 @@ subprojects {
                 "-Xconsistent-data-class-copy-visibility"
             )
             jvmTarget = Versions.JAVA_VERSION
+            javaParameters = true
         }
     }
 }

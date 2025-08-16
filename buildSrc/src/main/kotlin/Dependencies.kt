@@ -12,6 +12,9 @@ object Dependencies {
         const val BOOT_STARTER_OAUTH2_CLIENT = "org.springframework.boot:spring-boot-starter-oauth2-client"
         const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect"
         const val CONFIGURATION_PROCESSOR = "org.springframework.boot:spring-boot-configuration-processor"
+        const val SPRING_DATA_COMMONS = "org.springframework.data:spring-data-commons"
+        const val SPRING_WEB = "org.springframework:spring-web"
+        const val STARTER_LOG4J2 = "org.springframework.boot:spring-boot-starter-log4j2"
     }
 
     object Database {

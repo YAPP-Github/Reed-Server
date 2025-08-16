@@ -48,9 +48,9 @@ class UserBookRepositoryImpl(
 
     override fun findAllByUserIdAndBookIsbn13In(
         userId: UUID,
-        bookIsbns: List<String>
+        bookIsbn13s: List<String>
     ): List<UserBook> {
-        return jpaUserBookRepository.findAllByUserIdAndBookIsbn13In(userId, bookIsbns)
+        return jpaUserBookRepository.findAllByUserIdAndBookIsbn13In(userId, bookIsbn13s)
             .map { it.toDomain() }
     }
 

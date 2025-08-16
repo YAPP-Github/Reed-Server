@@ -2,21 +2,23 @@ package org.yapp.gateway.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.convert.converter.Converter
+import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.core.convert.converter.Converter
-import org.springframework.http.HttpMethod
-import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter
 import org.springframework.security.web.SecurityFilterChain
+import org.yapp.gateway.filter.MdcLoggingFilter
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtAuthenticationConverter: Converter<Jwt, out AbstractAuthenticationToken>,
     private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
-    private val customAccessDeniedHandler: CustomAccessDeniedHandler
+    private val customAccessDeniedHandler: CustomAccessDeniedHandler,
+    private val mdcLoggingFilter: MdcLoggingFilter
 ) {
     companion object {
         private val WHITELIST_URLS = arrayOf(
@@ -53,6 +55,7 @@ class SecurityConfig(
                 it.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 it.anyRequest().authenticated()
             }
+            .addFilterAfter(mdcLoggingFilter, BearerTokenAuthenticationFilter::class.java)
 
         return http.build()
     }
