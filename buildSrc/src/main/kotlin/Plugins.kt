@@ -11,6 +11,7 @@ object Plugins {
         const val SPRING = "org.jetbrains.kotlin.plugin.spring"
         const val JPA = "org.jetbrains.kotlin.plugin.jpa"
         const val JVM = "org.jetbrains.kotlin.jvm"
+        const val KAPT = "org.jetbrains.kotlin.kapt"
 
         object Short {
             const val KAPT = "kapt"
