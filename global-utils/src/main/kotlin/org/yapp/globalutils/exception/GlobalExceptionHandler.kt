@@ -9,6 +9,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 /**
  * Global exception handler for the application.
@@ -153,6 +154,27 @@ class GlobalExceptionHandler {
         val error = ErrorResponse.builder()
             .status(commonErrorCode.getHttpStatus().value())
             .message("Malformed JSON request: ${ex.localizedMessage}")
+            .code(commonErrorCode.getCode())
+            .build()
+
+        return ResponseEntity(error, commonErrorCode.getHttpStatus())
+    }
+
+    /**
+     * 메서드 파라미터 타입 변환 실패 처리
+     *
+     * 주로 @RequestParam, @PathVariable 등에서 클라이언트가 잘못된 타입의 값을 전달했을 때 발생합니다.
+     * 예: 문자열을 int 타입으로 변환 시도
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
+    protected fun handleMethodArgumentTypeMismatch(ex: MethodArgumentTypeMismatchException): ResponseEntity<ErrorResponse> {
+        val commonErrorCode = CommonErrorCode.INVALID_REQUEST
+
+        log.warn { "Method argument type mismatch: ${ex.name}, value: ${ex.value}, requiredType: ${ex.requiredType}" }
+
+        val error = ErrorResponse.builder()
+            .status(commonErrorCode.getHttpStatus().value())
+            .message("Invalid value '${ex.value}' for parameter '${ex.name}'. Expected type: ${ex.requiredType?.simpleName}")
             .code(commonErrorCode.getCode())
             .build()
 
