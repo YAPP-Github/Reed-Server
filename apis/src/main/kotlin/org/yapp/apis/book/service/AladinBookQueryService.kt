@@ -25,7 +25,7 @@ class AladinBookQueryService(
     private val MAX_ALADIN_RESULTS = 200 // Added constant
 
     override fun searchBooks(request: BookSearchRequest): BookSearchResponse {
-        log.info { "Service - Converting BookSearchRequest to AladinBookSearchRequest and calling Aladin API for book search." }
+//        log.info { "Service - Converting BookSearchRequest to AladinBookSearchRequest and calling Aladin API for book search." }
         val aladinSearchRequest = AladinBookSearchRequest.of(
             request.validQuery(),
             request.queryType,
@@ -44,7 +44,7 @@ class AladinBookQueryService(
                 throw BookException(BookErrorCode.ALADIN_API_SEARCH_FAILED, exception.message)
             }
 
-        log.info { "Before filtering - Full Response: $response" }
+//        log.info { "Before filtering - Full Response: $response" }
 
         val transformedItems = response.item.mapNotNull { item ->
             val validIsbn13 = getValidAndFilteredIsbn13(item)
@@ -75,13 +75,13 @@ class AladinBookQueryService(
             searchCategoryName = response.searchCategoryName,
             item = transformedItems
         )
-        log.info { "After filtering - Full Response: $filteredResponse" }
+//        log.info { "After filtering - Full Response: $filteredResponse" }
 
         return BookSearchResponse.of(filteredResponse, isLastPage) // Passed isLastPage
     }
 
     override fun getBookDetail(request: BookDetailRequest): BookDetailResponse {
-        log.info("Service - Converting BookDetailRequest to AladinBookLookupRequest and calling Aladin API for book detail lookup.")
+//        log.info("Service - Converting BookDetailRequest to AladinBookLookupRequest and calling Aladin API for book detail lookup.")
         val aladinLookupRequest = AladinBookLookupRequest.from(request.validIsbn13())
         val response: AladinBookDetailResponse = aladinApi.lookupBook(aladinLookupRequest)
             .onSuccess { response ->
