@@ -6,6 +6,7 @@ import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
 import org.slf4j.LoggerFactory
+import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 import org.yapp.infra.aop.properties.LoggingAopProperties
 import java.time.Duration
@@ -16,11 +17,17 @@ import java.util.*
 @Component
 class ServiceLoggingAspect(
     private val properties: LoggingAopProperties,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val environment: Environment
 ) {
     companion object {
         private val log = LoggerFactory.getLogger(ServiceLoggingAspect::class.java)
         private const val MASKING_TEXT = "****"
+        private const val PROD_PROFILE = "prod"
+    }
+
+    private val isProdEnvironment: Boolean by lazy {
+        environment.activeProfiles.contains(PROD_PROFILE)
     }
 
     @Around("org.yapp.infra.aop.pointcut.CommonPointcuts.serviceLayer() && !org.yapp.infra.aop.pointcut.CommonPointcuts.noLogging()")
@@ -68,7 +75,7 @@ class ServiceLoggingAspect(
 
     private fun getArgumentsAsString(signature: MethodSignature, args: Array<Any?>): String {
         return signature.parameterNames.mapIndexed { index, paramName ->
-            val value = if (isSensitiveParameter(paramName)) {
+            val value = if (shouldMaskParameter(paramName)) {
                 MASKING_TEXT
             } else {
                 formatValue(args.getOrNull(index))
@@ -77,8 +84,8 @@ class ServiceLoggingAspect(
         }.joinToString(", ")
     }
 
-    private fun isSensitiveParameter(paramName: String): Boolean {
-        return properties.service.sensitiveFields.any { sensitiveField ->
+    private fun shouldMaskParameter(paramName: String): Boolean {
+        return isProdEnvironment && properties.service.sensitiveFields.any { sensitiveField ->
             paramName.lowercase().contains(sensitiveField.lowercase())
         }
     }
@@ -90,6 +97,7 @@ class ServiceLoggingAspect(
             is String -> "\"$obj\""
             is Number, is Boolean -> obj.toString()
             is UUID -> obj.toString()
+            is Enum<*> -> obj.name
             is Collection<*> -> "[${obj.size} items]"
             else -> maskMapLikeObject(obj)
         }
@@ -100,7 +108,7 @@ class ServiceLoggingAspect(
             val map: Map<*, *> = objectMapper.convertValue(obj, Map::class.java)
             val maskedMap = map.mapValues { (key, value) ->
                 val keyStr = key.toString()
-                if (isSensitiveParameter(keyStr)) {
+                if (shouldMaskParameter(keyStr)) {
                     return@mapValues MASKING_TEXT
                 }
                 value
