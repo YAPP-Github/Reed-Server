@@ -29,7 +29,7 @@ class ServiceLoggingAspect(
         val signature = joinPoint.signature as MethodSignature
         val startTime = Instant.now()
 
-        logServiceStart(signature, joinPoint.args, startTime)
+        logServiceStart(signature, joinPoint.args)
 
         try {
             val result = joinPoint.proceed()
@@ -40,21 +40,18 @@ class ServiceLoggingAspect(
         }
     }
 
-    private fun logServiceStart(signature: MethodSignature, args: Array<Any?>, startTime: Instant) {
+    private fun logServiceStart(signature: MethodSignature, args: Array<Any?>) {
         val className = signature.declaringType.simpleName
         val methodName = signature.name
         val params = getArgumentsAsString(signature, args)
 
-        log.info(
-            "[SVC-START] {}.{} | Params: {} | Start At: {}", className, methodName, truncateIfNeeded(params), startTime
-        )
+        log.info("[SVC-START] {}.{} | Params: {}", className, methodName, truncateIfNeeded(params))
     }
 
     private fun logServiceSuccess(signature: MethodSignature, startTime: Instant, result: Any?) {
         val className = signature.declaringType.simpleName
         val methodName = signature.name
-        val endTime = Instant.now()
-        val duration = Duration.between(startTime, endTime).toMillis()
+        val duration = Duration.between(startTime, Instant.now()).toMillis()
         val returnValue = maskSensitiveData(result)
 
         log.info(

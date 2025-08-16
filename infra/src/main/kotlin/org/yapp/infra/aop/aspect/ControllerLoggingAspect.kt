@@ -5,7 +5,6 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.slf4j.LoggerFactory
-import org.slf4j.MDC
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
@@ -27,7 +26,7 @@ class ControllerLoggingAspect(
         }
 
         val startTime = Instant.now()
-        logRequestStart(joinPoint, startTime)
+        logRequestStart(joinPoint)
 
         try {
             val result = joinPoint.proceed()
@@ -38,7 +37,7 @@ class ControllerLoggingAspect(
         }
     }
 
-    private fun logRequestStart(joinPoint: ProceedingJoinPoint, startTime: Instant) {
+    private fun logRequestStart(joinPoint: ProceedingJoinPoint) {
         val signature = joinPoint.signature
         val className = signature.declaringType.simpleName
         val methodName = signature.name
@@ -47,17 +46,12 @@ class ControllerLoggingAspect(
         val httpMethod = request?.method ?: "UNKNOWN"
         val uri = request?.requestURI ?: "UNKNOWN"
 
-        log.info(
-            "[API-REQ] {} {} | Controller: {}.{} | Start At: {} | TraceId: {} | UserId: {}",
-            httpMethod, uri, className, methodName, startTime,
-            MDC.get("traceId"), MDC.get("userId")
-        )
+        log.info("[API-REQ] {} {} | Controller: {}.{}", httpMethod, uri, className, methodName)
     }
 
     private fun logRequestSuccess(startTime: Instant) {
-        val endTime = Instant.now()
         val executionTimeMs = getExecutionTimeMs(startTime)
-        log.info("[API-RES] End At: {} | Logic Duration: {}ms", endTime, executionTimeMs)
+        log.info("[API-RES] Logic Duration: {}ms", executionTimeMs)
     }
 
     private fun getCurrentRequest(): HttpServletRequest? =
