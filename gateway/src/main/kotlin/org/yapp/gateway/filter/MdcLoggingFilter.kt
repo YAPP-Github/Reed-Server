@@ -15,10 +15,12 @@ class MdcLoggingFilter : OncePerRequestFilter() {
     companion object {
         private const val TRACE_ID_HEADER = "X-Request-ID"
         private const val XFF_HEADER = "X-Forwarded-For"
+        private const val X_REAL_IP_HEADER = "X-Real-IP"
         private const val TRACE_ID_KEY = "traceId"
         private const val USER_ID_KEY = "userId"
         private const val CLIENT_IP_KEY = "clientIp"
         private const val REQUEST_INFO_KEY = "requestInfo"
+        private const val DEFAULT_GUEST_USER = "GUEST"
     }
 
     override fun doFilterInternal(
@@ -48,16 +50,21 @@ class MdcLoggingFilter : OncePerRequestFilter() {
         MDC.put(REQUEST_INFO_KEY, "${request.method} ${request.requestURI}")
 
         val userId = resolveUserId()
-        MDC.put(USER_ID_KEY, userId ?: "GUEST")
+        MDC.put(USER_ID_KEY, userId ?: DEFAULT_GUEST_USER)
     }
 
     private fun extractClientIp(request: HttpServletRequest): String {
         val xffHeader = request.getHeader(XFF_HEADER)
-        return if (xffHeader.isNullOrBlank()) {
-            request.remoteAddr
-        } else {
-            xffHeader.split(",").first().trim()
+        if (!xffHeader.isNullOrBlank()) {
+            return xffHeader.split(",").first().trim()
         }
+
+        val xRealIp = request.getHeader(X_REAL_IP_HEADER)
+        if (!xRealIp.isNullOrBlank()) {
+            return xRealIp.trim()
+        }
+
+        return request.remoteAddr
     }
 
     private fun resolveUserId(): String? {
