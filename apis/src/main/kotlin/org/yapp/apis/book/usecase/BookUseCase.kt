@@ -92,8 +92,8 @@ class BookUseCase(
         userBookId: UUID
     ) {
         userService.validateUserExists(userId)
-        userBookService.deleteUserBook(userBookId, userId)
         readingRecordService.deleteAllByUserBookId(userBookId)
+        userBookService.deleteUserBook(userBookId, userId)
     }
 
     private fun mergeWithUserBookStatus(
