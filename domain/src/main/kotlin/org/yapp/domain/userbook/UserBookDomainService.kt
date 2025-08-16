@@ -6,11 +6,12 @@ import org.yapp.domain.userbook.vo.HomeBookVO
 import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
 import org.yapp.globalutils.annotation.DomainService
+import org.yapp.domain.readingrecord.ReadingRecordRepository
 import java.util.*
 
 @DomainService
 class UserBookDomainService(
-    private val userBookRepository: UserBookRepository
+    private val userBookRepository: UserBookRepository,
 ) {
     fun upsertUserBook(
         userId: UUID,
@@ -77,6 +78,10 @@ class UserBookDomainService(
         return userBookRepository.existsByIdAndUserId(userBookId, userId)
     }
 
+    fun deleteById(userBookId: UUID) {
+        userBookRepository.deleteById(userBookId)
+    }
+
     fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {
         val resultTriples = userBookRepository.findRecordedBooksSortedByRecency(userId)
 
@@ -103,7 +108,8 @@ class UserBookDomainService(
         return userBooks.map { userBook ->
             HomeBookVO.newInstance(
                 userBook = userBook,
-                lastRecordedAt = userBook.updatedAt ?: throw IllegalStateException("UserBook의 updatedAt이 null입니다: ${userBook.id}"),
+                lastRecordedAt = userBook.updatedAt
+                    ?: throw IllegalStateException("UserBook의 updatedAt이 null입니다: ${userBook.id}"),
                 recordCount = 0
             )
         }

@@ -83,4 +83,9 @@ class UserBookService(
             completedCount = userBookStatusCountsVO.completedCount
         )
     }
+
+    fun deleteUserBook(userBookId: UUID, userId: UUID) {
+        validateUserBookExists(userBookId, userId)
+        userBookDomainService.deleteById(userBookId)
+    }
 }

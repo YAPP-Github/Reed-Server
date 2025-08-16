@@ -146,6 +146,9 @@ class ReadingRecordDomainService(
         return buildReadingRecordInfoVO(savedReadingRecord)
     }
 
+    fun deleteAllByUserBookId(userBookId: UUID) {
+        readingRecordRepository.deleteAllByUserBookId(userBookId)
+    }
     fun deleteReadingRecord(readingRecordId: UUID) {
         val readingRecord = readingRecordRepository.findById(readingRecordId)
             ?: throw ReadingRecordNotFoundException(

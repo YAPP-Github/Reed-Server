@@ -11,6 +11,8 @@ interface JpaReadingRecordRepository : JpaRepository<ReadingRecordEntity, UUID>,
 
     fun findAllByUserBookId(userBookId: UUID): List<ReadingRecordEntity>
 
+    fun deleteAllByUserBookId(userBookId: UUID)
+
     fun findAllByUserBookId(userBookId: UUID, pageable: Pageable): Page<ReadingRecordEntity>
 
     fun findAllByUserBookIdIn(userBookIds: List<UUID>): List<ReadingRecordEntity>

@@ -47,6 +47,9 @@ class ReadingRecordService(
         return page.map { ReadingRecordResponse.from(it) }
     }
 
+    fun deleteAllByUserBookId(userBookId: UUID) {
+        readingRecordDomainService.deleteAllByUserBookId(userBookId)
+    }
     fun updateReadingRecord(
         readingRecordId: UUID,
         request: UpdateReadingRecordRequest

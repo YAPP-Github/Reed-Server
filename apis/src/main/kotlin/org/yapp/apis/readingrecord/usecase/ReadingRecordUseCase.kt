@@ -1,6 +1,5 @@
 package org.yapp.apis.readingrecord.usecase
 
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.book.service.UserBookService

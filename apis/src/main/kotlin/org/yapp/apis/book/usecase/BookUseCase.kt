@@ -13,6 +13,7 @@ import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.service.BookManagementService
 import org.yapp.apis.book.service.BookQueryService
 import org.yapp.apis.book.service.UserBookService
+import org.yapp.apis.readingrecord.service.ReadingRecordService
 import org.yapp.apis.user.service.UserService
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookSortType
@@ -26,7 +27,8 @@ class BookUseCase(
     private val bookQueryService: BookQueryService,
     private val userService: UserService,
     private val userBookService: UserBookService,
-    private val bookManagementService: BookManagementService
+    private val bookManagementService: BookManagementService,
+    private val readingRecordService: ReadingRecordService
 ) {
     fun searchBooks(
         request: BookSearchRequest
@@ -82,6 +84,16 @@ class BookUseCase(
         userService.validateUserExists(userId)
 
         return userBookService.findUserBooksByDynamicConditionWithStatusCounts(userId, status, sort, title, pageable)
+    }
+
+    @Transactional
+    fun deleteBookFromMyLibrary(
+        userId: UUID,
+        userBookId: UUID
+    ) {
+        userService.validateUserExists(userId)
+        readingRecordService.deleteAllByUserBookId(userBookId)
+        userBookService.deleteUserBook(userBookId, userId)
     }
 
     private fun mergeWithUserBookStatus(

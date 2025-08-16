@@ -21,6 +21,10 @@ class ReadingRecordRepositoryImpl(
         return savedEntity.toDomain()
     }
 
+    override fun deleteAllByUserBookId(userBookId: UUID) {
+        jpaReadingRecordRepository.deleteAllByUserBookId(userBookId)
+    }
+
     override fun findById(id: UUID): ReadingRecord? {
         return jpaReadingRecordRepository.findByIdOrNull(id)?.toDomain()
     }

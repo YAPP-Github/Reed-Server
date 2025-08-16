@@ -9,6 +9,7 @@ interface ReadingRecordRepository {
 
     fun save(readingRecord: ReadingRecord): ReadingRecord
 
+    fun deleteAllByUserBookId(userBookId: UUID)
 
     fun findById(id: UUID): ReadingRecord?
 
