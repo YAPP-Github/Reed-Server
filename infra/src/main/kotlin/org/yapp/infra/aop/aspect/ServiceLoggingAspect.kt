@@ -99,6 +99,7 @@ class ServiceLoggingAspect(
             is UUID -> obj.toString()
             is Enum<*> -> obj.name
             is Collection<*> -> "[${obj.size} items]"
+            is Array<*> -> "${obj.javaClass.simpleName}[${obj.size}]"
             else -> maskMapLikeObject(obj)
         }
     }
