@@ -9,13 +9,13 @@ class MdcTaskDecorator : TaskDecorator {
         val contextMap = MDC.getCopyOfContextMap()
 
         return Runnable {
+            val previous = MDC.getCopyOfContextMap()
+
             try {
-                if (contextMap != null) {
-                    MDC.setContextMap(contextMap)
-                }
+                contextMap?.let(MDC::setContextMap) ?: MDC.clear()
                 runnable.run()
             } finally {
-                MDC.clear()
+                previous?.let(MDC::setContextMap) ?: MDC.clear()
             }
         }
     }
