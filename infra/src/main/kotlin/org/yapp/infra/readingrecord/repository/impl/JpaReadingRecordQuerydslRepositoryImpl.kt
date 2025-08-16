@@ -31,7 +31,7 @@ class JpaReadingRecordQuerydslRepositoryImpl(
         val results = queryFactory
             .selectFrom(readingRecord)
             .where(whereCondition)
-            .orderBy(createOrderSpecifier(sort))
+            .orderBy(*createOrderSpecifiers(sort))
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch()
@@ -45,13 +45,21 @@ class JpaReadingRecordQuerydslRepositoryImpl(
         return PageImpl(results, pageable, total)
     }
 
-    private fun createOrderSpecifier(sort: ReadingRecordSortType?): OrderSpecifier<*> {
+    private fun createOrderSpecifiers(sort: ReadingRecordSortType?): Array<OrderSpecifier<*>> {
         return when (sort) {
-            ReadingRecordSortType.PAGE_NUMBER_ASC -> readingRecord.pageNumber.asc()
-            ReadingRecordSortType.PAGE_NUMBER_DESC -> readingRecord.pageNumber.desc()
-            ReadingRecordSortType.CREATED_DATE_ASC -> readingRecord.createdAt.asc()
-            ReadingRecordSortType.CREATED_DATE_DESC -> readingRecord.createdAt.desc()
-            null -> readingRecord.createdAt.desc()
+            ReadingRecordSortType.PAGE_NUMBER_ASC -> arrayOf(
+                readingRecord.pageNumber.asc(),
+                readingRecord.updatedAt.desc()
+            )
+
+            ReadingRecordSortType.PAGE_NUMBER_DESC -> arrayOf(
+                readingRecord.pageNumber.desc(),
+                readingRecord.updatedAt.desc()
+            )
+
+            ReadingRecordSortType.CREATED_DATE_ASC -> arrayOf(readingRecord.createdAt.asc())
+            ReadingRecordSortType.CREATED_DATE_DESC -> arrayOf(readingRecord.createdAt.desc())
+            null -> arrayOf(readingRecord.createdAt.desc())
         }
     }
 
