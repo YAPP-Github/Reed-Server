@@ -18,7 +18,10 @@ class ServiceLoggingAspect(
     private val properties: LoggingAopProperties,
     private val objectMapper: ObjectMapper
 ) {
-    private val log = LoggerFactory.getLogger(ServiceLoggingAspect::class.java)
+    companion object {
+        private val log = LoggerFactory.getLogger(ServiceLoggingAspect::class.java)
+        private const val MASKING_TEXT = "****"
+    }
 
     @Around("org.yapp.infra.aop.pointcut.CommonPointcuts.serviceLayer() && !org.yapp.infra.aop.pointcut.CommonPointcuts.noLogging()")
     fun logService(joinPoint: ProceedingJoinPoint): Any? {
@@ -52,7 +55,7 @@ class ServiceLoggingAspect(
         val className = signature.declaringType.simpleName
         val methodName = signature.name
         val duration = Duration.between(startTime, Instant.now()).toMillis()
-        val returnValue = maskSensitiveData(result)
+        val returnValue = formatValue(result)
 
         log.info(
             "[SVC-SUCCESS] {}.{} | Result: {} | Duration: {}ms",
@@ -65,15 +68,26 @@ class ServiceLoggingAspect(
 
     private fun getArgumentsAsString(signature: MethodSignature, args: Array<Any?>): String {
         return signature.parameterNames.mapIndexed { index, paramName ->
-            "$paramName=${maskSensitiveData(args.getOrNull(index))}"
+            val value = if (isSensitiveParameter(paramName)) {
+                MASKING_TEXT
+            } else {
+                formatValue(args.getOrNull(index))
+            }
+            "$paramName=$value"
         }.joinToString(", ")
     }
 
-    private fun maskSensitiveData(obj: Any?): String {
+    private fun isSensitiveParameter(paramName: String): Boolean {
+        return properties.service.sensitiveFields.any { sensitiveField ->
+            paramName.lowercase().contains(sensitiveField.lowercase())
+        }
+    }
+
+    private fun formatValue(obj: Any?): String {
         return when (obj) {
             null -> "null"
             is Unit -> "void"
-            is String -> maskStringIfSensitive(obj)
+            is String -> "\"$obj\""
             is Number, is Boolean -> obj.toString()
             is UUID -> obj.toString()
             is Collection<*> -> "[${obj.size} items]"
@@ -81,22 +95,15 @@ class ServiceLoggingAspect(
         }
     }
 
-    private fun maskStringIfSensitive(value: String): String {
-        val isSensitive = properties.service.sensitiveFields.any { sensitiveField ->
-            value.lowercase().contains(sensitiveField)
-        }
-        return if (isSensitive) "****" else "\"$value\""
-    }
-
     private fun maskMapLikeObject(obj: Any): String {
         return try {
             val map: Map<*, *> = objectMapper.convertValue(obj, Map::class.java)
             val maskedMap = map.mapValues { (key, value) ->
-                val keyStr = key.toString().lowercase()
-                val isSensitive = properties.service.sensitiveFields.any { sensitiveField ->
-                    keyStr.contains(sensitiveField)
+                val keyStr = key.toString()
+                if (isSensitiveParameter(keyStr)) {
+                    return@mapValues MASKING_TEXT
                 }
-                if (isSensitive) "****" else value
+                value
             }
             objectMapper.writeValueAsString(maskedMap)
         } catch (e: Exception) {
