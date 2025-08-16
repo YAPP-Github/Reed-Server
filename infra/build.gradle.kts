@@ -1,9 +1,5 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
-plugins {
-    kotlin(Plugins.Kotlin.Short.KAPT) version Versions.KOTLIN
-}
-
 dependencies {
     implementation(project(Dependencies.Projects.GLOBAL_UTILS))
     implementation(project(Dependencies.Projects.DOMAIN))

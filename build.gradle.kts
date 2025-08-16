@@ -48,6 +48,7 @@ subprojects {
     apply(plugin = Plugins.Kotlin.JPA)
     apply(plugin = Plugins.Kotlin.JVM)
     apply(plugin = Plugins.JACOCO)
+    apply(plugin = Plugins.Kotlin.KAPT)
 
     java {
         toolchain {
@@ -55,10 +56,11 @@ subprojects {
         }
     }
 
+    configurations.all {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    }
+
     dependencies {
-        configurations.all {
-            exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
-        }
         implementation(Dependencies.Spring.STARTER_LOG4J2)
     }
 
@@ -78,7 +80,7 @@ subprojects {
                 "-Xconsistent-data-class-copy-visibility"
             )
             jvmTarget = Versions.JAVA_VERSION
-            kotlinOptions.javaParameters = true
+            javaParameters = true
         }
     }
 }

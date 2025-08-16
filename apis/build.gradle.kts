@@ -22,7 +22,7 @@ dependencies {
     implementation(Dependencies.BouncyCastle.BC_PROV)
     implementation(Dependencies.BouncyCastle.BC_PKIX)
 
-    annotationProcessor(Dependencies.Spring.CONFIGURATION_PROCESSOR)
+    kapt(Dependencies.Spring.CONFIGURATION_PROCESSOR)
 
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
     testImplementation(Dependencies.TestContainers.MYSQL)
