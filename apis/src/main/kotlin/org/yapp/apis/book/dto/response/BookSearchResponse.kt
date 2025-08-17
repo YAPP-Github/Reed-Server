@@ -78,7 +78,7 @@ data class BookSearchResponse private constructor(
         }
     }
 
-    @Schema(name = "BookSummary", description = "검색된 단일 책 요약 정보")
+    @Schema(name = "BookSummary", description = "회원용 검색된 단일 책 요약 정보")
     data class BookSummary private constructor(
 
         @field:Schema(description = "ISBN-13 번호", example = "9781234567890")
@@ -103,7 +103,7 @@ data class BookSearchResponse private constructor(
             description = "알라딘 도서 상세 페이지 링크",
             example = "http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=3680175"
         )
-        val link: String, // Added link field
+        val link: String,
 
         @field:Schema(description = "사용자의 책 상태", example = "BEFORE_REGISTRATION")
         val userBookStatus: BookStatus
@@ -120,7 +120,7 @@ data class BookSearchResponse private constructor(
                 author: String?,
                 publisher: String?,
                 coverImageUrl: String,
-                link: String // Added link
+                link: String
             ): BookSummary {
                 require(!title.isNullOrBlank()) { "Title is required" }
 
