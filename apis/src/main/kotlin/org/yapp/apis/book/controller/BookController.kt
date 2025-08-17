@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
 import org.yapp.apis.book.dto.request.UserBookRegisterRequest
-import org.yapp.apis.book.dto.response.BookDetailResponse
-import org.yapp.apis.book.dto.response.BookSearchResponse
-import org.yapp.apis.book.dto.response.UserBookPageResponse
-import org.yapp.apis.book.dto.response.UserBookResponse
+import org.yapp.apis.book.dto.response.*
 import org.yapp.apis.book.usecase.BookUseCase
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookSortType
@@ -33,11 +30,20 @@ class BookController(
     private val bookUseCase: BookUseCase,
 ) : BookControllerApi {
 
+    @GetMapping("/guest/search")
+    override fun searchBooksForGuest(
+        @Valid @ModelAttribute request: BookSearchRequest
+    ): ResponseEntity<GuestBookSearchResponse> {
+        val response = bookUseCase.searchBooksForGuest(request)
+        return ResponseEntity.ok(response)
+    }
+
     @GetMapping("/search")
     override fun searchBooks(
+        @AuthenticationPrincipal userId: UUID,
         @Valid @ModelAttribute request: BookSearchRequest
     ): ResponseEntity<BookSearchResponse> {
-        val response = bookUseCase.searchBooks(request)
+        val response = bookUseCase.searchBooks(request, userId)
         return ResponseEntity.ok(response)
     }
 

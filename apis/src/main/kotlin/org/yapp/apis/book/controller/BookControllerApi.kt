@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.*
 import org.yapp.apis.book.dto.request.BookDetailRequest
 import org.yapp.apis.book.dto.request.BookSearchRequest
 import org.yapp.apis.book.dto.request.UserBookRegisterRequest
-import org.yapp.apis.book.dto.response.BookDetailResponse
-import org.yapp.apis.book.dto.response.BookSearchResponse
-import org.yapp.apis.book.dto.response.UserBookPageResponse
-import org.yapp.apis.book.dto.response.UserBookResponse
+import org.yapp.apis.book.dto.response.*
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookSortType
 import org.yapp.globalutils.exception.ErrorResponse
@@ -32,7 +29,30 @@ import java.util.*
 interface BookControllerApi {
 
     @Operation(
-        summary = "도서 검색", description = "알라딘 API를 통해 키워드로 도서를 검색합니다.  \n" +
+        summary = "비회원 도서 검색", description = "알라딘 API를 통해 키워드로 도서를 검색합니다.  \n" +
+                " 비회원이기에 도서 상태(읽음, 읽는 중 등)은 표시되지 않습니다. "
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "성공적인 검색",
+                content = [Content(schema = Schema(implementation = GuestBookSearchResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 파라미터",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @GetMapping("/guest/search")
+    fun searchBooksForGuest(
+        @Valid @Parameter(description = "도서 검색 요청 객체") request: BookSearchRequest
+    ): ResponseEntity<GuestBookSearchResponse>
+
+    @Operation(
+        summary = "회원 도서 검색", description = "알라딘 API를 통해 키워드로 도서를 검색합니다.  \n" +
                 " 유저의 도서 상태(읽음, 읽는 중 등)가 함께 표시됩니다.  "
     )
     @ApiResponses(
@@ -51,6 +71,7 @@ interface BookControllerApi {
     )
     @GetMapping("/search")
     fun searchBooks(
+        @AuthenticationPrincipal userId: UUID,
         @Valid @Parameter(description = "도서 검색 요청 객체") request: BookSearchRequest
     ): ResponseEntity<BookSearchResponse>
 
