@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.book.dto.request.*
-import org.yapp.apis.book.dto.response.BookDetailResponse
-import org.yapp.apis.book.dto.response.BookSearchResponse
+import org.yapp.apis.book.dto.response.*
 import org.yapp.apis.book.dto.response.BookSearchResponse.BookSummary
-import org.yapp.apis.book.dto.response.UserBookPageResponse
-import org.yapp.apis.book.dto.response.UserBookResponse
 import org.yapp.apis.book.service.BookManagementService
 import org.yapp.apis.book.service.BookQueryService
 import org.yapp.apis.book.service.UserBookService
@@ -30,11 +27,19 @@ class BookUseCase(
     private val bookManagementService: BookManagementService,
     private val readingRecordService: ReadingRecordService
 ) {
-    fun searchBooks(
+    fun searchBooksForGuest(
         request: BookSearchRequest
+    ): GuestBookSearchResponse {
+        val searchResponse = bookQueryService.searchBooks(request)
+        return GuestBookSearchResponse.from(searchResponse)
+    }
+
+    fun searchBooks(
+        request: BookSearchRequest,
+        userId: UUID
     ): BookSearchResponse {
         val searchResponse = bookQueryService.searchBooks(request)
-        val booksWithUserStatus = mergeWithUserBookStatus(searchResponse.books, null)
+        val booksWithUserStatus = mergeWithUserBookStatus(searchResponse.books, userId)
 
         return searchResponse.withUpdatedBooks(booksWithUserStatus)
     }

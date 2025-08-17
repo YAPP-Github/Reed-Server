@@ -1,18 +1,13 @@
 package org.yapp.apis.book.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
-import org.yapp.apis.book.util.AuthorExtractor
-import org.yapp.apis.book.util.IsbnConverter
-import org.yapp.domain.userbook.BookStatus
 import org.yapp.globalutils.validator.BookDataValidator
-import org.yapp.infra.external.aladin.response.AladinSearchResponse
 
 @Schema(
-    name = "BookSearchResponse",
-    description = "알라딘 도서 검색 API 응답"
+    name = "GuestBookSearchResponse",
+    description = "게스트용 알라딘 도서 검색 API 응답"
 )
-data class BookSearchResponse private constructor(
-
+data class GuestBookSearchResponse private constructor(
     @field:Schema(description = "API 응답 버전", example = "20131101")
     val version: String?,
 
@@ -43,16 +38,12 @@ data class BookSearchResponse private constructor(
     @field:Schema(description = "마지막 페이지 여부", example = "false")
     val lastPage: Boolean,
 
-    @field:Schema(description = "검색된 책 목록")
-    val books: List<BookSummary>
+    @field:Schema(description = "검색된 책 목록 (게스트용)")
+    val books: List<GuestBookSummary>
 ) {
-    fun withUpdatedBooks(updatedBooks: List<BookSummary>): BookSearchResponse {
-        return this.copy(books = updatedBooks)
-    }
-
     companion object {
-        fun of(response: AladinSearchResponse, isLastPage: Boolean): BookSearchResponse { // Added isLastPage parameter
-            return BookSearchResponse(
+        fun from(response: BookSearchResponse): GuestBookSearchResponse {
+            return GuestBookSearchResponse(
                 version = response.version,
                 title = response.title,
                 pubDate = response.pubDate,
@@ -62,24 +53,23 @@ data class BookSearchResponse private constructor(
                 query = response.query,
                 searchCategoryId = response.searchCategoryId,
                 searchCategoryName = response.searchCategoryName,
-                lastPage = isLastPage,
-                books = response.item.map {
-                    BookSummary.of(
-                        isbn = it.isbn,
-                        isbn13 = it.isbn13,
-                        title = it.title,
-                        author = AuthorExtractor.extractAuthors(it.author),
-                        publisher = it.publisher,
-                        coverImageUrl = it.cover,
-                        link = it.link
+                lastPage = response.lastPage,
+                books = response.books.map { userBookSummary ->
+                    GuestBookSummary.of(
+                        isbn13 = userBookSummary.isbn13,
+                        title = userBookSummary.title,
+                        author = userBookSummary.author,
+                        publisher = userBookSummary.publisher,
+                        coverImageUrl = userBookSummary.coverImageUrl,
+                        link = userBookSummary.link
                     )
                 }
             )
         }
     }
 
-    @Schema(name = "BookSummary", description = "회원용 검색된 단일 책 요약 정보")
-    data class BookSummary private constructor(
+    @Schema(name = "GuestBookSummary", description = "게스트용 검색된 단일 책 요약 정보")
+    data class GuestBookSummary private constructor(
 
         @field:Schema(description = "ISBN-13 번호", example = "9781234567890")
         val isbn13: String,
@@ -103,36 +93,24 @@ data class BookSearchResponse private constructor(
             description = "알라딘 도서 상세 페이지 링크",
             example = "http://www.aladin.co.kr/shop/wproduct.aspx?ItemId=3680175"
         )
-        val link: String,
-
-        @field:Schema(description = "사용자의 책 상태", example = "BEFORE_REGISTRATION")
-        val userBookStatus: BookStatus
+        val link: String
     ) {
-        fun updateStatus(newStatus: BookStatus): BookSummary {
-            return this.copy(userBookStatus = newStatus)
-        }
-
         companion object {
             fun of(
-                isbn: String?,
-                isbn13: String?,
-                title: String?,
+                isbn13: String,
+                title: String,
                 author: String?,
                 publisher: String?,
                 coverImageUrl: String,
                 link: String
-            ): BookSummary {
-                require(!title.isNullOrBlank()) { "Title is required" }
-
-                return BookSummary(
-                    isbn13 = isbn13 ?: IsbnConverter.toIsbn13(isbn)
-                    ?: throw IllegalArgumentException("Either isbn13 or isbn must be provided"),
+            ): GuestBookSummary {
+                return GuestBookSummary(
+                    isbn13 = isbn13,
                     title = title,
                     author = author,
                     publisher = publisher?.let { BookDataValidator.removeParenthesesFromPublisher(it) },
                     coverImageUrl = coverImageUrl,
-                    link = link,
-                    userBookStatus = BookStatus.BEFORE_REGISTRATION
+                    link = link
                 )
             }
         }

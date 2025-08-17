@@ -22,7 +22,7 @@ class SecurityConfig(
 ) {
     companion object {
         private val WHITELIST_URLS = arrayOf(
-            "/api/v1/books/search",
+            "/api/v1/books/guest/search",
             "/api/v1/auth/refresh",
             "/api/v1/auth/signin",
             "/actuator/**",
