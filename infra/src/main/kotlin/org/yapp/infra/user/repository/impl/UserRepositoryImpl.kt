@@ -39,7 +39,7 @@ class UserRepositoryImpl(
         providerType: ProviderType,
         providerId: String
     ): User? {
-        return jpaUserRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType, providerId)?.toDomain()
+        return jpaUserRepository.findByProviderTypeAndProviderIdIncludingDeleted(providerType.name, providerId)?.toDomain()
     }
 
     override fun deleteById(userId: UUID) {
