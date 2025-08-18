@@ -17,17 +17,17 @@ interface JpaUserRepository : JpaRepository<UserEntity, UUID> {
     fun existsByEmail(email: String): Boolean
 
     @Query(
-        value = "SELECT u.* FROM users u WHERE u.provider_type = :#{#providerType.name()} AND u.provider_id = :providerId",
+        value = "SELECT u.* FROM users u WHERE u.provider_type = ?1 AND u.provider_id = ?2",
         nativeQuery = true
     )
     fun findByProviderTypeAndProviderIdIncludingDeleted(
-        @Param("providerType") providerType: ProviderType,
-        @Param("providerId") providerId: String
+        providerType: ProviderType,
+        providerId: String
     ): UserEntity?
 
     @Query(
-        value = "SELECT u.* FROM users u WHERE u.id = :id",
+        value = "SELECT u.* FROM users u WHERE u.id = ?1",
         nativeQuery = true
     )
-    fun findByIdIncludingDeleted(@Param("id") id: UUID): UserEntity?
+    fun findByIdIncludingDeleted(id: UUID): UserEntity?
 }
