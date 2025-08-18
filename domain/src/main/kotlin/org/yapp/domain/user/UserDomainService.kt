@@ -69,7 +69,7 @@ class UserDomainService(
     }
 
     fun restoreDeletedUser(userId: UUID): UserAuthVO {
-        val deletedUser = userRepository.findById(userId)
+        val deletedUser = userRepository.findByIdIncludingDeleted(userId)
             ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
 
         val restoredUser = userRepository.save(deletedUser.restore())

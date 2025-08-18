@@ -24,4 +24,10 @@ interface JpaUserRepository : JpaRepository<UserEntity, UUID> {
         @Param("providerType") providerType: ProviderType,
         @Param("providerId") providerId: String
     ): UserEntity?
+
+    @Query(
+        value = "SELECT u.* FROM users u WHERE u.id = :id",
+        nativeQuery = true
+    )
+    fun findByIdIncludingDeleted(@Param("id") id: UUID): UserEntity?
 }

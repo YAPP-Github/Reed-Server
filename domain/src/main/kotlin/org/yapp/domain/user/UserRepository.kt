@@ -6,6 +6,8 @@ interface UserRepository {
 
     fun findById(id: UUID): User?
 
+    fun findByIdIncludingDeleted(id: UUID): User?
+
     fun findByProviderTypeAndProviderId(providerType: ProviderType, providerId: String): User?
 
     fun findByProviderTypeAndProviderIdIncludingDeleted(providerType: ProviderType, providerId: String): User?

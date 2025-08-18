@@ -27,6 +27,10 @@ class UserRepositoryImpl(
         return jpaUserRepository.findByIdOrNull(id)?.toDomain()
     }
 
+    override fun findByIdIncludingDeleted(id: UUID): User? {
+        return jpaUserRepository.findByIdIncludingDeleted(id)?.toDomain()
+    }
+
     override fun existsById(id: UUID): Boolean {
         return jpaUserRepository.existsById(id)
     }
