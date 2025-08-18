@@ -90,19 +90,26 @@ data class BookCreateRequest private constructor(
     fun validCoverImageUrl(): String = coverImageUrl!!
 
     companion object {
+        private const val UNKNOWN_AUTHOR = "저자 정보 없음"
+        private const val UNKNOWN_PUBLISHER = "출판사 정보 없음"
+        private const val DEFAULT_COVER_IMAGE = "https://github.com/user-attachments/assets/7ba556a4-3a76-4f27-aecb-e58924e66843"
+
         fun from(bookDetailResponse: BookDetailResponse): BookCreateRequest {
             val finalIsbn13 = bookDetailResponse.isbn13
-            ?: throw IllegalArgumentException("ISBN13이 존재하지 않습니다.")
+                ?: throw IllegalArgumentException("ISBN13이 존재하지 않습니다.")
 
             return BookCreateRequest(
                 isbn13 = finalIsbn13,
-                title = bookDetailResponse.title,
-                author = bookDetailResponse.author,
-                publisher = bookDetailResponse.publisher,
+                author = provideDefaultIfBlank(bookDetailResponse.author, UNKNOWN_AUTHOR),
+                publisher = provideDefaultIfBlank(bookDetailResponse.publisher, UNKNOWN_PUBLISHER),
                 publicationYear = parsePublicationYear(bookDetailResponse.pubDate),
-                coverImageUrl = bookDetailResponse.coverImageUrl,
-                description = bookDetailResponse.description,
+                coverImageUrl = provideDefaultIfBlank(bookDetailResponse.coverImageUrl, DEFAULT_COVER_IMAGE),
+                description = bookDetailResponse.description
             )
+        }
+
+        private fun provideDefaultIfBlank(input: String?, defaultValue: String): String {
+            return if (input.isNullOrBlank()) defaultValue else input
         }
 
         private fun parsePublicationYear(pubDate: String?): Int? {
