@@ -111,7 +111,8 @@ data class BookCreateRequest private constructor(
         }
 
         private fun provideDefaultIfBlank(input: String?, defaultValue: String): String {
-            return if (input.isNullOrBlank()) defaultValue else input
+            val trimmed = input?.trim()
+            return if (trimmed.isNullOrEmpty()) defaultValue else trimmed
         }
 
         private fun parsePublicationYear(pubDate: String?): Int? {
