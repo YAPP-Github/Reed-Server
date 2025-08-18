@@ -1,8 +1,9 @@
 package org.yapp.globalutils.validator
 
-object BookDataValidator {
+import org.yapp.globalutils.util.RegexUtils
 
-    private val PARENTHESIS_REGEX = "\\s*\\([^)]*\\)\\s*".toRegex()
+object BookDataValidator {
+    private val PARENTHESIS_REGEX = Regex(RegexUtils.PARENTHESIS_PATTERN)
 
     fun removeParenthesesFromAuthor(author: String): String {
         return author.replace(PARENTHESIS_REGEX, "")
