@@ -5,7 +5,7 @@ import com.nimbusds.jose.jwk.OctetSequenceKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -16,13 +16,13 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.yapp.gateway.constants.JwtConstants
-import java.util.UUID
+import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
 @Configuration
+@EnableConfigurationProperties(JwtProperties::class)
 class JwtConfig(
-    @Value("\${jwt.secret-key}")
-    private val secretKey: String
+    private val jwtProperties: JwtProperties
 ) {
     companion object {
         private val SIGNATURE_ALGORITHM = MacAlgorithm.HS256
@@ -38,7 +38,7 @@ class JwtConfig(
      */
     @Bean
     fun jwkSource(): JWKSource<SecurityContext> {
-        val jwk: OctetSequenceKey = OctetSequenceKey.Builder(secretKey.toByteArray()).build()
+        val jwk: OctetSequenceKey = OctetSequenceKey.Builder(jwtProperties.secretKey.toByteArray()).build()
         return ImmutableJWKSet(JWKSet(jwk))
     }
 
@@ -64,7 +64,7 @@ class JwtConfig(
     @Bean
     @Primary
     fun jwtDecoder(): JwtDecoder {
-        val secretKeySpec = SecretKeySpec(secretKey.toByteArray(), SIGNATURE_ALGORITHM.name)
+        val secretKeySpec = SecretKeySpec(jwtProperties.secretKey.toByteArray(), SIGNATURE_ALGORITHM.name)
         val decoder = NimbusJwtDecoder.withSecretKey(secretKeySpec).build()
         val validator = JwtValidators.createDefaultWithIssuer(JwtConstants.ISSUER)
         decoder.setJwtValidator(validator)

@@ -1,12 +1,12 @@
 package org.yapp.gateway.jwt
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm
 import org.springframework.security.oauth2.jwt.JwsHeader
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters
 import org.springframework.stereotype.Component
+import org.yapp.gateway.config.JwtProperties
 import org.yapp.gateway.constants.JwtConstants
 import org.yapp.globalutils.auth.Role
 import java.time.Instant
@@ -15,10 +15,7 @@ import java.util.*
 @Component
 class JwtTokenProvider(
     private val jwtEncoder: JwtEncoder,
-    @Value("\${jwt.access-token-expiration}")
-    private val accessTokenExpiration: Long,
-    @Value("\${jwt.refresh-token-expiration}")
-    private val refreshTokenExpiration: Long
+    private val jwtProperties: JwtProperties
 ) {
     companion object {
         private const val TOKEN_TYPE_CLAIM = "type"
@@ -32,16 +29,16 @@ class JwtTokenProvider(
             JwtConstants.ROLES_CLAIM to roleStrings,
             TOKEN_TYPE_CLAIM to ACCESS_TOKEN_TYPE
         )
-        return generateToken(userId.toString(), accessTokenExpiration, claims)
+        return generateToken(userId.toString(), jwtProperties.accessTokenExpiration, claims)
     }
 
     fun generateRefreshToken(userId: UUID): String {
         val claims = mapOf(TOKEN_TYPE_CLAIM to REFRESH_TOKEN_TYPE)
-        return generateToken(userId.toString(), refreshTokenExpiration, claims)
+        return generateToken(userId.toString(), jwtProperties.refreshTokenExpiration, claims)
     }
 
     fun getRefreshTokenExpiration(): Long {
-        return refreshTokenExpiration
+        return jwtProperties.refreshTokenExpiration
     }
 
     private fun generateToken(subject: String, expirationSeconds: Long, claims: Map<String, Any>): String {
