@@ -17,12 +17,11 @@ spring:
 
   flyway:
     enabled: true
-    baseline-on-migrate: true
-    baseline-version: 0
-    clean-disabled: true
+    baseline-on-migrate: false
+    validate-on-migrate: true
     locations:
-      - classpath:db/migration
-      - classpath:db/reed
+      - classpath:db/migration/mysql
+      - classpath:db/seed/common
 
 ---
 spring:
@@ -32,10 +31,14 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
 
   flyway:
-    enabled: false
+    enabled: true
+    baseline-on-migrate: false
+    locations:
+      - classpath:db/migration/mysql
+      - classpath:db/seed/common
 
 ---
 spring:
