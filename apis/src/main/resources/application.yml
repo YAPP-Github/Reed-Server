@@ -7,19 +7,25 @@ spring:
     group:
       dev:
         - persistence
-        - infra
+        - crosscutting
         - jwt
+        - web
         - redis
         - external
       prod:
         - persistence
-        - infra
+        - crosscutting
         - jwt
+        - web
         - redis
         - external
       test:
         - persistence
+        - crosscutting
         - jwt
+        - web
+        - redis
+        - external
   servlet:
     multipart:
       max-file-size: 10MB
@@ -66,7 +72,6 @@ springdoc:
 ---
 spring:
   config:
-    import: optional:file:../secret/application-test-secret.properties
     activate:
       on-profile: test
 
@@ -75,25 +80,3 @@ springdoc:
     enabled: false
   api-docs:
     enabled: false
-
-aladin:
-  api:
-    ttb-key: dummy-aladin-key
-
-oauth:
-  kakao:
-    admin-key: DUMMYADMINKEY
-  apple:
-    client-id: dummy.client.id
-    key-id: DUMMYKEYID
-    team-id: DUMMYTEAMID
-    key-path: "path-ignored-by-mock"
-    audience: https://appleid.apple.com
-
-logging:
-  aop:
-    service:
-      enabled: false
-    controller:
-      enabled: false
-
