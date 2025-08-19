@@ -79,3 +79,29 @@ jobs:
             cd ~/deploy
             chmod +x ./deploy.sh
             ./deploy.sh
+
+      - name: Send Discord notification on success
+        if: success()
+        uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
+        with:
+          webhook-url: ${{ secrets.PROD_DEPLOY_DISCORD_WEBHOOK_URL }}
+          content: "🚀 **Production Deploy Succeeded!**"
+          embed-title: "✅ [${{ github.repository }}] Release **${{ github.event.release.tag_name }}**"
+          embed-description: |
+            **Released by**: `${{ github.actor }}`
+            The new version has been successfully deployed to production.
+            [View Release Notes](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }})
+          embed-color: 65280 # Green
+
+      - name: Send Discord notification on failure
+        if: failure()
+        uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
+        with:
+          webhook-url: ${{ secrets.PROD_DEPLOY_DISCORD_WEBHOOK_URL }}
+          content: "🚨 **Production Deploy Failed!**"
+          embed-title: "❌ [${{ github.repository }}] Release **${{ github.event.release.tag_name }}**"
+          embed-description: |
+            **Released by**: `${{ github.actor }}`
+            An error occurred during the production deployment workflow.
+            [View Failed Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          embed-color: 16711680 # Red
