@@ -5,6 +5,10 @@ dependencies {
     implementation(Dependencies.Spring.BOOT_STARTER_WEB)
     implementation(Dependencies.Spring.BOOT_STARTER_SECURITY)
     implementation(Dependencies.Spring.BOOT_STARTER_OAUTH2_RESOURCE_SERVER)
+    implementation(Dependencies.Spring.BOOT_STARTER_ACTUATOR)
+
+    implementation(Dependencies.Prometheus.MICROMETER_PROMETHEUS_REGISTRY)
+
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
 }
 

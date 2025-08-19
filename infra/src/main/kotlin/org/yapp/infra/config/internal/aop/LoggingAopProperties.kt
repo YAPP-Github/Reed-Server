@@ -1,4 +1,4 @@
-package org.yapp.infra.aop.properties
+package org.yapp.infra.config.internal.aop
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

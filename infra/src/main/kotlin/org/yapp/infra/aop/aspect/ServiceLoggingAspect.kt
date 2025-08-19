@@ -8,7 +8,7 @@ import org.aspectj.lang.reflect.MethodSignature
 import org.slf4j.LoggerFactory
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
-import org.yapp.infra.aop.properties.LoggingAopProperties
+import org.yapp.infra.config.internal.aop.LoggingAopProperties
 import java.time.Duration
 import java.time.Instant
 import java.util.*

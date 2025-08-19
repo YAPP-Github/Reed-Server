@@ -10,7 +10,6 @@ dependencies {
     implementation(Dependencies.Spring.BOOT_STARTER_DATA_JPA)
     implementation(Dependencies.Spring.BOOT_STARTER_SECURITY)
     implementation(Dependencies.Spring.BOOT_STARTER_VALIDATION)
-    implementation(Dependencies.Spring.BOOT_STARTER_ACTUATOR)
     implementation(Dependencies.Spring.BOOT_STARTER_OAUTH2_CLIENT)
 
     implementation(Dependencies.Database.MYSQL_CONNECTOR)

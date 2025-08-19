@@ -11,3 +11,23 @@ oauth:
     team-id: ${APPLE_TEAM_ID}
     key-path: ${APPLE_KEY_PATH}
     audience: https://appleid.apple.com
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+aladin:
+  api:
+    ttb-key: dummy-ttb-key
+
+oauth:
+  kakao:
+    admin-key: dummy-kakao-admin-key
+  apple:
+    client-id: dummy-apple-client-id
+    key-id: dummy-apple-key-id
+    team-id: dummy-apple-team-id
+    key-path: dummy-apple-key-path
+    audience: https://appleid.apple.com

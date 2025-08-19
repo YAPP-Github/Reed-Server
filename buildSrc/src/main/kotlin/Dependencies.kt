@@ -66,4 +66,8 @@ object Dependencies {
         const val BC_PROV = "org.bouncycastle:bcprov-jdk18on:1.78.1"
         const val BC_PKIX = "org.bouncycastle:bcpkix-jdk18on:1.78.1"
     }
+
+    object Prometheus {
+        const val MICROMETER_PROMETHEUS_REGISTRY = "io.micrometer:micrometer-registry-prometheus"
+    }
 }
