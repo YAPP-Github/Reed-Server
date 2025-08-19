@@ -3,6 +3,8 @@ server:
   shutdown: graceful
 
 spring:
+  jackson:
+    time-zone: Asia/Seoul
   profiles:
     group:
       dev:

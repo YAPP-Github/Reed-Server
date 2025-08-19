@@ -33,7 +33,10 @@ COPY --from=build /app/${MODULE}/build/libs/${MODULE}-*.jar app.jar
 # 런타임에 필요한 secret 폴더 복사
 COPY --from=build /app/secret ./secret/
 
+# TimeZone KST 설정
+ENV TZ=Asia/Seoul
+
 # JVM 실행 설정
 # - Xms512m: 초기 힙 메모리 512MB
 # - Xmx1g: 최대 힙 메모리 1GB
-ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
