@@ -1,7 +1,7 @@
 jwt:
   secret-key: ${JWT_SECRET_KEY}
-  access-token-expiration: 1800      # 30 minutes (초 단위)
-  refresh-token-expiration: 1209600  # 2 weeks (초 단위)
+  access-token-expiration: 30m
+  refresh-token-expiration: 14d
 
 ---
 spring:
@@ -11,5 +11,5 @@ spring:
 
 jwt:
   secret-key: this-is-a-simple-key-for-testing-purpose-only
-  access-token-expiration: 120        # 2 minute (초 단위, 테스트용 짧게 설정)
-  refresh-token-expiration: 3600      # 1 hour (초 단위, 테스트용 짧게 설정)
+  access-token-expiration: 2m
+  refresh-token-expiration: 1h

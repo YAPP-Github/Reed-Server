@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component
 import org.yapp.gateway.config.JwtProperties
 import org.yapp.gateway.constants.JwtConstants
 import org.yapp.globalutils.auth.Role
+import java.time.Duration
 import java.time.Instant
 import java.util.*
 
@@ -38,12 +39,16 @@ class JwtTokenProvider(
     }
 
     fun getRefreshTokenExpiration(): Long {
-        return jwtProperties.refreshTokenExpiration
+        return jwtProperties.refreshTokenExpiration.toSeconds()
     }
 
-    private fun generateToken(subject: String, expirationSeconds: Long, claims: Map<String, Any>): String {
+    private fun generateToken(
+        subject: String,
+        expiration: Duration,
+        claims: Map<String, Any>
+    ): String {
         val now = Instant.now()
-        val expiry = now.plusSeconds(expirationSeconds)
+        val expiry = now.plus(expiration)
 
         val claimsSet = JwtClaimsSet.builder()
             .issuer(JwtConstants.ISSUER)

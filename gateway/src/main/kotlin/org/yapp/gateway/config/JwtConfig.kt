@@ -1,6 +1,8 @@
 package org.yapp.gateway.config
 
+import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.jwk.JWKSet
+import com.nimbusds.jose.jwk.KeyUse
 import com.nimbusds.jose.jwk.OctetSequenceKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import com.nimbusds.jose.jwk.source.JWKSource
@@ -38,7 +40,11 @@ class JwtConfig(
      */
     @Bean
     fun jwkSource(): JWKSource<SecurityContext> {
-        val jwk: OctetSequenceKey = OctetSequenceKey.Builder(jwtProperties.secretKey.toByteArray()).build()
+        val jwk: OctetSequenceKey = OctetSequenceKey.Builder(jwtProperties.secretKey.toByteArray())
+            .algorithm(JWSAlgorithm.HS256)
+            .keyUse(KeyUse.SIGNATURE)
+            .build()
+
         return ImmutableJWKSet(JWKSet(jwk))
     }
 

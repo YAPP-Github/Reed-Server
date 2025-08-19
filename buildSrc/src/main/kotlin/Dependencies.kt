@@ -68,6 +68,6 @@ object Dependencies {
     }
 
     object Prometheus {
-        const val MICROMETER_PROMETHEUS_REGISTRY = "io.micrometer:micrometer-registry-prometheus:1.15.3"
+        const val MICROMETER_PROMETHEUS_REGISTRY = "io.micrometer:micrometer-registry-prometheus"
     }
 }
