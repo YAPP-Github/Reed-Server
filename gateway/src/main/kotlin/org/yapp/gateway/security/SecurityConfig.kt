@@ -32,6 +32,7 @@ class SecurityConfig(
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/kakao-login.html/**",
+            "/favicon.ico",
             "/error",
             "/"
         )
