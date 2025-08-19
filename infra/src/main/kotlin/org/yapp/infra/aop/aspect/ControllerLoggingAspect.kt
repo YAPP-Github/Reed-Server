@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
-import org.yapp.infra.aop.properties.LoggingAopProperties
+import org.yapp.infra.config.internal.aop.LoggingAopProperties
 import java.time.Duration
 import java.time.Instant
 
