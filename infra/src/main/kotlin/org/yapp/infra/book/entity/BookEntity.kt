@@ -41,7 +41,7 @@ class BookEntity private constructor(
     var author: String = author
         protected set
 
-    @Column(length = 255)
+    @Column(length = 300)
     var publisher: String = publisher
         protected set
 
