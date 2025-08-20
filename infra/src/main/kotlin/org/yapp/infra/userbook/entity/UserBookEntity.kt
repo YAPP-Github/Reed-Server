@@ -34,7 +34,7 @@ class UserBookEntity(
     @JdbcTypeCode(Types.VARCHAR)
     val bookId: UUID,
 
-    @Column(name = "book_isbn13", nullable = false)
+    @Column(name = "book_isbn13", nullable = false, length = 13)
     val bookIsbn13: String,
 
     coverImageUrl: String,
