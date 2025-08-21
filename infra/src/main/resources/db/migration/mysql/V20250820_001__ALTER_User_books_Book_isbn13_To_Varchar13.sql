@@ -1,0 +1,2 @@
+ALTER TABLE user_books
+    MODIFY COLUMN book_isbn13 VARCHAR(13) NOT NULL;
