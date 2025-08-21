@@ -168,4 +168,12 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+### User Customization ###
+# node_modules
+node_modules/
+
+# secret
+application-*-secret.properties
+secret/
+
 # End of https://www.toptal.com/developers/gitignore/api/intellij,kotlin,gradle

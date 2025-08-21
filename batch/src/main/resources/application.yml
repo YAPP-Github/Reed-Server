@@ -1,16 +1,45 @@
+server:
+  port: 8080
+  shutdown: graceful
+
 spring:
-  application:
-    name: batch
-  datasource:
-    url: jdbc:mysql://localhost:3306/batch_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
+  jackson:
+    time-zone: Asia/Seoul
+  profiles:
+    group:
+      dev:
+        - persistence
+        - jwt
+        - redis
+      prod:
+        - persistence
+        - jwt
+        - redis
+      test:
+        - persistence
+        - jwt
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 30MB
+
+---
+spring:
+  config:
+    import: optional:file:secret/application-dev-secret.properties
+    activate:
+      on-profile: dev
+
+---
+spring:
+  config:
+    import: optional:file:secret/application-prod-secret.properties
+    activate:
+      on-profile: prod
+
+---
+spring:
+  config:
+    import: optional:file:../secret/application-test-secret.properties
+    activate:
+      on-profile: test

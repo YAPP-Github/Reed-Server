@@ -1,0 +1,15 @@
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiration: 30m
+  refresh-token-expiration: 14d
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+jwt:
+  secret-key: this-is-a-simple-key-for-testing-purpose-only
+  access-token-expiration: 2m
+  refresh-token-expiration: 1h

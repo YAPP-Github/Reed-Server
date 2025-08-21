@@ -1,0 +1,29 @@
+management:
+  server:
+    port: ${ACTUATOR_PORT}
+  endpoints:
+    jmx:
+      exposure:
+        exclude: "*"
+    web:
+      exposure:
+        include: info, health, metrics, prometheus
+      base-path: ${ACTUATOR_PATH}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    jmx:
+      exposure:
+        exclude: "*"
+    web:
+      exposure:
+        include: info, health, metrics, prometheus
+      base-path: /actuator-test

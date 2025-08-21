@@ -1,0 +1,107 @@
+name: Prod CI/CD - Build, Push and Deploy
+
+on:
+  release:
+    types:
+      - published # GitHub Release가 'published' 상태일 때만 워크플로우를 실행합니다.
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: ninecraft0523/ninecraft-server
+  MODULE: apis
+
+jobs:
+  build-push-and-deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Inject application-secret.properties from Secrets
+        run: |
+          mkdir ./secret
+          echo "${{ secrets.PROD_SECRET_PROPERTIES }}" > ./secret/application-prod-secret.properties
+          echo "${{ secrets.APPLE_AUTH_KEY }}" > ./secret/AuthKey.p8
+          chmod 600 ./secret/*
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=raw,value=production-latest
+
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            MODULE=${{ env.MODULE }}
+
+      - name: Deploy to Production Server
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          port: ${{ secrets.PROD_PORT }}
+          script: |
+            export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+            export DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
+            export IMAGE_TAG="$(echo "${{ steps.meta.outputs.tags }}" | head -n1)"
+            export VERSION_TAG="${{ steps.meta.outputs.version }}"
+            export RELEASE_VERSION="${{ github.event.release.tag_name }}"
+            cd ~/deploy
+            chmod +x ./deploy.sh
+            ./deploy.sh
+
+      - name: Send Discord notification on success
+        if: success()
+        uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
+        with:
+          webhook-url: ${{ secrets.PROD_DEPLOY_DISCORD_WEBHOOK_URL }}
+          content: "🚀 **Production Deploy Succeeded!**"
+          embed-title: "✅ [${{ github.repository }}] Release **${{ github.event.release.tag_name }}**"
+          embed-description: |
+            **Released by**: `${{ github.actor }}`
+            The new version has been successfully deployed to production.
+            [View Release Notes](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }})
+          embed-color: 65280 # Green
+
+      - name: Send Discord notification on failure
+        if: failure()
+        uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
+        with:
+          webhook-url: ${{ secrets.PROD_DEPLOY_DISCORD_WEBHOOK_URL }}
+          content: "🚨 **Production Deploy Failed!**"
+          embed-title: "❌ [${{ github.repository }}] Release **${{ github.event.release.tag_name }}**"
+          embed-description: |
+            **Released by**: `${{ github.actor }}`
+            An error occurred during the production deployment workflow.
+            [View Failed Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          embed-color: 16711680 # Red

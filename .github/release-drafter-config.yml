@@ -1,0 +1,41 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+categories:
+  - title: '✨ 새로운 기능이 추가되었어요'
+    labels: ['✨ feat']
+
+  - title: '🐞 버그가 수정되었어요'
+    labels: ['🐞 fix']
+
+  - title: '🔨 코드 리팩터링이 있었어요'
+    labels: ['🔨 refactor']
+
+  - title: '📃 문서가 변경되었어요'
+    labels: ['📃 docs']
+
+  - title: '⚙️ 설정이나 기타 사소한 작업이 있었어요'
+    labels: ['⚙️ chore']
+
+  - title: '✅ 테스트가 추가되었어요'
+    labels: ['✅ test']
+
+  - title: '🎨 스타일 관련 수정이 있었어요'
+    labels: ['🎨 style']
+
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+template: |
+  ## 🚀 이번 버전의 변경사항
+  ---
+  $CHANGES
+
+no-changes-template: '변경사항이 없어요 🎉'
+
+version-resolver:
+  major:
+    labels: ['1️⃣ major']
+  minor:
+    labels: ['2️⃣ minor']
+  patch:
+    labels: ['3️⃣ patch']
+  default: patch
