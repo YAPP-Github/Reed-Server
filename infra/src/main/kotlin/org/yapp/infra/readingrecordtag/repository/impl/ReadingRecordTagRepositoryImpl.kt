@@ -21,10 +21,17 @@ class ReadingRecordTagRepositoryImpl(
     }
 
     override fun findByReadingRecordIdIn(readingRecordIds: List<UUID>): List<ReadingRecordTag> {
-        return jpaReadingRecordTagRepository.findByReadingRecordIdIn(readingRecordIds).map { it.toDomain() }
+        if (readingRecordIds.isEmpty()) return emptyList()
+        return jpaReadingRecordTagRepository
+            .findByReadingRecordIdIn(readingRecordIds)
+            .map { it.toDomain() }
     }
 
-    override fun countTagsByUserIdAndUserBookIdAndCategories(userId: UUID, userBookId: UUID, categories: List<String>): Map<String, Int> {
+    override fun countTagsByUserIdAndUserBookIdAndCategories(
+        userId: UUID,
+        userBookId: UUID,
+        categories: List<String>
+    ): Map<String, Int> {
         return jpaReadingRecordTagRepository.countTagsByUserIdAndUserBookIdAndCategories(userId, userBookId, categories)
     }
 
