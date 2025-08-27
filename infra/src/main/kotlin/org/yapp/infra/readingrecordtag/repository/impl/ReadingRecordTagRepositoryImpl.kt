@@ -20,6 +20,10 @@ class ReadingRecordTagRepositoryImpl(
         return jpaReadingRecordTagRepository.findByReadingRecordId(readingRecordId).map { it.toDomain() }
     }
 
+    override fun findByReadingRecordIdIn(readingRecordIds: List<UUID>): List<ReadingRecordTag> {
+        return jpaReadingRecordTagRepository.findByReadingRecordIdIn(readingRecordIds).map { it.toDomain() }
+    }
+
     override fun countTagsByUserIdAndUserBookIdAndCategories(userId: UUID, userBookId: UUID, categories: List<String>): Map<String, Int> {
         return jpaReadingRecordTagRepository.countTagsByUserIdAndUserBookIdAndCategories(userId, userBookId, categories)
     }
