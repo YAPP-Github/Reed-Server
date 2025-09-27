@@ -2,12 +2,6 @@
 <Configuration status="WARN" packages="io.sentry.log4j2">
 
     <Properties>
-        <!-- 색상 없는 기본 패턴 (파일용) -->
-        <Property name="FILE_LOG_PATTERN">
-            %d{yyyy-MM-dd HH:mm:ss.SSSSSS} %-5level [%thread] [%X{traceId}] [%X{userId}] [%X{clientIp}]
-            [%X{requestInfo}] %logger{36} - %msg%n
-        </Property>
-
         <Property name="CONSOLE_LOG_PATTERN">
             %d{yyyy-MM-dd HH:mm:ss.SSSSSS} %highlight{%-5level}{FATAL=red blink, ERROR=red, WARN=yellow bold,
             INFO=green, DEBUG=green bold, TRACE=blue} %style{[%thread]}{cyan} %style{[%X{traceId}]}{green}
@@ -22,17 +16,6 @@
             <PatternLayout pattern="${CONSOLE_LOG_PATTERN}" disableAnsi="false"/>
         </Console>
 
-        <!-- 파일 출력 - 색상 없음 -->
-        <RollingFile name="FileAppender" fileName="logs/application.log"
-                     filePattern="logs/application-%d{yyyy-MM-dd}-%i.log.gz">
-            <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy interval="1"/>
-                <SizeBasedTriggeringPolicy size="100MB"/>
-            </Policies>
-            <DefaultRolloverStrategy max="10"/>
-        </RollingFile>
-
         <!-- Sentry Appender -->
         <Sentry name="Sentry" level="ERROR"/>
     </Appenders>
@@ -41,14 +24,12 @@
         <!-- 내 애플리케이션 로거 -->
         <Logger name="org.yapp" level="INFO" additivity="false">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="FileAppender"/>
             <AppenderRef ref="Sentry"/>
         </Logger>
 
         <!-- 루트 로거 -->
         <Root level="INFO">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="FileAppender"/>
             <AppenderRef ref="Sentry"/>
         </Root>
     </Loggers>
