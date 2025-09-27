@@ -23,6 +23,9 @@ spring:
       max-file-size: 10MB
       max-request-size: 30MB
 
+app:
+  module-name: batch
+
 ---
 spring:
   config:

@@ -10,6 +10,18 @@ logging:
     controller:
       enabled: true
 
+sentry:
+  dsn: ${SENTRY_DSN}
+  environment: ${SENTRY_ENVIRONMENT}
+  server-name: ${SENTRY_SERVER_NAME}
+  traces-sample-rate: 1.0
+  send-default-pii: true
+  logs:
+    enabled: true
+  logging:
+    minimum-event-level: error
+    minimum-breadcrumb-level: info
+
 ---
 spring:
   config:
@@ -25,3 +37,15 @@ logging:
       max-log-length: 500
     controller:
       enabled: true
+
+sentry:
+  dsn: ""
+  environment: test
+  server-name: reed-test
+  traces-sample-rate: 1.0
+  send-default-pii: true
+  logs:
+    enabled: true
+  logging:
+    minimum-event-level: error
+    minimum-breadcrumb-level: info
