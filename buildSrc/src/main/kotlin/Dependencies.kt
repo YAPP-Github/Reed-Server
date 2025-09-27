@@ -70,4 +70,9 @@ object Dependencies {
     object Prometheus {
         const val MICROMETER_PROMETHEUS_REGISTRY = "io.micrometer:micrometer-registry-prometheus"
     }
+
+    object Sentry {
+        const val SPRING_BOOT_STARTER = "io.sentry:sentry-spring-boot-starter-jakarta:8.22.0"
+        const val LOG4J2 = "io.sentry:sentry-log4j2:8.22.0"
+    }
 }
