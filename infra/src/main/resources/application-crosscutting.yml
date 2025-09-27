@@ -39,7 +39,7 @@ logging:
       enabled: true
 
 sentry:
-  dsn: ""
+  dsn:
   environment: test
   server-name: reed-test
   traces-sample-rate: 1.0
