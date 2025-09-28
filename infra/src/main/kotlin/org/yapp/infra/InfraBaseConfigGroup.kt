@@ -7,6 +7,7 @@ import org.yapp.infra.config.internal.async.AsyncConfig
 import org.yapp.infra.config.internal.jpa.JpaConfig
 import org.yapp.infra.config.internal.page.PageConfig
 import org.yapp.infra.config.internal.querydsl.QuerydslConfig
+import org.yapp.infra.config.external.sentry.SentryConfig
 
 enum class InfraBaseConfigGroup(
     val configClass: Class<out InfraBaseConfig>
@@ -17,5 +18,6 @@ enum class InfraBaseConfigGroup(
     REDIS(RedisConfig::class.java),
     REST_CLIENT(RestClientConfig::class.java),
     QUERY_DSL(QuerydslConfig::class.java),
-    AOP(AopConfig::class.java)
+    AOP(AopConfig::class.java),
+    SENTRY(SentryConfig::class.java)
 }

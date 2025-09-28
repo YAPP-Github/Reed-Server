@@ -34,6 +34,9 @@ springdoc:
     enabled: true
   override-with-generic-response: false
 
+app:
+  module-name: admin
+
 ---
 spring:
   config:

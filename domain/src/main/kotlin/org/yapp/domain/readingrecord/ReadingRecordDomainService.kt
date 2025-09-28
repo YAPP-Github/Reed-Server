@@ -102,8 +102,36 @@ class ReadingRecordDomainService(
         sort: ReadingRecordSortType?,
         pageable: Pageable
     ): Page<ReadingRecordInfoVO> {
-        return readingRecordRepository.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)
-            .map { buildReadingRecordInfoVO(it) }
+        val readingRecordPage = readingRecordRepository.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)
+        if (readingRecordPage.isEmpty) {
+            return Page.empty(pageable)
+        }
+
+        val readingRecords = readingRecordPage.content
+        val readingRecordIds = readingRecords.map { it.id.value }
+
+        val readingRecordTags = readingRecordTagRepository.findByReadingRecordIdIn(readingRecordIds)
+        val tagIds = readingRecordTags.map { it.tagId.value }
+        val tagsById = tagRepository.findByIds(tagIds).associateBy { it.id.value }
+
+        val tagsByReadingRecordId = readingRecordTags
+            .groupBy { it.readingRecordId.value }
+            .mapValues { (_, tags) ->
+                tags.mapNotNull { tagsById[it.tagId.value] }
+            }
+
+        val userBook = userBookRepository.findById(userBookId)
+
+        return readingRecordPage.map { readingRecord ->
+            ReadingRecordInfoVO.newInstance(
+                readingRecord = readingRecord,
+                emotionTags = tagsByReadingRecordId[readingRecord.id.value]?.map { it.name } ?: emptyList(),
+                bookTitle = userBook?.title,
+                bookPublisher = userBook?.publisher,
+                bookCoverImageUrl = userBook?.coverImageUrl,
+                author = userBook?.author
+            )
+        }
     }
 
     fun modifyReadingRecord(
