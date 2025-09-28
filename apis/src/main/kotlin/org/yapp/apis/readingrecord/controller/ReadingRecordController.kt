@@ -63,7 +63,7 @@ class ReadingRecordController(
         @AuthenticationPrincipal userId: UUID,
         @PathVariable userBookId: UUID,
         @RequestParam(required = false) sort: ReadingRecordSortType?,
-        @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
+        @PageableDefault(size = 10, sort = ["updatedAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<ReadingRecordPageResponse> {
         val response = readingRecordUseCase.getReadingRecordsByUserBookId(
