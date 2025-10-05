@@ -59,7 +59,9 @@ class JpaReadingRecordQuerydslRepositoryImpl(
 
             ReadingRecordSortType.CREATED_DATE_ASC -> arrayOf(readingRecord.createdAt.asc())
             ReadingRecordSortType.CREATED_DATE_DESC -> arrayOf(readingRecord.createdAt.desc())
-            null -> arrayOf(readingRecord.createdAt.desc())
+            ReadingRecordSortType.UPDATED_DATE_ASC -> arrayOf(readingRecord.updatedAt.asc())
+            ReadingRecordSortType.UPDATED_DATE_DESC -> arrayOf(readingRecord.updatedAt.desc())
+            null -> arrayOf(readingRecord.updatedAt.desc())
         }
     }
 
