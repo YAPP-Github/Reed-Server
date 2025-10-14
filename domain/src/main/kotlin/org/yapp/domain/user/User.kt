@@ -18,7 +18,9 @@ data class User private constructor(
     val appleRefreshToken: String? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
-    val deletedAt: LocalDateTime? = null
+    val deletedAt: LocalDateTime? = null,
+    val lastActivity: LocalDateTime? = null,
+    val notificationEnabled: Boolean = true,
 ) {
 
     fun restore(): User {
@@ -40,6 +42,18 @@ data class User private constructor(
         )
     }
 
+    fun updateLastActivity(): User {
+        return this.copy(
+            lastActivity = LocalDateTime.now()
+        )
+    }
+
+    fun updateNotificationSettings(notificationEnabled: Boolean): User {
+        return this.copy(
+            notificationEnabled = notificationEnabled
+        )
+    }
+
     companion object {
         fun create(
             email: String,
@@ -58,7 +72,8 @@ data class User private constructor(
                 providerId = ProviderId.newInstance(providerId),
                 role = Role.USER,
                 termsAgreed = termsAgreed,
-                appleRefreshToken = null
+                appleRefreshToken = null,
+                lastActivity = LocalDateTime.now()
             )
         }
 
@@ -81,7 +96,8 @@ data class User private constructor(
                 providerId = ProviderId.newInstance(providerId),
                 role = role,
                 termsAgreed = termsAgreed,
-                appleRefreshToken = null
+                appleRefreshToken = null,
+                lastActivity = LocalDateTime.now()
             )
         }
 
@@ -97,7 +113,9 @@ data class User private constructor(
             appleRefreshToken: String? = null,
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null,
-            deletedAt: LocalDateTime? = null
+            deletedAt: LocalDateTime? = null,
+            lastActivity: LocalDateTime? = null,
+            notificationEnabled: Boolean = true
         ): User {
             return User(
                 id = id,
@@ -111,7 +129,9 @@ data class User private constructor(
                 appleRefreshToken = appleRefreshToken,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
-                deletedAt = deletedAt
+                deletedAt = deletedAt,
+                lastActivity = lastActivity,
+                notificationEnabled = notificationEnabled
             )
         }
     }

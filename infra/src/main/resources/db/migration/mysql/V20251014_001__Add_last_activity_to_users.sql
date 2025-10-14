@@ -1,0 +1,2 @@
+ALTER TABLE users
+ADD COLUMN last_activity DATETIME(6) DEFAULT NULL;

@@ -9,6 +9,7 @@ import org.yapp.domain.user.User
 import org.yapp.globalutils.auth.Role
 import org.yapp.infra.common.BaseTimeEntity
 import java.sql.Types
+import java.time.LocalDateTime
 import java.util.*
 
 @Entity
@@ -63,6 +64,14 @@ class UserEntity private constructor(
     var appleRefreshToken: String? = appleRefreshToken
         protected set
 
+    @Column(name = "last_activity")
+    var lastActivity: LocalDateTime? = null
+        protected set
+
+    @Column(name = "notification_enabled", nullable = false)
+    var notificationEnabled: Boolean = true
+        protected set
+
     fun toDomain(): User = User.reconstruct(
         id = User.Id.newInstance(this.id),
         email = User.Email.newInstance(this.email),
@@ -75,21 +84,28 @@ class UserEntity private constructor(
         appleRefreshToken = appleRefreshToken,
         createdAt = createdAt,
         updatedAt = updatedAt,
-        deletedAt = deletedAt
+        deletedAt = deletedAt,
+        lastActivity = lastActivity,
+        notificationEnabled = notificationEnabled
     )
 
     companion object {
-        fun fromDomain(user: User): UserEntity = UserEntity(
-            id = user.id.value,
-            email = user.email.value,
-            nickname = user.nickname,
-            profileImageUrl = user.profileImageUrl,
-            providerType = user.providerType,
-            providerId = user.providerId.value,
-            role = user.role,
-            termsAgreed = user.termsAgreed,
-            appleRefreshToken = user.appleRefreshToken
-        )
+        fun fromDomain(user: User): UserEntity {
+            return UserEntity(
+                id = user.id.value,
+                email = user.email.value,
+                nickname = user.nickname,
+                profileImageUrl = user.profileImageUrl,
+                providerType = user.providerType,
+                providerId = user.providerId.value,
+                role = user.role,
+                termsAgreed = user.termsAgreed,
+                appleRefreshToken = user.appleRefreshToken
+            ).apply {
+                this.lastActivity = user.lastActivity
+                this.notificationEnabled = user.notificationEnabled
+            }
+        }
     }
 
     override fun equals(other: Any?): Boolean {

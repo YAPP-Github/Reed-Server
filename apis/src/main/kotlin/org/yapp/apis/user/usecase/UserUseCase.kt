@@ -7,6 +7,8 @@ import org.yapp.apis.user.service.UserService
 import org.yapp.globalutils.annotation.UseCase
 import java.util.*
 
+import org.yapp.apis.user.dto.request.NotificationSettingsRequest
+
 @UseCase
 @Transactional(readOnly = true)
 class UserUseCase(
@@ -19,5 +21,15 @@ class UserUseCase(
     @Transactional
     fun updateTermsAgreement(userId: UUID, request: TermsAgreementRequest): UserProfileResponse {
         return userService.updateTermsAgreement(userId, request)
+    }
+
+    @Transactional
+    fun updateLastActivity(userId: UUID) {
+        userService.updateLastActivity(userId)
+    }
+
+    @Transactional
+    fun updateNotificationSettings(userId: UUID, request: NotificationSettingsRequest): UserProfileResponse {
+        return userService.updateNotificationSettings(userId, request)
     }
 }

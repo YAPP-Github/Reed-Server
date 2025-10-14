@@ -36,4 +36,15 @@ class UserService(
         val userIdentity = userDomainService.findUserIdentityById(findUserIdentityRequest.validUserId())
         return UserAuthInfoResponse.from(userIdentity)
     }
+
+    fun updateLastActivity(userId: UUID) {
+        validateUserExists(userId)
+        userDomainService.updateLastActivity(userId)
+    }
+
+    fun updateNotificationSettings(userId: UUID, request: NotificationSettingsRequest): UserProfileResponse {
+        validateUserExists(userId)
+        val updatedUserProfile = userDomainService.updateNotificationSettings(userId, request.validNotificationEnabled())
+        return UserProfileResponse.from(updatedUserProfile)
+    }
 }

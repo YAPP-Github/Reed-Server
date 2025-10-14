@@ -99,4 +99,19 @@ class UserDomainService(
 
         userRepository.deleteById(user.id.value)
     }
+
+    fun updateLastActivity(userId: UUID) {
+        val user = userRepository.findById(userId)
+            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+
+        userRepository.save(user.updateLastActivity())
+    }
+
+    fun updateNotificationSettings(userId: UUID, notificationEnabled: Boolean): UserProfileVO {
+        val user = userRepository.findById(userId)
+            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+
+        val updatedUser = userRepository.save(user.updateNotificationSettings(notificationEnabled))
+        return UserProfileVO.newInstance(updatedUser)
+    }
 }

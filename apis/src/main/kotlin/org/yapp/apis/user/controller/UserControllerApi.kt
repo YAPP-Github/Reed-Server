@@ -19,6 +19,8 @@ import org.yapp.apis.user.dto.response.UserProfileResponse
 import org.yapp.globalutils.exception.ErrorResponse
 import java.util.*
 
+import org.yapp.apis.user.dto.request.NotificationSettingsRequest
+
 @Tag(name = "Users", description = "사용자 정보를 관리하는 API")
 @RequestMapping("/api/v1/users")
 interface UserControllerApi {
@@ -83,5 +85,66 @@ interface UserControllerApi {
     fun updateTermsAgreement(
         @Parameter(hidden = true) @AuthenticationPrincipal userId: UUID,
         @Valid @RequestBody @Parameter(description = "약관 동의 요청 객체") request: TermsAgreementRequest
+    ): ResponseEntity<UserProfileResponse>
+
+    @Operation(
+        summary = "사용자 마지막 활동 시간 업데이트",
+        description = "사용자의 마지막 활동 시간을 현재 시간으로 업데이트합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "마지막 활동 시간 업데이트 성공"
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "사용자를 찾을 수 없습니다.",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @PutMapping("/me/last-activity")
+    fun updateLastActivity(
+        @Parameter(hidden = true) @AuthenticationPrincipal userId: UUID
+    ): ResponseEntity<Unit>
+
+    @Operation(
+        summary = "사용자 알림 설정 업데이트",
+        description = "사용자의 알림 설정 상태를 업데이트합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "알림 설정 업데이트 성공",
+                content = [Content(schema = Schema(implementation = UserProfileResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 파라미터",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "사용자를 찾을 수 없습니다.",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @PutMapping("/me/notification-settings")
+    fun updateNotificationSettings(
+        @Parameter(hidden = true) @AuthenticationPrincipal userId: UUID,
+        @Valid @RequestBody @Parameter(description = "알림 설정 요청 객체") request: NotificationSettingsRequest
     ): ResponseEntity<UserProfileResponse>
 }

@@ -9,6 +9,8 @@ import org.yapp.apis.user.dto.response.UserProfileResponse
 import org.yapp.apis.user.usecase.UserUseCase
 import java.util.*
 
+import org.yapp.apis.user.dto.request.NotificationSettingsRequest
+
 @RestController
 @RequestMapping("/api/v1/users")
 class UserController(
@@ -28,6 +30,23 @@ class UserController(
         @Valid @RequestBody request: TermsAgreementRequest
     ): ResponseEntity<UserProfileResponse> {
         val userProfile = userUseCase.updateTermsAgreement(userId, request)
+        return ResponseEntity.ok(userProfile)
+    }
+
+    @PutMapping("/me/last-activity")
+    override fun updateLastActivity(
+        @AuthenticationPrincipal userId: UUID
+    ): ResponseEntity<Unit> {
+        userUseCase.updateLastActivity(userId)
+        return ResponseEntity.ok().build()
+    }
+
+    @PutMapping("/me/notification-settings")
+    override fun updateNotificationSettings(
+        @AuthenticationPrincipal userId: UUID,
+        @Valid @RequestBody request: NotificationSettingsRequest
+    ): ResponseEntity<UserProfileResponse> {
+        val userProfile = userUseCase.updateNotificationSettings(userId, request)
         return ResponseEntity.ok(userProfile)
     }
 }
