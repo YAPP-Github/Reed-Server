@@ -21,6 +21,10 @@ dependencies {
     implementation(Dependencies.BouncyCastle.BC_PROV)
     implementation(Dependencies.BouncyCastle.BC_PKIX)
 
+    implementation(Dependencies.Firebase.FIREBASE_ADMIN)
+
+    implementation(Dependencies.OkHttp.OKHTTP)
+
     kapt(Dependencies.Spring.CONFIGURATION_PROCESSOR)
 
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)

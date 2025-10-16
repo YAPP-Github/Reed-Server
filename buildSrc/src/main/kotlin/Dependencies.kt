@@ -1,5 +1,10 @@
 object Dependencies {
 
+    object Firebase {
+        const val FIREBASE_ADMIN = "com.google.firebase:firebase-admin:9.2.0"
+    }
+
+
     object Spring {
         const val BOOT_STARTER_WEB = "org.springframework.boot:spring-boot-starter-web"
         const val BOOT_STARTER_DATA_JPA = "org.springframework.boot:spring-boot-starter-data-jpa"
@@ -10,6 +15,7 @@ object Dependencies {
         const val BOOT_STARTER_DATA_REDIS = "org.springframework.boot:spring-boot-starter-data-redis"
         const val BOOT_STARTER_OAUTH2_RESOURCE_SERVER = "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
         const val BOOT_STARTER_OAUTH2_CLIENT = "org.springframework.boot:spring-boot-starter-oauth2-client"
+        const val BOOT_STARTER_BATCH = "org.springframework.boot:spring-boot-starter-batch"
         const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect"
         const val CONFIGURATION_PROCESSOR = "org.springframework.boot:spring-boot-configuration-processor"
         const val SPRING_DATA_COMMONS = "org.springframework.data:spring-data-commons"
@@ -19,6 +25,7 @@ object Dependencies {
 
     object Database {
         const val MYSQL_CONNECTOR = "com.mysql:mysql-connector-j"
+        const val JAKARTA_PERSISTENCE_API = "jakarta.persistence:jakarta.persistence-api:3.1.0"
     }
 
     object Swagger {
@@ -46,6 +53,11 @@ object Dependencies {
         const val HTTP_CLIENT5 = "org.apache.httpcomponents.client5:httpclient5:$HTTP_CLIENT5_VERSION"
         const val HTTP_CORE5 = "org.apache.httpcomponents.core5:httpcore5:$HTTP_CLIENT5_VERSION"
     }
+
+    object OkHttp {
+        const val OKHTTP = "com.squareup.okhttp3:okhttp:4.12.0"
+    }
+
 
     object TestContainers {
         const val MYSQL = "org.testcontainers:mysql:1.21.3"

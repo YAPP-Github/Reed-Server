@@ -8,10 +8,13 @@ import java.util.UUID
 data class Notification private constructor(
     val id: Id,
     val user: User,
+    val fcmToken: String,
     val title: String,
     val message: String,
     val notificationType: NotificationType,
     val isRead: Boolean = false,
+    val isSent: Boolean = false,
+    val sentAt: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null
 ) {
@@ -27,42 +30,55 @@ data class Notification private constructor(
             user: User,
             title: String,
             message: String,
-            notificationType: NotificationType
+            notificationType: NotificationType,
+            isSent: Boolean = false,
+            sentAt: LocalDateTime? = null
         ): Notification {
             return Notification(
                 id = Id.newInstance(UuidGenerator.create()),
                 user = user,
+                fcmToken = findFcmTokenForUser(user),
                 title = title,
                 message = message,
-                notificationType = notificationType
+                notificationType = notificationType,
+                isSent = isSent,
+                sentAt = sentAt
             )
         }
 
         fun reconstruct(
             id: Id,
             user: User,
+            fcmToken: String,
             title: String,
             message: String,
             notificationType: NotificationType,
             isRead: Boolean,
+            isSent: Boolean = false,
+            sentAt: LocalDateTime? = null,
             createdAt: LocalDateTime?,
             updatedAt: LocalDateTime?
         ): Notification {
             return Notification(
                 id = id,
                 user = user,
+                fcmToken = fcmToken,
                 title = title,
                 message = message,
                 notificationType = notificationType,
                 isRead = isRead,
+                isSent = isSent,
+                sentAt = sentAt,
                 createdAt = createdAt,
                 updatedAt = updatedAt
             )
         }
-    }
-}
 
-enum class NotificationType {
-    UNRECORDED,
-    DORMANT
+        // This is a placeholder. In a real implementation, you would retrieve the FCM token from a repository
+        private fun findFcmTokenForUser(user: User): String {
+            // In a real implementation, you would retrieve the FCM token from a repository
+            // For now, we'll return an empty string
+            return ""
+        }
+    }
 }

@@ -23,17 +23,17 @@ import java.time.LocalDateTime
 
 import org.springframework.batch.core.launch.JobLauncher
 import org.springframework.batch.core.JobParametersBuilder
+import org.yapp.batch.service.FcmService
 
-@Configuration
 class NotificationJobConfig(
     private val jobRepository: JobRepository,
     private val transactionManager: PlatformTransactionManager,
     private val entityManagerFactory: EntityManagerFactory,
     private val notificationRepository: NotificationRepository,
     private val jobLauncher: JobLauncher,
+    private val fcmService: FcmService
 ) {
 
-    @Scheduled(cron = "0 0 21 * * *")
     fun runNotificationJob() {
         val jobParameters = JobParametersBuilder()
             .addLong("time", System.currentTimeMillis())
@@ -41,7 +41,6 @@ class NotificationJobConfig(
         jobLauncher.run(notificationJob(), jobParameters)
     }
 
-    @Bean
     fun notificationJob(): Job {
         return JobBuilder("notificationJob", jobRepository)
             .start(unrecordedNotificationStep())
@@ -49,7 +48,6 @@ class NotificationJobConfig(
             .build()
     }
 
-    @Bean
     fun unrecordedNotificationStep(): Step {
         return StepBuilder("unrecordedNotificationStep", jobRepository)
             .chunk<UserEntity, Notification>(100, transactionManager)
@@ -59,7 +57,6 @@ class NotificationJobConfig(
             .build()
     }
 
-    @Bean
     fun dormantNotificationStep(): Step {
         return StepBuilder("dormantNotificationStep", jobRepository)
             .chunk<UserEntity, Notification>(100, transactionManager)
@@ -69,7 +66,6 @@ class NotificationJobConfig(
             .build()
     }
 
-    @Bean
     fun unrecordedUserReader(): JpaPagingItemReader<UserEntity> {
         val queryProvider = JpaPagingItemReaderBuilder<UserEntity>()
             .name("unrecordedUserReader")
@@ -84,7 +80,6 @@ class NotificationJobConfig(
         return queryProvider
     }
 
-    @Bean
     fun dormantUserReader(): JpaPagingItemReader<UserEntity> {
         val queryProvider = JpaPagingItemReaderBuilder<UserEntity>()
             .name("dormantUserReader")
@@ -99,7 +94,6 @@ class NotificationJobConfig(
         return queryProvider
     }
 
-    @Bean
     fun unrecordedNotificationProcessor(): ItemProcessor<UserEntity, Notification> {
         return ItemProcessor { userEntity ->
             val user = userEntity.toDomain()
@@ -112,7 +106,7 @@ class NotificationJobConfig(
         }
     }
 
-    @Bean
+    // @Bean - Disabled to avoid conflicts with FcmNotificationJobConfig
     fun dormantNotificationProcessor(): ItemProcessor<UserEntity, Notification> {
         return ItemProcessor { userEntity ->
             val user = userEntity.toDomain()
@@ -125,12 +119,21 @@ class NotificationJobConfig(
         }
     }
 
-    @Bean
+    // @Bean - Disabled to avoid conflicts with FcmNotificationJobConfig
     fun notificationWriter(): ItemWriter<Notification> {
         return ItemWriter { notifications ->
-            notifications.forEach {
-                notificationRepository.save(it)
-                // TODO: fcmService.sendMessageTo(user.fcmToken, ...)
+            notifications.forEach { notification ->
+                // Save notification to database
+                notificationRepository.save(notification)
+
+                // Send FCM notification if token is available
+                if (notification.fcmToken.isNotBlank()) {
+                    fcmService.sendNotification(
+                        token = notification.fcmToken,
+                        title = notification.title,
+                        body = notification.message
+                    )
+                }
             }
         }
     }

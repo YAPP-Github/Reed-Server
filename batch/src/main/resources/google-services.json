@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "439059293439",
+    "project_id": "reed-1f3ce",
+    "storage_bucket": "reed-1f3ce.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439059293439:android:c1ad6b2468a7dc983098ca",
+        "android_client_info": {
+          "package_name": "com.ninecraft.booket"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIbTIiQ6p6sTQZLYEyUwUMLu3sC_NDP-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439059293439:android:42e0817c379038db3098ca",
+        "android_client_info": {
+          "package_name": "com.ninecraft.booket.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIbTIiQ6p6sTQZLYEyUwUMLu3sC_NDP-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
