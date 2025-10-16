@@ -7,6 +7,7 @@ import org.yapp.domain.user.User
 import org.yapp.domain.user.UserRepository
 import org.yapp.infra.user.entity.UserEntity
 import org.yapp.infra.user.repository.JpaUserRepository
+import java.time.LocalDateTime
 import java.util.*
 
 @Repository
@@ -48,5 +49,15 @@ class UserRepositoryImpl(
 
     override fun deleteById(userId: UUID) {
         return jpaUserRepository.deleteById(userId)
+    }
+
+    override fun findByLastActivityBeforeAndNotificationEnabled(
+        lastActivityBefore: LocalDateTime, 
+        notificationEnabled: Boolean
+    ): List<User> {
+        return jpaUserRepository.findByLastActivityBeforeAndNotificationEnabledAndDeletedAtIsNull(
+            lastActivityBefore, 
+            notificationEnabled
+        ).map { it.toDomain() }
     }
 }

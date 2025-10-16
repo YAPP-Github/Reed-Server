@@ -1,5 +1,6 @@
 package org.yapp.domain.user
 
+import java.time.LocalDateTime
 import java.util.*
 
 interface UserRepository {
@@ -19,4 +20,13 @@ interface UserRepository {
     fun existsByEmail(email: String): Boolean
 
     fun deleteById(userId: UUID): Unit
+
+    /**
+     * Find users who haven't been active since the specified time and have notifications enabled
+     * 
+     * @param lastActivityBefore Find users whose last activity is before this time
+     * @param notificationEnabled Find users with notifications enabled if true
+     * @return List of users matching the criteria
+     */
+    fun findByLastActivityBeforeAndNotificationEnabled(lastActivityBefore: LocalDateTime, notificationEnabled: Boolean): List<User>
 }

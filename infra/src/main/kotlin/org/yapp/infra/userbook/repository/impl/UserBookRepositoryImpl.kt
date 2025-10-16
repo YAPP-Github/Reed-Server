@@ -86,5 +86,7 @@ class UserBookRepositoryImpl(
         return entities.map { it.toDomain() }
     }
 
-
+    override fun findByUserIdAndCreatedAtAfter(userId: UUID, after: LocalDateTime): List<UserBook> {
+        return jpaUserBookRepository.findByUserIdAndCreatedAtAfter(userId, after).map { it.toDomain() }
+    }
 }

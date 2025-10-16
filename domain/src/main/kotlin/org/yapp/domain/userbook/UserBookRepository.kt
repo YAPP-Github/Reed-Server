@@ -32,4 +32,13 @@ interface UserBookRepository {
         limit: Int,
         excludeIds: Set<UUID>
     ): List<UserBook>
+
+    /**
+     * Find books registered by a user after the specified time
+     * 
+     * @param userId The user's ID
+     * @param after Find books registered after this time
+     * @return List of books matching the criteria
+     */
+    fun findByUserIdAndCreatedAtAfter(userId: UUID, after: LocalDateTime): List<UserBook>
 }
