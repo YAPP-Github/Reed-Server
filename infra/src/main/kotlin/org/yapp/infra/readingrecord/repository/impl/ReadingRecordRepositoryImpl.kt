@@ -9,6 +9,7 @@ import org.yapp.domain.readingrecord.ReadingRecordRepository
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.infra.readingrecord.entity.ReadingRecordEntity
 import org.yapp.infra.readingrecord.repository.JpaReadingRecordRepository
+import java.time.LocalDateTime
 import java.util.*
 
 @Repository
@@ -59,5 +60,10 @@ class ReadingRecordRepositoryImpl(
 
     override fun deleteById(id: UUID) {
         jpaReadingRecordRepository.deleteById(id)
+    }
+
+    override fun findByUserBookIdInAndCreatedAtAfter(userBookIds: List<UUID>, after: LocalDateTime): List<ReadingRecord> {
+        val entities = jpaReadingRecordRepository.findByUserBookIdInAndCreatedAtAfter(userBookIds, after)
+        return entities.map { it.toDomain() }
     }
 }

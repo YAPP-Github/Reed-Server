@@ -7,12 +7,14 @@ import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.domain.readingrecord.ReadingRecordDomainService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
+import org.yapp.domain.user.UserDomainService
 import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
 @ApplicationService
 class ReadingRecordService(
     private val readingRecordDomainService: ReadingRecordDomainService,
+    private val userDomainService: UserDomainService
 ) {
     fun createReadingRecord(
         userId: UUID,
@@ -26,6 +28,9 @@ class ReadingRecordService(
             review = request.validReview(),
             emotionTags = request.validEmotionTags()
         )
+
+        // Update user's lastActivity when a reading record is created
+        userDomainService.updateLastActivity(userId)
 
         return ReadingRecordResponse.from(readingRecordInfoVO)
     }
@@ -51,6 +56,7 @@ class ReadingRecordService(
         readingRecordDomainService.deleteAllByUserBookId(userBookId)
     }
     fun updateReadingRecord(
+        userId: UUID,
         readingRecordId: UUID,
         request: UpdateReadingRecordRequest
     ): ReadingRecordResponse {
@@ -61,6 +67,10 @@ class ReadingRecordService(
             review = request.validReview(),
             emotionTags = request.validEmotionTags()
         )
+
+        // Update user's lastActivity when a reading record is updated
+        userDomainService.updateLastActivity(userId)
+
         return ReadingRecordResponse.from(readingRecordInfoVO)
     }
 

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.yapp.domain.user.ProviderType
 import org.yapp.infra.user.entity.UserEntity
+import java.time.LocalDateTime
 import java.util.*
 
 /**
@@ -29,4 +30,9 @@ interface JpaUserRepository : JpaRepository<UserEntity, UUID> {
         nativeQuery = true
     )
     fun findByIdIncludingDeleted(id: UUID): UserEntity?
+
+    fun findByLastActivityBeforeAndNotificationEnabledAndDeletedAtIsNull(
+        lastActivityBefore: LocalDateTime,
+        notificationEnabled: Boolean
+    ): List<UserEntity>
 }
