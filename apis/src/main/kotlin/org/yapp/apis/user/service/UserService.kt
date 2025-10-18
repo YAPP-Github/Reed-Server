@@ -3,7 +3,9 @@ package org.yapp.apis.user.service
 import jakarta.validation.Valid
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
+import org.yapp.apis.user.dto.request.FcmTokenRequest
 import org.yapp.apis.user.dto.request.FindUserIdentityRequest
+import org.yapp.apis.user.dto.request.NotificationSettingsRequest
 import org.yapp.apis.user.dto.request.TermsAgreementRequest
 import org.yapp.apis.user.dto.response.UserAuthInfoResponse
 import org.yapp.apis.user.dto.response.UserProfileResponse
@@ -35,5 +37,17 @@ class UserService(
     fun findUserIdentityByUserId(@Valid findUserIdentityRequest: FindUserIdentityRequest): UserAuthInfoResponse {
         val userIdentity = userDomainService.findUserIdentityById(findUserIdentityRequest.validUserId())
         return UserAuthInfoResponse.from(userIdentity)
+    }
+
+    fun updateNotificationSettings(userId: UUID, @Valid request: NotificationSettingsRequest): UserProfileResponse {
+        validateUserExists(userId)
+        val updatedUserProfile = userDomainService.updateNotificationSettings(userId, request.notificationEnabled)
+        return UserProfileResponse.from(updatedUserProfile)
+    }
+
+    fun updateFcmToken(userId: UUID, @Valid request: FcmTokenRequest): UserProfileResponse {
+        validateUserExists(userId)
+        val updatedUserProfile = userDomainService.updateFcmToken(userId, request.validFcmToken())
+        return UserProfileResponse.from(updatedUserProfile)
     }
 }

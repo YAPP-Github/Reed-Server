@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.yapp.apis.user.dto.request.FcmTokenRequest
+import org.yapp.apis.user.dto.request.NotificationSettingsRequest
 import org.yapp.apis.user.dto.request.TermsAgreementRequest
 import org.yapp.apis.user.dto.response.UserProfileResponse
 import org.yapp.globalutils.exception.ErrorResponse
@@ -83,5 +85,73 @@ interface UserControllerApi {
     fun updateTermsAgreement(
         @Parameter(hidden = true) @AuthenticationPrincipal userId: UUID,
         @Valid @RequestBody @Parameter(description = "약관 동의 요청 객체") request: TermsAgreementRequest
+    ): ResponseEntity<UserProfileResponse>
+
+    @Operation(
+        summary = "알림 설정 업데이트",
+        description = "사용자의 알림 설정을 업데이트합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "알림 설정 업데이트 성공",
+                content = [Content(schema = Schema(implementation = UserProfileResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 파라미터",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "사용자를 찾을 수 없습니다.",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @PutMapping("/me/notification-settings")
+    fun updateNotificationSettings(
+        @Parameter(hidden = true) @AuthenticationPrincipal userId: UUID,
+        @Valid @RequestBody @Parameter(description = "알림 설정 요청 객체") request: NotificationSettingsRequest
+    ): ResponseEntity<UserProfileResponse>
+
+    @Operation(
+        summary = "FCM 토큰 등록",
+        description = "사용자의 FCM 토큰을 등록합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "FCM 토큰 등록 성공",
+                content = [Content(schema = Schema(implementation = UserProfileResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "잘못된 요청 파라미터",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "401",
+                description = "인증되지 않은 사용자",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "사용자를 찾을 수 없습니다.",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @PutMapping("/me/fcm-token")
+    fun updateFcmToken(
+        @Parameter(hidden = true) @AuthenticationPrincipal userId: UUID,
+        @Valid @RequestBody @Parameter(description = "FCM 토큰 요청 객체") request: FcmTokenRequest
     ): ResponseEntity<UserProfileResponse>
 }
