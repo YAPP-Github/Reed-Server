@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
   shutdown: graceful
 
 spring:
@@ -9,22 +9,41 @@ spring:
     group:
       dev:
         - persistence
+        - crosscutting
         - jwt
+        - web
         - redis
+        - external
       prod:
         - persistence
+        - crosscutting
         - jwt
+        - web
         - redis
+        - external
       test:
         - persistence
+        - crosscutting
         - jwt
+        - web
+        - redis
+        - external
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 30MB
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  override-with-generic-response: false
+
 app:
-  module-name: batch
+  module-name: apis
 
 ---
 spring:
@@ -33,6 +52,15 @@ spring:
     activate:
       on-profile: dev
 
+swagger:
+  servers:
+    - url: ${SWAGGER_SERVER_URL:http://localhost:8080}
+      description: Development Server
+  info:
+    title: YAPP API (Dev)
+    description: YAPP API Documentation for Development
+    version: v1.0.0-dev
+
 ---
 spring:
   config:
@@ -40,9 +68,20 @@ spring:
     activate:
       on-profile: prod
 
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
+
 ---
 spring:
   config:
-    import: optional:file:../secret/application-test-secret.properties
     activate:
       on-profile: test
+
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
