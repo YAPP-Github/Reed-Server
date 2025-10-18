@@ -41,7 +41,7 @@ class UserService(
 
     fun updateNotificationSettings(userId: UUID, @Valid request: NotificationSettingsRequest): UserProfileResponse {
         validateUserExists(userId)
-        val updatedUserProfile = userDomainService.updateNotificationSettings(userId, request.notificationEnabled)
+        val updatedUserProfile = userDomainService.updateNotificationSettings(userId, request.validNotificationEnabled())
         return UserProfileResponse.from(updatedUserProfile)
     }
 
