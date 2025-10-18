@@ -18,7 +18,7 @@ spring:
 
 management:
   server:
-    port: 8081
+    port: 1234
   endpoints:
     jmx:
       exposure:
