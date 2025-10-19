@@ -39,13 +39,13 @@ class FcmNotificationJobConfig(
                 notificationRepository.findByUserId(user.id.value)
             }
 
-            val hasActiveUnrecordedNotification = userNotifications.any { 
-                it.notificationType == NotificationType.UNRECORDED && it.isSent 
+            val hasActiveUnrecordedNotification = userNotifications.any {
+                it.notificationType == NotificationType.UNRECORDED && it.isSent
             }
             if (!hasActiveUnrecordedNotification) {
                 if (userNotifications.isNotEmpty()) {
-                    val resetNotifications = userNotifications.filter { 
-                        it.notificationType == NotificationType.UNRECORDED && !it.isSent 
+                    val resetNotifications = userNotifications.filter {
+                        it.notificationType == NotificationType.UNRECORDED && !it.isSent
                     }
                     if (resetNotifications.isNotEmpty()) {
                         logger.info("Sending new unrecorded notification to user ${user.id.value} after previous notification was reset. User lastActivity: ${user.lastActivity}")
@@ -53,7 +53,7 @@ class FcmNotificationJobConfig(
                 }
                 val (success, updatedNotifications) = sendNotificationToUser(
                     user = user,
-                    title = "미기록 알림",
+                    title = "\uD83D\uDCDA 잠시 멈춘 기록.. 다시 이어가 볼까요?",
                     message = "이번주에 읽은 책, 잊기 전에 기록해 보세요!",
                     notificationType = NotificationType.UNRECORDED,
                     existingNotifications = userNotifications
@@ -73,13 +73,13 @@ class FcmNotificationJobConfig(
                 notificationRepository.findByUserId(user.id.value)
             }
 
-            val hasActiveDormantNotification = userNotifications.any { 
-                it.notificationType == NotificationType.DORMANT && it.isSent 
+            val hasActiveDormantNotification = userNotifications.any {
+                it.notificationType == NotificationType.DORMANT && it.isSent
             }
             if (!hasActiveDormantNotification) {
                 if (userNotifications.isNotEmpty()) {
-                    val resetNotifications = userNotifications.filter { 
-                        it.notificationType == NotificationType.DORMANT && !it.isSent 
+                    val resetNotifications = userNotifications.filter {
+                        it.notificationType == NotificationType.DORMANT && !it.isSent
                     }
                     if (resetNotifications.isNotEmpty()) {
                         logger.info("Sending new dormant notification to user ${user.id.value} after previous notification was reset. User lastActivity: ${user.lastActivity}")
@@ -87,7 +87,7 @@ class FcmNotificationJobConfig(
                 }
                 val (success, updatedNotifications) = sendNotificationToUser(
                     user = user,
-                    title = "휴면 알림",
+                    title = "\uD83D\uDCDA Reed와 함께 독서 기록 시작",
                     message = "그동안 읽은 책을 모아 기록해 보세요!",
                     notificationType = NotificationType.DORMANT,
                     existingNotifications = userNotifications
@@ -135,9 +135,9 @@ class FcmNotificationJobConfig(
 
     @Transactional
     protected fun sendNotificationToUser(
-        user: User, 
-        title: String, 
-        message: String, 
+        user: User,
+        title: String,
+        message: String,
         notificationType: NotificationType,
         existingNotifications: List<Notification> = emptyList()
     ): Pair<Boolean, List<Notification>> {
