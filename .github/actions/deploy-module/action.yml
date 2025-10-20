@@ -46,7 +46,7 @@ inputs:
     description: 'Image tag type (development-latest or semver)'
     required: true
   deploy-script:
-    description: 'Deploy script name (deploy-dev.sh or deploy.sh)'
+    description: 'Deploy script name (deploy-dev.sh or deploy-prod.sh)'
     required: true
     default: 'deploy-dev.sh'
 
