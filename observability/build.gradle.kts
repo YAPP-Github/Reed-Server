@@ -1,13 +1,17 @@
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 dependencies {
-    implementation(project(Dependencies.Projects.GLOBAL_UTILS))
-    implementation(project(Dependencies.Projects.OBSERVABILITY))
-
+    // Web & Filter
     implementation(Dependencies.Spring.BOOT_STARTER_WEB)
-    implementation(Dependencies.Spring.BOOT_STARTER_SECURITY)
-    implementation(Dependencies.Spring.BOOT_STARTER_OAUTH2_RESOURCE_SERVER)
 
+    // Metrics & Monitoring
+    implementation(Dependencies.Spring.BOOT_STARTER_ACTUATOR)
+    implementation(Dependencies.Prometheus.MICROMETER_PROMETHEUS_REGISTRY)
+
+    // Logging
+    implementation(Dependencies.Logging.KOTLIN_LOGGING)
+
+    // Test
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)
 }
 

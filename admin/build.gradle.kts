@@ -4,6 +4,7 @@ dependencies {
 	implementation(project(Dependencies.Projects.INFRA))
 	implementation(project(Dependencies.Projects.DOMAIN))
 	implementation(project(Dependencies.Projects.GLOBAL_UTILS))
+	implementation(project(Dependencies.Projects.OBSERVABILITY))
 
 	implementation(Dependencies.Spring.BOOT_STARTER_WEB)
 	implementation(Dependencies.Spring.BOOT_STARTER_SECURITY)
