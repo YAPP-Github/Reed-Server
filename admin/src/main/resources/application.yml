@@ -9,17 +9,25 @@ spring:
     group:
       dev:
         - persistence
+        - crosscutting
         - jwt
         - redis
         - external
+        - observability
       prod:
         - persistence
+        - crosscutting
         - jwt
         - redis
         - external
+        - observability
       test:
         - persistence
+        - crosscutting
         - jwt
+        - redis
+        - external
+        - observability
   servlet:
     multipart:
       max-file-size: 10MB

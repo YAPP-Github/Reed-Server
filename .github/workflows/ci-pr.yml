@@ -58,4 +58,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew fullCheck --parallel --build-cache --info --stacktrace
+        run: |
+          # fullCheck: 모든 모듈 (apis, admin, batch, gateway 등)의 빌드, 테스트, 정적분석 수행
+          # --parallel: 모듈별 병렬 빌드로 시간 단축
+          # --build-cache: Gradle 빌드 캐시 사용
+          ./gradlew fullCheck --parallel --build-cache --info --stacktrace

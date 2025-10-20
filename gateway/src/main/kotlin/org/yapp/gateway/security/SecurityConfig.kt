@@ -11,8 +11,8 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter
 import org.springframework.security.web.SecurityFilterChain
-import org.yapp.gateway.config.ActuatorProperties
-import org.yapp.gateway.filter.MdcLoggingFilter
+import org.yapp.observability.metrics.config.ActuatorProperties
+import org.yapp.gateway.filter.SecurityMdcLoggingFilter
 
 @Configuration
 @EnableWebSecurity
@@ -21,7 +21,7 @@ class SecurityConfig(
     private val jwtAuthenticationConverter: Converter<Jwt, out AbstractAuthenticationToken>,
     private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
     private val customAccessDeniedHandler: CustomAccessDeniedHandler,
-    private val mdcLoggingFilter: MdcLoggingFilter,
+    private val securityMdcLoggingFilter: SecurityMdcLoggingFilter,
     actuatorProperties: ActuatorProperties
 ) {
     companion object {
@@ -61,7 +61,7 @@ class SecurityConfig(
                 it.requestMatchers(ADMIN_PATTERN).hasRole("ADMIN")
                 it.anyRequest().authenticated()
             }
-            .addFilterAfter(mdcLoggingFilter, BearerTokenAuthenticationFilter::class.java)
+            .addFilterAfter(securityMdcLoggingFilter, BearerTokenAuthenticationFilter::class.java)
             .build()
     }
 }

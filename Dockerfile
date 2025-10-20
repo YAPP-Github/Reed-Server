@@ -1,6 +1,7 @@
 # Build stage
 FROM gradle:8.7-jdk21 AS build
-ARG MODULE=apis
+# MODULE: 빌드할 모듈 (apis, admin, batch) - 빌드 시 --build-arg MODULE=xxx 필수
+ARG MODULE
 WORKDIR /app
 
 # 의존성 캐싱 최적화를 위한 단계별 복사
@@ -24,7 +25,8 @@ RUN ./gradlew :${MODULE}:bootJar --parallel --no-daemon
 
 # Run stage
 FROM openjdk:21-slim
-ARG MODULE=apis
+# MODULE: 빌드할 모듈 (apis, admin, batch) - 빌드 시 --build-arg MODULE=xxx 필수
+ARG MODULE
 WORKDIR /app
 
 # 멀티스테이지 빌드로 최종 이미지 크기 최소화
@@ -39,4 +41,6 @@ ENV TZ=Asia/Seoul
 # JVM 실행 설정
 # - Xms512m: 초기 힙 메모리 512MB
 # - Xmx1g: 최대 힙 메모리 1GB
-ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-Duser.timezone=Asia/Seoul", "-jar", "app.jar"]
+# - server.port: Spring Boot 서버 포트 (컨테이너 실행 시 -e SERVER_PORT=xxxx로 주입, 기본값: 8080)
+# - exec: shell 프로세스를 java 프로세스로 대체하여 graceful shutdown 지원
+ENTRYPOINT ["sh", "-c", "exec java -Xms512m -Xmx1g -Duser.timezone=Asia/Seoul -Dserver.port=${SERVER_PORT:-8080} -jar app.jar"]

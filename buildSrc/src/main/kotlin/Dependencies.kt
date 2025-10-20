@@ -30,6 +30,7 @@ object Dependencies {
         const val DOMAIN = ":domain"
         const val GLOBAL_UTILS = ":global-utils"
         const val GATEWAY = ":gateway"
+        const val OBSERVABILITY = ":observability"
     }
 
     object Logging {

@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8082
   shutdown: graceful
 
 spring:
@@ -10,24 +10,21 @@ spring:
       dev:
         - persistence
         - crosscutting
-        - jwt
-        - web
         - redis
         - external
+        - observability
       prod:
         - persistence
         - crosscutting
-        - jwt
-        - web
         - redis
         - external
+        - observability
       test:
         - persistence
         - crosscutting
-        - jwt
-        - web
         - redis
         - external
+        - observability
   servlet:
     multipart:
       max-file-size: 10MB

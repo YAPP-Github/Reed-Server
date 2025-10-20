@@ -3,20 +3,12 @@ package org.yapp.apis
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.ComponentScan
 
-/**
- * Main application class for the apis module.
- */
 @SpringBootApplication(
-    scanBasePackages = [
-        "org.yapp.apis",
-        "org.yapp.infra",
-        "org.yapp.domain",
-        "org.yapp.gateway",
-        "org.yapp.globalutils"
-    ],
-    exclude = [JpaRepositoriesAutoConfiguration::class]
+    exclude = [JpaRepositoriesAutoConfiguration::class] // infra 모듈에서 @EnableJpaRepositories로 명시적으로 설정하여 관리
 )
+@ComponentScan(basePackages = ["org.yapp"])
 class ApisApplication
 
 fun main(args: Array<String>) {
