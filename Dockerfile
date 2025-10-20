@@ -41,5 +41,6 @@ ENV TZ=Asia/Seoul
 # JVM 실행 설정
 # - Xms512m: 초기 힙 메모리 512MB
 # - Xmx1g: 최대 힙 메모리 1GB
-# - server.port: Spring Boot 서버 포트 (컨테이너 실행 시 -e SERVER_PORT=xxxx로 주입 필수)
-ENTRYPOINT ["sh", "-c", "java -Xms512m -Xmx1g -Duser.timezone=Asia/Seoul -Dserver.port=${SERVER_PORT} -jar app.jar"]
+# - server.port: Spring Boot 서버 포트 (컨테이너 실행 시 -e SERVER_PORT=xxxx로 주입, 기본값: 8080)
+# - exec: shell 프로세스를 java 프로세스로 대체하여 graceful shutdown 지원
+ENTRYPOINT ["sh", "-c", "exec java -Xms512m -Xmx1g -Duser.timezone=Asia/Seoul -Dserver.port=${SERVER_PORT:-8080} -jar app.jar"]
