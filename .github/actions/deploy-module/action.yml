@@ -115,7 +115,6 @@ runs:
       uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
       if: success() && inputs.environment == 'dev'
       continue-on-error: true
-      shell: bash
       with:
         webhook-url: ${{ inputs.discord-webhook-url }}
         embed-title: "✅ [${{ github.repository }}] Development Deploy Succeeded - ${{ inputs.module }}"
@@ -131,7 +130,6 @@ runs:
       uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
       if: success() && inputs.environment == 'prod'
       continue-on-error: true
-      shell: bash
       with:
         webhook-url: ${{ inputs.discord-webhook-url }}
         content: "🚀 **Production Deploy Succeeded!**"
@@ -147,7 +145,6 @@ runs:
       uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
       if: failure() && inputs.environment == 'dev'
       continue-on-error: true
-      shell: bash
       with:
         webhook-url: ${{ inputs.discord-webhook-url }}
         embed-title: "❌ [${{ github.repository }}] Development Deploy Failed - ${{ inputs.module }}"
@@ -163,7 +160,6 @@ runs:
       uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
       if: failure() && inputs.environment == 'prod'
       continue-on-error: true
-      shell: bash
       with:
         webhook-url: ${{ inputs.discord-webhook-url }}
         content: "🚨 **Production Deploy Failed!**"
