@@ -68,22 +68,13 @@ jobs:
       matrix:
         include:
           - module: apis
-            port: 8080
             changed: ${{ needs.detect-changes.outputs.apis }}
           # - module: admin  # TODO: Uncomment when admin module is ready
-          #   port: 8081
           #   changed: ${{ needs.detect-changes.outputs.admin }}
           - module: batch
-            port: 8082
             changed: ${{ needs.detect-changes.outputs.batch }}
 
     steps:
-      - name: Skip if no changes
-        if: matrix.changed != 'true'
-        run: |
-          echo "No changes detected for ${{ matrix.module }}, skipping deployment"
-          exit 0
-
       - name: Checkout code
         if: matrix.changed == 'true'
         uses: actions/checkout@v4
@@ -94,7 +85,6 @@ jobs:
         with:
           environment: dev
           module: ${{ matrix.module }}
-          port: ${{ matrix.port }}
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
           secret-properties: ${{ secrets.DEV_SECRET_PROPERTIES }}

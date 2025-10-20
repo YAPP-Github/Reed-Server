@@ -9,8 +9,9 @@ inputs:
     description: 'Module name (apis, admin, batch)'
     required: true
   port:
-    description: 'Server port'
-    required: true
+    description: 'Server port (for logging only - actual port defined in docker-compose.yml)'
+    required: false
+    default: 'N/A'
   dockerhub-username:
     description: 'Docker Hub username'
     required: true
@@ -104,7 +105,6 @@ runs:
           export DOCKERHUB_USERNAME="${{ inputs.dockerhub-username }}"
           export DOCKERHUB_TOKEN="${{ inputs.dockerhub-token }}"
           export MODULE="${{ inputs.module }}"
-          export SERVER_PORT="${{ inputs.port }}"
           export SPRING_PROFILE="${{ inputs.environment }}"
           export IMAGE_TAG="$(echo "${{ steps.meta.outputs.tags }}" | head -n1)"
           cd ~/deploy
@@ -121,7 +121,6 @@ runs:
         embed-title: "✅ [${{ github.repository }}] Development Deploy Succeeded - ${{ inputs.module }}"
         embed-description: |
           **Module**: `${{ inputs.module }}`
-          **Port**: `${{ inputs.port }}`
           **Commit**: `${{ github.sha }}`
           **Author**: `${{ github.actor }}`
           **Message**: `${{ github.event.head_commit.message }}`
@@ -139,7 +138,6 @@ runs:
         embed-title: "✅ [${{ github.repository }}] Production Deploy Succeeded - ${{ inputs.module }}"
         embed-description: |
           **Module**: `${{ inputs.module }}`
-          **Port**: `${{ inputs.port }}`
           **Deployed by**: `${{ github.actor }}`
           The new version has been successfully deployed to production.
           [View Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
