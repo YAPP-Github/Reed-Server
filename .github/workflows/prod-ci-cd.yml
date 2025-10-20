@@ -23,11 +23,8 @@ jobs:
       matrix:
         include:
           - module: apis
-            port: 8080
           # - module: admin  # TODO: Uncomment when admin module is ready
-          #   port: 8081
           - module: batch
-            port: 8082
 
     steps:
       - name: Checkout code
@@ -38,7 +35,6 @@ jobs:
         with:
           environment: prod
           module: ${{ matrix.module }}
-          port: ${{ matrix.port }}
           dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
           secret-properties: ${{ secrets.PROD_SECRET_PROPERTIES }}
