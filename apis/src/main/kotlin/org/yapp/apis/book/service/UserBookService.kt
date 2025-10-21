@@ -12,16 +12,19 @@ import org.yapp.apis.book.exception.UserBookException
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBookDomainService
 import org.yapp.domain.userbook.UserBookSortType
+import org.yapp.domain.user.UserDomainService
 import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
 @ApplicationService
 class UserBookService(
-    private val userBookDomainService: UserBookDomainService
+    private val userBookDomainService: UserBookDomainService,
+    private val userDomainService: UserDomainService
 ) {
     fun upsertUserBook(@Valid upsertUserBookRequest: UpsertUserBookRequest): UserBookResponse {
+        val userId = upsertUserBookRequest.validUserId()
         val userBookInfoVO = userBookDomainService.upsertUserBook(
-            upsertUserBookRequest.validUserId(),
+            userId,
             upsertUserBookRequest.validBookId(),
             upsertUserBookRequest.validBookIsbn13(),
             upsertUserBookRequest.validBookTitle(),
@@ -30,6 +33,10 @@ class UserBookService(
             upsertUserBookRequest.validBookCoverImageUrl(),
             upsertUserBookRequest.validStatus()
         )
+
+        // Update user's lastActivity when a book is registered
+        userDomainService.updateLastActivity(userId)
+
         return UserBookResponse.from(userBookInfoVO)
     }
 

@@ -76,4 +76,8 @@ object Dependencies {
         const val SPRING_BOOT_STARTER = "io.sentry:sentry-spring-boot-starter-jakarta:8.22.0"
         const val LOG4J2 = "io.sentry:sentry-log4j2:8.22.0"
     }
+
+    object Firebase {
+        const val FIREBASE_ADMIN = "com.google.firebase:firebase-admin:9.2.0"
+    }
 }

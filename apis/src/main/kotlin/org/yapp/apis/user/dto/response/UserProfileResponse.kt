@@ -39,7 +39,13 @@ data class UserProfileResponse(
         description = "Whether the user has agreed to the terms of service",
         example = "false"
     )
-    val termsAgreed: Boolean
+    val termsAgreed: Boolean,
+
+    @field:Schema(
+        description = "Whether notifications are enabled for the user",
+        example = "true"
+    )
+    val notificationEnabled: Boolean
 ) {
     companion object {
         fun from(userProfileVO: UserProfileVO): UserProfileResponse {
@@ -48,7 +54,8 @@ data class UserProfileResponse(
                 email = userProfileVO.email.value,
                 nickname = userProfileVO.nickname,
                 provider = userProfileVO.provider,
-                termsAgreed = userProfileVO.termsAgreed
+                termsAgreed = userProfileVO.termsAgreed,
+                notificationEnabled = userProfileVO.notificationEnabled
             )
         }
     }

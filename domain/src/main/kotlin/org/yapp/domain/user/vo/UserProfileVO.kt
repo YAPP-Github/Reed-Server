@@ -8,7 +8,8 @@ data class UserProfileVO private constructor(
     val email: User.Email,
     val nickname: String,
     val provider: ProviderType,
-    val termsAgreed: Boolean
+    val termsAgreed: Boolean,
+    val notificationEnabled: Boolean
 ) {
     init {
         require(nickname.isNotBlank()) {"nickname은 비어 있을 수 없습니다."}
@@ -24,7 +25,8 @@ data class UserProfileVO private constructor(
                 email = user.email,
                 nickname = user.nickname,
                 provider = user.providerType,
-                termsAgreed = user.termsAgreed
+                termsAgreed = user.termsAgreed,
+                notificationEnabled = user.notificationEnabled
             )
         }
     }

@@ -16,6 +16,9 @@ data class User private constructor(
     val role: Role,
     val termsAgreed: Boolean = false,
     val appleRefreshToken: String? = null,
+    val fcmToken: String? = null,
+    val notificationEnabled: Boolean = true,
+    val lastActivity: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
     val deletedAt: LocalDateTime? = null
@@ -40,6 +43,24 @@ data class User private constructor(
         )
     }
 
+    fun updateFcmToken(token: String?): User {
+        return this.copy(
+            fcmToken = token
+        )
+    }
+
+    fun updateNotificationEnabled(enabled: Boolean): User {
+        return this.copy(
+            notificationEnabled = enabled
+        )
+    }
+
+    fun updateLastActivity(): User {
+        return this.copy(
+            lastActivity = LocalDateTime.now()
+        )
+    }
+
     companion object {
         fun create(
             email: String,
@@ -47,7 +68,9 @@ data class User private constructor(
             profileImageUrl: String?,
             providerType: ProviderType,
             providerId: String,
-            termsAgreed: Boolean = false
+            termsAgreed: Boolean = false,
+            fcmToken: String? = null,
+            notificationEnabled: Boolean = true
         ): User {
             return User(
                 id = Id.newInstance(UuidGenerator.create()),
@@ -58,7 +81,10 @@ data class User private constructor(
                 providerId = ProviderId.newInstance(providerId),
                 role = Role.USER,
                 termsAgreed = termsAgreed,
-                appleRefreshToken = null
+                appleRefreshToken = null,
+                fcmToken = fcmToken,
+                notificationEnabled = notificationEnabled,
+                lastActivity = LocalDateTime.now()
             )
         }
 
@@ -70,7 +96,9 @@ data class User private constructor(
             providerType: ProviderType,
             providerId: String,
             role: Role,
-            termsAgreed: Boolean = false
+            termsAgreed: Boolean = false,
+            fcmToken: String? = null,
+            notificationEnabled: Boolean = true
         ): User {
             return User(
                 id = Id.newInstance(UuidGenerator.create()),
@@ -81,7 +109,10 @@ data class User private constructor(
                 providerId = ProviderId.newInstance(providerId),
                 role = role,
                 termsAgreed = termsAgreed,
-                appleRefreshToken = null
+                appleRefreshToken = null,
+                fcmToken = fcmToken,
+                notificationEnabled = notificationEnabled,
+                lastActivity = LocalDateTime.now()
             )
         }
 
@@ -95,6 +126,9 @@ data class User private constructor(
             role: Role,
             termsAgreed: Boolean = false,
             appleRefreshToken: String? = null,
+            fcmToken: String? = null,
+            notificationEnabled: Boolean = true,
+            lastActivity: LocalDateTime? = null,
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null,
             deletedAt: LocalDateTime? = null
@@ -109,6 +143,9 @@ data class User private constructor(
                 role = role,
                 termsAgreed = termsAgreed,
                 appleRefreshToken = appleRefreshToken,
+                fcmToken = fcmToken,
+                notificationEnabled = notificationEnabled,
+                lastActivity = lastActivity,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
                 deletedAt = deletedAt
