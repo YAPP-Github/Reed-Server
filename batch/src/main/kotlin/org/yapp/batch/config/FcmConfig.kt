@@ -6,11 +6,12 @@ import com.google.firebase.FirebaseOptions
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.util.Base64
 
 @Configuration
+@Profile("!test") // 임시 조치
 class FcmConfig {
 
     @Value("\${FIREBASE_TYPE:service_account}")

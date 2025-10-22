@@ -6,13 +6,9 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.ComponentScan
 
 @SpringBootApplication(
-    scanBasePackages = [
-        "org.yapp.batch",
-        "org.yapp.infra",
-        "org.yapp.domain",
-        "org.yapp.globalutils"
-    ]
+    exclude = [JpaRepositoriesAutoConfiguration::class] // infra 모듈에서 @EnableJpaRepositories로 명시적으로 설정하여 수동 관리
 )
+@ComponentScan(basePackages = ["org.yapp"])
 class BatchApplication
 
 fun main(args: Array<String>) {
