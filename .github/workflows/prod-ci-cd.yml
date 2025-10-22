@@ -1,4 +1,4 @@
-name: Prod CI/CD - Build, Push and Deploy
+name: Prod CI/CD - Build, Push and Deploy (Sequential with Matrix)
 
 on:
   release:
@@ -14,23 +14,21 @@ env:
   IMAGE_PREFIX: ninecraft0523/ninecraft
 
 jobs:
-  build-push-and-deploy:
+  deploy-modules:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     environment: production
     strategy:
-      fail-fast: false
+      max-parallel: 1
+      fail-fast: true
       matrix:
-        include:
-          - module: apis
-          # - module: admin  # TODO: Uncomment when admin module is ready
-          - module: batch
+        module: [apis, batch] # 배포 순서: apis → batch (배열 순서대로 실행)
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy module
+      - name: Deploy ${{ matrix.module }} module
         uses: ./.github/actions/deploy-module
         with:
           environment: prod
@@ -49,3 +47,26 @@ jobs:
             type=semver,pattern={{version}}
             type=raw,value=production-latest
           deploy-script: deploy-prod.sh
+          release-version: ${{ github.event.release.tag_name }}
+
+  deployment-summary:
+    runs-on: ubuntu-24.04
+    needs: deploy-modules
+    if: always()
+
+    steps:
+      - name: Send deployment summary to Discord
+        uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
+        continue-on-error: true
+        with:
+          webhook-url: ${{ secrets.PROD_DEPLOY_DISCORD_WEBHOOK_URL }}
+          content: "📊 **Production Deployment Summary**"
+          embed-title: "[${{ github.repository }}] Production Deployment Completed"
+          embed-description: |
+            **Release**: `${{ github.event.release.tag_name }}`
+            **Status**: ${{ needs.deploy-modules.result == 'success' && '✅ All modules deployed successfully' || '❌ Deployment failed' }}
+            **Deployed by**: `${{ github.actor }}`
+
+            [View Release](${{ github.event.release.html_url }})
+            [View Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          embed-color: ${{ needs.deploy-modules.result == 'success' && '65280' || '16711680' }}

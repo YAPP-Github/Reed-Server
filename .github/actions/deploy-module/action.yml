@@ -49,6 +49,10 @@ inputs:
     description: 'Deploy script name (deploy-dev.sh or deploy-prod.sh)'
     required: true
     default: 'deploy-dev.sh'
+  release-version:
+    description: 'Release version tag (e.g., v1.2.3). Only used in production for metadata tracking.'
+    required: false
+    default: 'unknown'
 
 runs:
   using: 'composite'
@@ -107,6 +111,7 @@ runs:
           export MODULE="${{ inputs.module }}"
           export SPRING_PROFILE="${{ inputs.environment }}"
           export IMAGE_TAG="$(echo "${{ steps.meta.outputs.tags }}" | head -n1)"
+          export RELEASE_VERSION="${{ inputs.release-version }}"
           cd ~/deploy
           chmod +x ./${{ inputs.deploy-script }}
           ./${{ inputs.deploy-script }}
