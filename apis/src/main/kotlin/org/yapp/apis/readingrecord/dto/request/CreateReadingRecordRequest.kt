@@ -30,9 +30,8 @@ data class CreateReadingRecordRequest private constructor(
     @field:Schema(description = "기억에 남는 문장", example = "이것은 기억에 남는 문장입니다.", required = true)
     val quote: String? = null,
 
-    @field:NotBlank(message = "감상평은 필수입니다.")
     @field:Size(max = 1000, message = "감상평은 1000자를 초과할 수 없습니다.")
-    @field:Schema(description = "감상평", example = "이 책은 매우 인상적이었습니다.", required = true)
+    @field:Schema(description = "감상평", example = "이 책은 매우 인상적이었습니다.", required = false)
     val review: String? = null,
 
     @field:Size(max = 1, message = "감정 태그는 최대 1개까지 가능합니다. (단일 감정만 받지만, 확장성을 위해 리스트 형태로 관리됩니다.)")
@@ -41,6 +40,6 @@ data class CreateReadingRecordRequest private constructor(
 ) {
     fun validPageNumber(): Int = pageNumber!!
     fun validQuote(): String = quote!!
-    fun validReview(): String = review!!
+    
     fun validEmotionTags(): List<String> = emotionTags
 }

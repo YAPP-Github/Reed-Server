@@ -37,6 +37,6 @@ data class UpdateReadingRecordRequest private constructor(
 ) {
     fun validPageNumber(): Int = pageNumber!!
     fun validQuote(): String = quote!!
-    fun validReview(): String = review!!
+    
     fun validEmotionTags(): List<String> = emotionTags!!
 }
