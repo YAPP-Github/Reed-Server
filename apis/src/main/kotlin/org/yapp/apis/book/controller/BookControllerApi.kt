@@ -158,7 +158,11 @@ interface BookControllerApi {
         @RequestParam(required = false) @Parameter(description = "책 상태 필터") status: BookStatus?,
         @RequestParam(required = false) @Parameter(description = "정렬 방식") sort: UserBookSortType?,
         @RequestParam(required = false) @Parameter(description = "책 제목 검색") title: String?,
-        @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
+        @Parameter(
+            description = "페이징 정보 (기본값: 10개, 최신 수정일 순)",
+            example = "?page=0&size=10&sort=updatedAt,desc"
+        )
+        @PageableDefault(size = 10, sort = ["updatedAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<UserBookPageResponse>
 

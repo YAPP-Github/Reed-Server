@@ -9,7 +9,7 @@ data class ReadingRecord private constructor(
     val userBookId: UserBookId,
     val pageNumber: PageNumber,
     val quote: Quote,
-    val review: Review,
+    val review: Review?,
     val emotionTags: List<EmotionTag> = emptyList(),
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
@@ -20,7 +20,7 @@ data class ReadingRecord private constructor(
             userBookId: UUID,
             pageNumber: Int,
             quote: String,
-            review: String,
+            review: String?,
             emotionTags: List<String> = emptyList()
         ): ReadingRecord {
             return ReadingRecord(
@@ -28,7 +28,7 @@ data class ReadingRecord private constructor(
                 userBookId = UserBookId.newInstance(userBookId),
                 pageNumber = PageNumber.newInstance(pageNumber),
                 quote = Quote.newInstance(quote),
-                review = Review.newInstance(review),
+                review = review?.let { Review.newInstance(it) },
                 emotionTags = emotionTags.map { EmotionTag.newInstance(it) }
             )
         }
@@ -38,7 +38,7 @@ data class ReadingRecord private constructor(
             userBookId: UserBookId,
             pageNumber: PageNumber,
             quote: Quote,
-            review: Review,
+            review: Review?,
             emotionTags: List<EmotionTag> = emptyList(),
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null,
@@ -67,7 +67,7 @@ data class ReadingRecord private constructor(
         return this.copy(
             pageNumber = pageNumber?.let { PageNumber.newInstance(it) } ?: this.pageNumber,
             quote = quote?.let { Quote.newInstance(it) } ?: this.quote,
-            review = review?.let { Review.newInstance(it) } ?: this.review,
+            review = review?.let { Review.newInstance(it) },
             emotionTags = emotionTags?.map { EmotionTag.newInstance(it) } ?: this.emotionTags,
             updatedAt = LocalDateTime.now()
         )

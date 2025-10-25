@@ -25,7 +25,7 @@ class ReadingRecordEntity(
 
     pageNumber: Int,
     quote: String,
-    review: String,
+    review: String?,
 
     
 ) : BaseTimeEntity() {
@@ -38,8 +38,8 @@ class ReadingRecordEntity(
     var quote: String = quote
         protected set
 
-    @Column(name = "review", nullable = false, length = 1000)
-    var review: String = review
+    @Column(name = "review", nullable = true, length = 1000)
+    var review: String? = review
         protected set
 
     fun toDomain(): ReadingRecord {
@@ -48,7 +48,7 @@ class ReadingRecordEntity(
             userBookId = ReadingRecord.UserBookId.newInstance(this.userBookId),
             pageNumber = ReadingRecord.PageNumber.newInstance(this.pageNumber),
             quote = ReadingRecord.Quote.newInstance(this.quote),
-            review = ReadingRecord.Review.newInstance(this.review),
+            review = this.review?.let { ReadingRecord.Review.newInstance(it) },
             emotionTags = emptyList(),
             createdAt = this.createdAt,
             updatedAt = this.updatedAt,
@@ -63,7 +63,7 @@ class ReadingRecordEntity(
                 userBookId = readingRecord.userBookId.value,
                 pageNumber = readingRecord.pageNumber.value,
                 quote = readingRecord.quote.value,
-                review = readingRecord.review.value
+                review = readingRecord.review?.value
             )
         }
     }

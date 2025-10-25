@@ -28,7 +28,7 @@ class ReadingRecordDomainService(
         userBookId: UUID,
         pageNumber: Int,
         quote: String,
-        review: String,
+        review: String?,
         emotionTags: List<String>
     ): ReadingRecordInfoVO {
         val userBook = userBookRepository.findById(userBookId)

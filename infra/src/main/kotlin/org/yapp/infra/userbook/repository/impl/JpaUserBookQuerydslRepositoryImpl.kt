@@ -164,7 +164,9 @@ class JpaUserBookQuerydslRepositoryImpl(
             UserBookSortType.TITLE_DESC -> userBook.title.desc()
             UserBookSortType.CREATED_DATE_ASC -> userBook.createdAt.asc()
             UserBookSortType.CREATED_DATE_DESC -> userBook.createdAt.desc()
-            null -> userBook.createdAt.desc()
+            UserBookSortType.UPDATED_DATE_ASC -> userBook.updatedAt.asc()
+            UserBookSortType.UPDATED_DATE_DESC -> userBook.updatedAt.desc()
+            null -> userBook.updatedAt.desc()
         }
     }
 }

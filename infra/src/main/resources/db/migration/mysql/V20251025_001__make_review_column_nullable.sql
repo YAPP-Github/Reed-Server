@@ -1,0 +1,1 @@
+ALTER TABLE reading_records MODIFY COLUMN review VARCHAR(1000) NULL;
