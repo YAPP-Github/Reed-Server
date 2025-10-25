@@ -8,7 +8,7 @@ data class ReadingRecordInfoVO private constructor(
     val userBookId: ReadingRecord.UserBookId,
     val pageNumber: ReadingRecord.PageNumber,
     val quote: ReadingRecord.Quote,
-    val review: ReadingRecord.Review,
+    val review: ReadingRecord.Review?,
     val emotionTags: List<String>,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,

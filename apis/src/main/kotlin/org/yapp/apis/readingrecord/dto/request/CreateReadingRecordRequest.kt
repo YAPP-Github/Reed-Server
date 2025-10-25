@@ -38,8 +38,11 @@ data class CreateReadingRecordRequest private constructor(
     @field:Schema(description = "감정 태그 목록 (현재는 최대 1개, 확장 가능)", example = "[\"감동적\"]")
     val emotionTags: List<@Size(max = 10, message = "감정 태그는 10자를 초과할 수 없습니다.") String> = emptyList()
 ) {
-    fun validPageNumber(): Int = pageNumber!!
-    fun validQuote(): String = quote!!
+    fun validPageNumber(): Int =
+        requireNotNull(pageNumber) { "pageNumber는 null일 수 없습니다." }
+
+    fun validQuote(): String =
+        requireNotNull(quote) { "quote는 null일 수 없습니다." }
     
     fun validEmotionTags(): List<String> = emotionTags
 }
