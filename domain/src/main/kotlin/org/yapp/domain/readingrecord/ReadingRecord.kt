@@ -28,7 +28,7 @@ data class ReadingRecord private constructor(
                 userBookId = UserBookId.newInstance(userBookId),
                 pageNumber = PageNumber.newInstance(pageNumber),
                 quote = Quote.newInstance(quote),
-                review = review?.let { Review.newInstance(it) },
+                review = Review.newInstance(review),
                 emotionTags = emotionTags.map { EmotionTag.newInstance(it) }
             )
         }
@@ -67,7 +67,7 @@ data class ReadingRecord private constructor(
         return this.copy(
             pageNumber = pageNumber?.let { PageNumber.newInstance(it) } ?: this.pageNumber,
             quote = quote?.let { Quote.newInstance(it) } ?: this.quote,
-            review = review?.let { Review.newInstance(it) },
+            review = if (review != null) Review.newInstance(review) else this.review,
             emotionTags = emotionTags?.map { EmotionTag.newInstance(it) } ?: this.emotionTags,
             updatedAt = LocalDateTime.now()
         )
@@ -111,8 +111,10 @@ data class ReadingRecord private constructor(
     @JvmInline
     value class Review(val value: String) {
         companion object {
-            fun newInstance(value: String): Review {
-                require(value.isNotBlank()) { "Review cannot be blank" }
+            fun newInstance(value: String?): Review? {
+                if (value.isNullOrBlank()) {
+                    return null
+                }
                 require(value.length <= 1000) { "Review cannot exceed 1000 characters" }
                 return Review(value)
             }

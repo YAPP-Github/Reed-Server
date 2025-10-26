@@ -48,7 +48,7 @@ class ReadingRecordEntity(
             userBookId = ReadingRecord.UserBookId.newInstance(this.userBookId),
             pageNumber = ReadingRecord.PageNumber.newInstance(this.pageNumber),
             quote = ReadingRecord.Quote.newInstance(this.quote),
-            review = this.review?.let { ReadingRecord.Review.newInstance(it) },
+            review = ReadingRecord.Review.newInstance(this.review),
             emotionTags = emptyList(),
             createdAt = this.createdAt,
             updatedAt = this.updatedAt,
