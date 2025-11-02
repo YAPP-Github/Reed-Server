@@ -143,26 +143,10 @@ class UserDomainService(
      * @param notificationEnabled Whether notifications should be enabled
      * @return Updated user profile
      */
-    fun updateNotificationSettings(userId: UUID, notificationEnabled: Boolean): UserProfileVO {
-        val user = userRepository.findById(userId)
-            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
-
-        val updatedUser = userRepository.save(user.updateNotificationEnabled(notificationEnabled))
-        return UserProfileVO.newInstance(updatedUser)
-    }
-
-    /**
-     * Updates the user's FCM token
-     * 
-     * @param userId The user's ID
-     * @param fcmToken The FCM token
-     * @return Updated user profile
-     */
-    fun updateFcmToken(userId: UUID, fcmToken: String): UserProfileVO {
-        val user = userRepository.findById(userId)
-            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
-
-        val updatedUser = userRepository.save(user.updateFcmToken(fcmToken))
-        return UserProfileVO.newInstance(updatedUser)
-    }
-}
+        fun updateNotificationSettings(userId: UUID, notificationEnabled: Boolean): UserProfileVO {
+            val user = userRepository.findById(userId)
+                ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+    
+            val updatedUser = userRepository.save(user.updateNotificationEnabled(notificationEnabled))
+            return UserProfileVO.newInstance(updatedUser)
+        }}
