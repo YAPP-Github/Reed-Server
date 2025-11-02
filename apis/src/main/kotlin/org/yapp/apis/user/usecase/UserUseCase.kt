@@ -1,7 +1,7 @@
 package org.yapp.apis.user.usecase
 
 import org.springframework.transaction.annotation.Transactional
-import org.yapp.apis.user.dto.request.FcmTokenRequest
+import org.yapp.apis.user.dto.request.DeviceRequest
 import org.yapp.apis.user.dto.request.NotificationSettingsRequest
 import org.yapp.apis.user.dto.request.TermsAgreementRequest
 import org.yapp.apis.user.dto.response.UserProfileResponse
@@ -29,7 +29,7 @@ class UserUseCase(
     }
 
     @Transactional
-    fun updateFcmToken(userId: UUID, request: FcmTokenRequest): UserProfileResponse {
-        return userService.updateFcmToken(userId, request)
+    fun registerDevice(userId: UUID, request: DeviceRequest): UserProfileResponse {
+        return userService.registerDevice(userId, request)
     }
 }
