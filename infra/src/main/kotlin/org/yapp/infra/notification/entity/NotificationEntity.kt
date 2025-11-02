@@ -23,9 +23,6 @@ class NotificationEntity(
     val user: UserEntity,
 
     @Column(nullable = false)
-    var fcmToken: String,
-
-    @Column(nullable = false)
     var title: String,
 
     @Column(nullable = false)
@@ -50,7 +47,6 @@ class NotificationEntity(
             return NotificationEntity(
                 id = notification.id.value,
                 user = UserEntity.fromDomain(notification.user),
-                fcmToken = notification.fcmToken,
                 title = notification.title,
                 message = notification.message,
                 notificationType = notification.notificationType,
@@ -65,7 +61,6 @@ class NotificationEntity(
         return Notification.reconstruct(
             id = Notification.Id.newInstance(this.id),
             user = this.user.toDomain(),
-            fcmToken = this.fcmToken,
             title = this.title,
             message = this.message,
             notificationType = this.notificationType,
