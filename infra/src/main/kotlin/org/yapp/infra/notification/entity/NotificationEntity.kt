@@ -4,8 +4,8 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.yapp.domain.notification.Notification
 import org.yapp.domain.notification.NotificationType
+import org.yapp.domain.user.User
 import org.yapp.infra.common.BaseTimeEntity
-import org.yapp.infra.user.entity.UserEntity
 import java.sql.Types
 import java.time.LocalDateTime
 import java.util.UUID
@@ -18,9 +18,9 @@ class NotificationEntity(
     @Column(length = 36, updatable = false, nullable = false)
     val id: UUID,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    val user: UserEntity,
+    @JdbcTypeCode(Types.VARCHAR)
+    @Column(name = "user_id", length = 36, nullable = false)
+    val userId: UUID,
 
     @Column(nullable = false)
     var title: String,
@@ -46,7 +46,7 @@ class NotificationEntity(
         fun fromDomain(notification: Notification): NotificationEntity {
             return NotificationEntity(
                 id = notification.id.value,
-                user = UserEntity.fromDomain(notification.user),
+                userId = notification.userId.value,
                 title = notification.title,
                 message = notification.message,
                 notificationType = notification.notificationType,
@@ -60,7 +60,7 @@ class NotificationEntity(
     fun toDomain(): Notification {
         return Notification.reconstruct(
             id = Notification.Id.newInstance(this.id),
-            user = this.user.toDomain(),
+            userId = User.Id.newInstance(this.userId),
             title = this.title,
             message = this.message,
             notificationType = this.notificationType,

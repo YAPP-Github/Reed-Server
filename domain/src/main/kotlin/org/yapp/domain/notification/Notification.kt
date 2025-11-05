@@ -7,7 +7,7 @@ import java.util.UUID
 
 data class Notification private constructor(
     val id: Id,
-    val user: User,
+    val userId: User.Id,
     val title: String,
     val message: String,
     val notificationType: NotificationType,
@@ -17,16 +17,16 @@ data class Notification private constructor(
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null
 ) {
-    @JvmInline
-    value class Id(val value: UUID) {
-        companion object {
-            fun newInstance(value: UUID) = Id(value)
-        }
+    fun reset(): Notification {
+        return this.copy(
+            isSent = false,
+            sentAt = null
+        )
     }
 
     companion object {
         fun create(
-            user: User,
+            userId: UUID,
             title: String,
             message: String,
             notificationType: NotificationType,
@@ -35,7 +35,7 @@ data class Notification private constructor(
         ): Notification {
             return Notification(
                 id = Id.newInstance(UuidGenerator.create()),
-                user = user,
+                userId = User.Id.newInstance(userId),
                 title = title,
                 message = message,
                 notificationType = notificationType,
@@ -46,7 +46,7 @@ data class Notification private constructor(
 
         fun reconstruct(
             id: Id,
-            user: User,
+            userId: User.Id,
             title: String,
             message: String,
             notificationType: NotificationType,
@@ -58,7 +58,7 @@ data class Notification private constructor(
         ): Notification {
             return Notification(
                 id = id,
-                user = user,
+                userId = userId,
                 title = title,
                 message = message,
                 notificationType = notificationType,
@@ -68,6 +68,13 @@ data class Notification private constructor(
                 createdAt = createdAt,
                 updatedAt = updatedAt
             )
+        }
+    }
+
+    @JvmInline
+    value class Id(val value: UUID) {
+        companion object {
+            fun newInstance(value: UUID) = Id(value)
         }
     }
 }
