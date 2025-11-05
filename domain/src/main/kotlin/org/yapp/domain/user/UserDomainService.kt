@@ -1,15 +1,11 @@
 package org.yapp.domain.user
 
+import org.yapp.domain.readingrecord.ReadingRecordRepository
 import org.yapp.domain.user.exception.UserErrorCode
 import org.yapp.domain.user.exception.UserNotFoundException
-import org.yapp.domain.user.vo.UserAuthVO
-import org.yapp.domain.user.vo.UserIdentityVO
-import org.yapp.domain.user.vo.UserProfileVO
-import org.yapp.domain.user.vo.WithdrawTargetUserVO
+import org.yapp.domain.user.vo.*
 import org.yapp.domain.userbook.UserBookRepository
-import org.yapp.domain.readingrecord.ReadingRecordRepository
 import org.yapp.globalutils.annotation.DomainService
-
 import java.time.LocalDateTime
 import java.util.*
 
@@ -22,6 +18,11 @@ class UserDomainService(
     fun findUserProfileById(id: UUID): UserProfileVO {
         val user = userRepository.findById(id) ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
         return UserProfileVO.newInstance(user)
+    }
+
+    fun findNotificationTargetUserById(id: UUID): NotificationTargetUserVO {
+        val user = userRepository.findById(id) ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+        return NotificationTargetUserVO.from(user)
     }
 
     fun findUserIdentityById(id: UUID): UserIdentityVO {
@@ -105,23 +106,14 @@ class UserDomainService(
         userRepository.deleteById(user.id.value)
     }
 
-    /**
-     * Updates the user's lastActivity value if they have registered or recorded a book in the last 7 days.
-     * If not, the lastActivity value remains unchanged (keeps the login date).
-     * 
-     * @param userId The user's ID
-     */
     fun updateLastActivity(userId: UUID) {
         val user = userRepository.findById(userId)
             ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
 
-        // Check if the user has registered or recorded a book in the last 7 days
         val sevenDaysAgo = LocalDateTime.now().minusDays(7)
 
-        // Check for book registrations in the last 7 days
         val recentBooks = userBookRepository.findByUserIdAndCreatedAtAfter(userId, sevenDaysAgo)
 
-        // Check for reading records in the last 7 days
         val userBooks = userBookRepository.findAllByUserId(userId)
         val userBookIds = userBooks.map { it.id.value }
         val recentRecords = if (userBookIds.isNotEmpty()) {
@@ -130,23 +122,51 @@ class UserDomainService(
             emptyList()
         }
 
-        // Update lastActivity only if the user has registered or recorded a book in the last 7 days
         if (recentBooks.isNotEmpty() || recentRecords.isNotEmpty()) {
             userRepository.save(user.updateLastActivity())
         }
     }
 
-    /**
-     * Updates the user's notification settings
-     * 
-     * @param userId The user's ID
-     * @param notificationEnabled Whether notifications should be enabled
-     * @return Updated user profile
-     */
-        fun updateNotificationSettings(userId: UUID, notificationEnabled: Boolean): UserProfileVO {
-            val user = userRepository.findById(userId)
-                ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
-    
-            val updatedUser = userRepository.save(user.updateNotificationEnabled(notificationEnabled))
-            return UserProfileVO.newInstance(updatedUser)
-        }}
+    fun updateNotificationSettings(userId: UUID, notificationEnabled: Boolean): UserProfileVO {
+        val user = userRepository.findById(userId)
+            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+
+        val updatedUser = userRepository.save(user.updateNotificationEnabled(notificationEnabled))
+        return UserProfileVO.newInstance(updatedUser)
+    }
+
+    fun findUnrecordedUsers(daysThreshold: Int): List<NotificationTargetUserVO> {
+        val targetDate = LocalDateTime.now().minusDays(daysThreshold.toLong())
+
+        val allUsers = userRepository.findByLastActivityBeforeAndNotificationEnabled(
+            LocalDateTime.now().plusDays(1),
+            true
+        )
+
+        return allUsers.filter { user ->
+            val userId = user.id.value
+            val recentBooks = userBookRepository.findByUserIdAndCreatedAtAfter(userId, targetDate)
+
+            if (recentBooks.isEmpty()) {
+                false
+            } else {
+                val userBooks = userBookRepository.findAllByUserId(userId)
+                val userBookIds = userBooks.map { it.id.value }
+
+                val recentRecords = if (userBookIds.isNotEmpty()) {
+                    readingRecordRepository.findByUserBookIdInAndCreatedAtAfter(userBookIds, targetDate)
+                } else {
+                    emptyList()
+                }
+
+                recentRecords.isEmpty()
+            }
+        }.map { NotificationTargetUserVO.from(it) }
+    }
+
+    fun findDormantUsers(daysThreshold: Int): List<NotificationTargetUserVO> {
+        val targetDate = LocalDateTime.now().minusDays(daysThreshold.toLong())
+        return userRepository.findByLastActivityBeforeAndNotificationEnabled(targetDate, true)
+            .map { NotificationTargetUserVO.from(it) }
+    }
+}
