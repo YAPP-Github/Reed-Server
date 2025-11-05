@@ -17,7 +17,7 @@ import org.yapp.domain.userbook.exception.UserBookNotFoundException
 import org.yapp.domain.userbook.exception.UserBookErrorCode
 
 @DomainService
-class ReadingRecordDomainService(
+class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 제거
     private val readingRecordRepository: ReadingRecordRepository,
     private val tagRepository: TagRepository,
     private val readingRecordTagRepository: ReadingRecordTagRepository,
