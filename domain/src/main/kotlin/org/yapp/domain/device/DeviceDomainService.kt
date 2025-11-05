@@ -1,5 +1,6 @@
 package org.yapp.domain.device
 
+import org.yapp.domain.device.vo.DeviceVO
 import org.yapp.globalutils.annotation.DomainService
 import java.util.UUID
 
@@ -7,13 +8,16 @@ import java.util.UUID
 class DeviceDomainService(
     private val deviceRepository: DeviceRepository
 ) {
-    fun findOrCreateDevice(userId: UUID, deviceId: String, fcmToken: String): Device {
+    fun findOrCreateDevice(userId: UUID, deviceId: String, fcmToken: String) {
         val device = deviceRepository.findByDeviceId(deviceId)
-        return if (device != null) {
-            device
-        } else {
+        if (device == null) {
             val newDevice = Device.create(userId, deviceId, fcmToken)
             deviceRepository.save(newDevice)
         }
+    }
+
+    fun findDevicesByUserId(userId: UUID): List<DeviceVO> {
+        return deviceRepository.findByUserId(userId)
+            .map { DeviceVO.from(it) }
     }
 }

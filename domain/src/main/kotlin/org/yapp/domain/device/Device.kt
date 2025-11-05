@@ -13,13 +13,6 @@ data class Device private constructor(
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null
 ) {
-    @JvmInline
-    value class Id(val value: UUID) {
-        companion object {
-            fun newInstance(value: UUID) = Id(value)
-        }
-    }
-
     companion object {
         fun create(
             userId: UUID,
@@ -50,6 +43,13 @@ data class Device private constructor(
                 createdAt = createdAt,
                 updatedAt = updatedAt
             )
+        }
+
+        @JvmInline
+        value class Id(val value: UUID) {
+            companion object {
+                fun newInstance(value: UUID) = Id(value)
+            }
         }
     }
 }
