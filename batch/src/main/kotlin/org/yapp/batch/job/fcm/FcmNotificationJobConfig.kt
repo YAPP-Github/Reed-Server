@@ -14,7 +14,6 @@ import org.yapp.domain.notification.NotificationType
 import org.yapp.domain.user.User
 import org.yapp.domain.user.UserRepository
 import java.time.LocalDateTime
-import java.util.UUID
 
 @Configuration
 @EnableScheduling
