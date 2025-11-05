@@ -44,12 +44,12 @@ data class Device private constructor(
                 updatedAt = updatedAt
             )
         }
+    }
 
-        @JvmInline
-        value class Id(val value: UUID) {
-            companion object {
-                fun newInstance(value: UUID) = Id(value)
-            }
+    @JvmInline
+    value class Id(val value: UUID) {
+        companion object {
+            fun newInstance(value: UUID) = Id(value)
         }
     }
 }
