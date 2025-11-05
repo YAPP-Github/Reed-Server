@@ -7,7 +7,7 @@ import java.util.UUID
 
 data class Device private constructor(
     val id: Id,
-    val user: User,
+    val userId: User.Id,
     val deviceId: String,
     val fcmToken: String,
     val createdAt: LocalDateTime? = null,
@@ -22,13 +22,13 @@ data class Device private constructor(
 
     companion object {
         fun create(
-            user: User,
+            userId: UUID,
             deviceId: String,
             fcmToken: String
         ): Device {
             return Device(
                 id = Id.newInstance(UuidGenerator.create()),
-                user = user,
+                userId = User.Id.newInstance(userId),
                 deviceId = deviceId,
                 fcmToken = fcmToken
             )
@@ -36,7 +36,7 @@ data class Device private constructor(
 
         fun reconstruct(
             id: Id,
-            user: User,
+            userId: User.Id,
             deviceId: String,
             fcmToken: String,
             createdAt: LocalDateTime?,
@@ -44,7 +44,7 @@ data class Device private constructor(
         ): Device {
             return Device(
                 id = id,
-                user = user,
+                userId = userId,
                 deviceId = deviceId,
                 fcmToken = fcmToken,
                 createdAt = createdAt,

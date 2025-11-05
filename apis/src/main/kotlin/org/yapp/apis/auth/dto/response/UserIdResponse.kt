@@ -1,7 +1,7 @@
 package org.yapp.apis.auth.dto.response
 
 import io.swagger.v3.oas.annotations.media.Schema
-import org.yapp.domain.token.RefreshToken.UserId
+import org.yapp.domain.user.User
 import java.util.*
 
 @Schema(
@@ -13,7 +13,7 @@ data class UserIdResponse(
     val userId: UUID
 ) {
     companion object {
-        fun from(userId: UserId): UserIdResponse {
+        fun from(userId: User.Id): UserIdResponse {
             return UserIdResponse(userId.value)
         }
     }

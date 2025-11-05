@@ -11,17 +11,13 @@ import org.yapp.apis.user.dto.response.UserAuthInfoResponse
 import org.yapp.apis.user.dto.response.UserProfileResponse
 import org.yapp.domain.device.DeviceDomainService
 import org.yapp.domain.user.UserDomainService
-import org.yapp.domain.user.UserRepository
-import org.yapp.domain.user.exception.UserErrorCode
-import org.yapp.domain.user.exception.UserNotFoundException
 import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
 @ApplicationService
 class UserService(
     private val userDomainService: UserDomainService,
-    private val deviceDomainService: DeviceDomainService,
-    private val userRepository: UserRepository
+    private val deviceDomainService: DeviceDomainService
 ) {
     fun findUserProfileByUserId(userId: UUID): UserProfileResponse {
         val userProfile = userDomainService.findUserProfileById(userId)
@@ -52,9 +48,8 @@ class UserService(
     }
 
     fun registerDevice(userId: UUID, @Valid request: DeviceRequest): UserProfileResponse {
-        val user = userRepository.findById(userId)
-            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
-        deviceDomainService.findOrCreateDevice(user, request.validDeviceId(), request.validFcmToken())
+        validateUserExists(userId)
+        deviceDomainService.findOrCreateDevice(userId, request.validDeviceId(), request.validFcmToken())
         val userProfile = userDomainService.findUserProfileById(userId)
         return UserProfileResponse.from(userProfile)
     }

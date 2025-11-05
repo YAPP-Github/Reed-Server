@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash
 import org.springframework.data.redis.core.index.Indexed
 import org.yapp.domain.token.RefreshToken
+import org.yapp.domain.user.User
 import org.yapp.globalutils.util.UuidGenerator
 import java.time.LocalDateTime
 import java.util.*
@@ -25,7 +26,7 @@ class RefreshTokenEntity private constructor(
     fun toDomain(): RefreshToken = RefreshToken.reconstruct(
         id = RefreshToken.Id.newInstance(this.id),
         token = RefreshToken.Token.newInstance(this.token),
-        userId = RefreshToken.UserId.newInstance(this.userId),
+        userId = User.Id.newInstance(this.userId),
         expiresAt = expiresAt,
         createdAt = createdAt
     )

@@ -1,11 +1,12 @@
 package org.yapp.domain.readingrecord.vo
 
 import org.yapp.domain.readingrecord.ReadingRecord
+import org.yapp.domain.userbook.UserBook
 import java.time.LocalDateTime
 
 data class ReadingRecordInfoVO private constructor(
     val id: ReadingRecord.Id,
-    val userBookId: ReadingRecord.UserBookId,
+    val userBookId: UserBook.Id,
     val pageNumber: ReadingRecord.PageNumber,
     val quote: ReadingRecord.Quote,
     val review: ReadingRecord.Review?,
