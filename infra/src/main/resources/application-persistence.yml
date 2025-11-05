@@ -8,7 +8,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     open-in-view: false
     properties:
@@ -16,7 +16,7 @@ spring:
         format_sql: true
 
   flyway:
-    enabled: false
+    enabled: true
     baseline-on-migrate: false
     validate-on-migrate: true
     locations:
