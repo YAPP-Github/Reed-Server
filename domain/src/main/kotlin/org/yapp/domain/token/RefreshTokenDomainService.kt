@@ -1,9 +1,9 @@
 package org.yapp.domain.token
 
 import org.yapp.domain.token.RefreshToken.Token
-import org.yapp.domain.token.RefreshToken.UserId
 import org.yapp.domain.token.exception.TokenErrorCode
 import org.yapp.domain.token.exception.TokenNotFoundException
+import org.yapp.domain.user.User
 import org.yapp.globalutils.annotation.DomainService
 import java.time.LocalDateTime
 import java.util.*
@@ -37,7 +37,7 @@ class RefreshTokenDomainService(
         }
     }
 
-    fun getUserIdByToken(refreshToken: String): UserId {
+    fun getUserIdByToken(refreshToken: String): User.Id {
         val storedToken = refreshTokenRepository.findByToken(refreshToken)
             ?: throw TokenNotFoundException(TokenErrorCode.TOKEN_NOT_FOUND)
         return storedToken.userId

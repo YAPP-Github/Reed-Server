@@ -1,5 +1,6 @@
 package org.yapp.domain.token
 
+import org.yapp.domain.user.User
 import org.yapp.globalutils.util.UuidGenerator
 import java.time.LocalDateTime
 import java.util.*
@@ -7,7 +8,7 @@ import java.util.*
 data class RefreshToken private constructor(
     val id: Id?,
     val token: Token,
-    val userId: UserId,
+    val userId: User.Id,
     val expiresAt: LocalDateTime,
     val createdAt: LocalDateTime
 ) {
@@ -25,7 +26,7 @@ data class RefreshToken private constructor(
             return RefreshToken(
                 id = Id.newInstance(UuidGenerator.create()),
                 token = Token.newInstance(token),
-                userId = UserId.newInstance(userId),
+                userId = User.Id.newInstance(userId),
                 expiresAt = expiresAt,
                 createdAt = createdAt
             )
@@ -34,7 +35,7 @@ data class RefreshToken private constructor(
         fun reconstruct(
             id: Id,
             token: Token,
-            userId: UserId,
+            userId: User.Id,
             expiresAt: LocalDateTime,
             createdAt: LocalDateTime
         ): RefreshToken {
@@ -67,17 +68,6 @@ data class RefreshToken private constructor(
             fun newInstance(value: String): Token {
                 require(value.isNotBlank()) { "Token must not be blank" }
                 return Token(value)
-            }
-        }
-    }
-
-    @JvmInline
-    value class UserId(val value: UUID) {
-        override fun toString(): String = value.toString()
-
-        companion object {
-            fun newInstance(value: UUID): UserId {
-                return UserId(value)
             }
         }
     }

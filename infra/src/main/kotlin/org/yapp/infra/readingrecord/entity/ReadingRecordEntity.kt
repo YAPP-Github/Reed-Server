@@ -5,6 +5,7 @@ import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
 import org.yapp.domain.readingrecord.ReadingRecord
+import org.yapp.domain.userbook.UserBook
 import org.yapp.infra.common.BaseTimeEntity
 import java.sql.Types
 import java.util.*
@@ -45,7 +46,7 @@ class ReadingRecordEntity(
     fun toDomain(): ReadingRecord {
         return ReadingRecord.reconstruct(
             id = ReadingRecord.Id.newInstance(this.id),
-            userBookId = ReadingRecord.UserBookId.newInstance(this.userBookId),
+            userBookId = UserBook.Id.newInstance(this.userBookId),
             pageNumber = ReadingRecord.PageNumber.newInstance(this.pageNumber),
             quote = ReadingRecord.Quote.newInstance(this.quote),
             review = ReadingRecord.Review.newInstance(this.review),

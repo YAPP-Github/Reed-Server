@@ -42,9 +42,6 @@ class UserEntity private constructor(
 
     appleRefreshToken: String? = null,
 
-    @Column(name = "fcm_token", length = 1024)
-    var fcmToken: String? = null,
-
     @Column(name = "notification_enabled", nullable = false)
     var notificationEnabled: Boolean = true,
 
@@ -83,7 +80,6 @@ class UserEntity private constructor(
         role = role,
         termsAgreed = termsAgreed,
         appleRefreshToken = appleRefreshToken,
-        fcmToken = fcmToken,
         notificationEnabled = notificationEnabled,
         lastActivity = lastActivity,
         createdAt = createdAt,
@@ -102,7 +98,6 @@ class UserEntity private constructor(
             role = user.role,
             termsAgreed = user.termsAgreed,
             appleRefreshToken = user.appleRefreshToken,
-            fcmToken = user.fcmToken,
             notificationEnabled = user.notificationEnabled,
             lastActivity = user.lastActivity
         )

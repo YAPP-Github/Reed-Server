@@ -3,19 +3,21 @@ package org.yapp.apis.user.service
 import jakarta.validation.Valid
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.user.dto.request.FcmTokenRequest
+import org.yapp.apis.user.dto.request.DeviceRequest
 import org.yapp.apis.user.dto.request.FindUserIdentityRequest
 import org.yapp.apis.user.dto.request.NotificationSettingsRequest
 import org.yapp.apis.user.dto.request.TermsAgreementRequest
 import org.yapp.apis.user.dto.response.UserAuthInfoResponse
 import org.yapp.apis.user.dto.response.UserProfileResponse
+import org.yapp.domain.device.DeviceDomainService
 import org.yapp.domain.user.UserDomainService
 import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
 @ApplicationService
 class UserService(
-    private val userDomainService: UserDomainService
+    private val userDomainService: UserDomainService,
+    private val deviceDomainService: DeviceDomainService
 ) {
     fun findUserProfileByUserId(userId: UUID): UserProfileResponse {
         val userProfile = userDomainService.findUserProfileById(userId)
@@ -45,9 +47,10 @@ class UserService(
         return UserProfileResponse.from(updatedUserProfile)
     }
 
-    fun updateFcmToken(userId: UUID, @Valid request: FcmTokenRequest): UserProfileResponse {
+    fun registerDevice(userId: UUID, @Valid request: DeviceRequest): UserProfileResponse {
         validateUserExists(userId)
-        val updatedUserProfile = userDomainService.updateFcmToken(userId, request.validFcmToken())
-        return UserProfileResponse.from(updatedUserProfile)
+        deviceDomainService.findOrCreateDevice(userId, request.validDeviceId(), request.validFcmToken())
+        val userProfile = userDomainService.findUserProfileById(userId)
+        return UserProfileResponse.from(userProfile)
     }
 }

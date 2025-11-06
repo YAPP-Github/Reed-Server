@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.yapp.apis.user.dto.request.FcmTokenRequest
+import org.yapp.apis.user.dto.request.DeviceRequest
 import org.yapp.apis.user.dto.request.NotificationSettingsRequest
 import org.yapp.apis.user.dto.request.TermsAgreementRequest
 import org.yapp.apis.user.dto.response.UserProfileResponse
@@ -122,14 +122,14 @@ interface UserControllerApi {
     ): ResponseEntity<UserProfileResponse>
 
     @Operation(
-        summary = "FCM 토큰 등록",
-        description = "사용자의 FCM 토큰을 등록합니다."
+        summary = "디바이스 등록",
+        description = "사용자의 디바이스를 등록합니다. 이미 등록된 디바이스인 경우 FCM 토큰을 업데이트합니다."
     )
     @ApiResponses(
         value = [
             ApiResponse(
                 responseCode = "200",
-                description = "FCM 토큰 등록 성공",
+                description = "디바이스 등록 또는 업데이트 성공",
                 content = [Content(schema = Schema(implementation = UserProfileResponse::class))]
             ),
             ApiResponse(
@@ -149,9 +149,9 @@ interface UserControllerApi {
             )
         ]
     )
-    @PutMapping("/me/fcm-token")
-    fun updateFcmToken(
+    @PutMapping("/me/devices")
+    fun registerDevice(
         @Parameter(hidden = true) @AuthenticationPrincipal userId: UUID,
-        @Valid @RequestBody @Parameter(description = "FCM 토큰 요청 객체") request: FcmTokenRequest
+        @Valid @RequestBody @Parameter(description = "디바이스 정보 요청 객체") request: DeviceRequest
     ): ResponseEntity<UserProfileResponse>
 }

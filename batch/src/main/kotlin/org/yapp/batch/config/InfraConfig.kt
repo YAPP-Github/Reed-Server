@@ -7,8 +7,9 @@ import org.yapp.infra.InfraBaseConfigGroup
 @Configuration(proxyBeanMethods = false)
 @EnableInfraBaseConfig(
     [
-        InfraBaseConfigGroup.JPA
+        InfraBaseConfigGroup.JPA,
+        InfraBaseConfigGroup.AOP,
+        InfraBaseConfigGroup.SENTRY
     ]
 )
-class InfraConfig {
-}
+class InfraConfig

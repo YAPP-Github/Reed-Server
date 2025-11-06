@@ -1,14 +1,16 @@
 package org.yapp.domain.userbook.vo
 
+import org.yapp.domain.book.Book
+import org.yapp.domain.user.User
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
 import java.time.LocalDateTime
 
 data class UserBookInfoVO private constructor(
     val id: UserBook.Id,
-    val userId: UserBook.UserId,
-    val bookId: UserBook.BookId,
-    val bookIsbn13: UserBook.BookIsbn13,
+    val userId: User.Id,
+    val bookId: Book.Id,
+    val bookIsbn13: Book.Isbn13,
     val coverImageUrl: String,
     val publisher: String,
     val title: String,

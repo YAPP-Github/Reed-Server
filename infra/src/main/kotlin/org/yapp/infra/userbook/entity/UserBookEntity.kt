@@ -4,6 +4,8 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
+import org.yapp.domain.book.Book
+import org.yapp.domain.user.User
 import org.yapp.domain.userbook.BookStatus
 import org.yapp.domain.userbook.UserBook
 import org.yapp.infra.common.BaseTimeEntity
@@ -71,9 +73,9 @@ class UserBookEntity(
 
     fun toDomain(): UserBook = UserBook.reconstruct(
         id = UserBook.Id.newInstance(this.id),
-        userId = UserBook.UserId.newInstance(this.userId),
-        bookId = UserBook.BookId.newInstance(this.bookId),
-        bookIsbn13 = UserBook.BookIsbn13.newInstance(this.bookIsbn13),
+        userId = User.Id.newInstance(this.userId),
+        bookId = Book.Id.newInstance(this.bookId),
+        bookIsbn13 = Book.Isbn13.newInstance(this.bookIsbn13),
         coverImageUrl = this.coverImageUrl,
         publisher = this.publisher,
         title = this.title,

@@ -4,7 +4,7 @@ import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
-import org.yapp.apis.user.dto.request.FcmTokenRequest
+import org.yapp.apis.user.dto.request.DeviceRequest
 import org.yapp.apis.user.dto.request.NotificationSettingsRequest
 import org.yapp.apis.user.dto.request.TermsAgreementRequest
 import org.yapp.apis.user.dto.response.UserProfileResponse
@@ -42,12 +42,12 @@ class UserController(
         return ResponseEntity.ok(userProfile)
     }
 
-    @PutMapping("/me/fcm-token")
-    override fun updateFcmToken(
+    @PutMapping("/me/devices")
+    override fun registerDevice(
         @AuthenticationPrincipal userId: UUID,
-        @Valid @RequestBody request: FcmTokenRequest
+        @Valid @RequestBody request: DeviceRequest
     ): ResponseEntity<UserProfileResponse> {
-        val userProfile = userUseCase.updateFcmToken(userId, request)
+        val userProfile = userUseCase.registerDevice(userId, request)
         return ResponseEntity.ok(userProfile)
     }
 }

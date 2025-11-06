@@ -1,12 +1,13 @@
 package org.yapp.domain.readingrecord
 
+import org.yapp.domain.userbook.UserBook
 import org.yapp.globalutils.util.UuidGenerator
 import java.time.LocalDateTime
 import java.util.*
 
 data class ReadingRecord private constructor(
     val id: Id,
-    val userBookId: UserBookId,
+    val userBookId: UserBook.Id,
     val pageNumber: PageNumber,
     val quote: Quote,
     val review: Review?,
@@ -25,7 +26,7 @@ data class ReadingRecord private constructor(
         ): ReadingRecord {
             return ReadingRecord(
                 id = Id.newInstance(UuidGenerator.create()),
-                userBookId = UserBookId.newInstance(userBookId),
+                userBookId = UserBook.Id.newInstance(userBookId),
                 pageNumber = PageNumber.newInstance(pageNumber),
                 quote = Quote.newInstance(quote),
                 review = Review.newInstance(review),
@@ -35,7 +36,7 @@ data class ReadingRecord private constructor(
 
         fun reconstruct(
             id: Id,
-            userBookId: UserBookId,
+            userBookId: UserBook.Id,
             pageNumber: PageNumber,
             quote: Quote,
             review: Review?,
@@ -77,13 +78,6 @@ data class ReadingRecord private constructor(
     value class Id(val value: UUID) {
         companion object {
             fun newInstance(value: UUID) = Id(value)
-        }
-    }
-
-    @JvmInline
-    value class UserBookId(val value: UUID) {
-        companion object {
-            fun newInstance(value: UUID) = UserBookId(value)
         }
     }
 
