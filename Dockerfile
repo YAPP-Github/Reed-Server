@@ -24,7 +24,7 @@ COPY . .
 RUN ./gradlew :${MODULE}:bootJar --parallel --no-daemon
 
 # Run stage
-FROM openjdk:21-slim
+FROM eclipse-temurin:21-jdk
 # MODULE: 빌드할 모듈 (apis, admin, batch) - 빌드 시 --build-arg MODULE=xxx 필수
 ARG MODULE
 WORKDIR /app
