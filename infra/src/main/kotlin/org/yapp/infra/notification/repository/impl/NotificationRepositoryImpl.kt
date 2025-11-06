@@ -21,8 +21,7 @@ class NotificationRepositoryImpl(
     }
 
     override fun findByUser(user: User): Notification? {
-        val userEntity = UserEntity.fromDomain(user)
-        return jpaNotificationRepository.findByUser(userEntity)?.toDomain()
+        return jpaNotificationRepository.findByUserId(user.id.value).firstOrNull()?.toDomain()
     }
 
     override fun findByUserId(userId: UUID): List<Notification> {
