@@ -36,18 +36,21 @@ jobs:
               - 'infra/**'
               - 'global-utils/**'
               - 'observability/**'
+              - '.github/**'
             # admin:  # TODO: Uncomment when admin module is ready
             #   - 'admin/**'
             #   - 'domain/**'
             #   - 'infra/**'
             #   - 'global-utils/**'
             #   - 'observability/**'
+            #   - '.github/**'
             batch:
               - 'batch/**'
               - 'domain/**'
               - 'infra/**'
               - 'global-utils/**'
               - 'observability/**'
+              - '.github/**'
             any:
               - 'apis/**'
               # - 'admin/**'  # TODO: Uncomment when admin module is ready
@@ -56,6 +59,7 @@ jobs:
               - 'infra/**'
               - 'global-utils/**'
               - 'observability/**'
+              - '.github/**'
 
   build-push-and-deploy:
     needs: detect-changes
