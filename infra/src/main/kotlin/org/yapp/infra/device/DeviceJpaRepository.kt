@@ -10,7 +10,7 @@ interface DeviceJpaRepository : JpaRepository<DeviceEntity, UUID> {
     fun findByDeviceId(deviceId: String): DeviceEntity?
     fun findByUserId(userId: UUID): List<DeviceEntity>
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("DELETE FROM DeviceEntity d WHERE d.fcmToken IN :tokens")
     fun deleteByFcmTokenIn(tokens: List<String>)
 }

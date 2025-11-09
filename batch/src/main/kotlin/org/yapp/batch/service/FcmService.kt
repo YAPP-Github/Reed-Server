@@ -3,6 +3,7 @@ package org.yapp.batch.service
 import com.google.firebase.messaging.*
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.yapp.batch.dto.FcmSendResult
 
 @Service
 class FcmService {
@@ -11,7 +12,7 @@ class FcmService {
     fun sendMulticastNotification(tokens: List<String>, title: String, body: String): FcmSendResult {
         if (tokens.isEmpty()) {
             logger.warn("FCM token list is empty. Skipping notification.")
-            return FcmSendResult(0, 0, emptyList())
+            return FcmSendResult.empty()
         }
 
         val notification = buildNotification(title, body)
@@ -27,7 +28,7 @@ class FcmService {
             return processFcmResponse(response, tokens)
         } catch (e: FirebaseMessagingException) {
             logger.error("Failed to send FCM notification to ${tokens.size} tokens", e)
-            return FcmSendResult(0, tokens.size, emptyList())
+            return FcmSendResult.allFailed(tokens.size)
         }
     }
 
@@ -40,8 +41,9 @@ class FcmService {
 
     private fun processFcmResponse(response: BatchResponse, tokens: List<String>): FcmSendResult {
         val invalidTokens = mutableListOf<String>()
+        val noFailures = 0
 
-        if (response.failureCount > 0) {
+        if (response.failureCount > noFailures) {
             response.responses.forEachIndexed { index, sendResponse ->
                 if (!sendResponse.isSuccessful) {
                     val failedToken = tokens[index]
@@ -63,7 +65,7 @@ class FcmService {
             invalidTokens.size
         )
 
-        return FcmSendResult(
+        return FcmSendResult.of(
             successCount = response.successCount,
             failureCount = response.failureCount,
             invalidTokens = invalidTokens

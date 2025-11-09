@@ -25,6 +25,8 @@ class NotificationService(
         private const val UNRECORDED_NOTIFICATION_MESSAGE = "이번주에 읽은 책, 잊기 전에 기록해 보세요!"
         private const val DORMANT_NOTIFICATION_TITLE = "📚 Reed와 함께 독서 기록 시작"
         private const val DORMANT_NOTIFICATION_MESSAGE = "그동안 읽은 책을 모아 기록해 보세요!"
+        private const val NO_SUCCESSFUL_DEVICES = 0
+        private const val NO_DEVICES_SENT = 0
     }
 
     @Transactional
@@ -91,17 +93,17 @@ class NotificationService(
         val userId = User.Id.newInstance(user.id)
         if (notificationDomainService.hasActiveNotification(userId, notificationType)) {
             logger.info("User ${user.id} already has active $notificationType notification, skipping")
-            return Pair(false, 0)
+            return Pair(false, NO_DEVICES_SENT)
         }
 
         val devices = deviceDomainService.findDevicesByUserId(user.id)
         if (devices.isEmpty()) {
             logger.info("No devices found for user ${user.id}")
-            return Pair(false, 0)
+            return Pair(false, NO_DEVICES_SENT)
         }
 
         val successDeviceCount = sendToDevices(devices, title, message)
-        if (successDeviceCount > 0) {
+        if (successDeviceCount > NO_SUCCESSFUL_DEVICES) {
             notificationDomainService.createAndSaveNotification(
                 userId = userId,
                 title = title,
@@ -112,7 +114,7 @@ class NotificationService(
         }
 
         logger.info("Failed to send notification to any device for user ${user.id}")
-        return Pair(false, 0)
+        return Pair(false, NO_DEVICES_SENT)
     }
 
     private fun sendToDevices(
@@ -126,7 +128,7 @@ class NotificationService(
 
         if (validTokens.isEmpty()) {
             logger.warn("No valid FCM tokens found for devices: {}", devices.map { it.id })
-            return 0
+            return NO_DEVICES_SENT
         }
 
         val result = fcmService.sendMulticastNotification(validTokens, title, message)
