@@ -20,4 +20,10 @@ class DeviceDomainService(
         return deviceRepository.findByUserId(userId)
             .map { DeviceVO.from(it) }
     }
+
+    fun removeDevicesByTokens(tokens: List<String>) {
+        if (tokens.isNotEmpty()) {
+            deviceRepository.deleteByTokens(tokens)
+        }
+    }
 }
