@@ -45,16 +45,29 @@ class FcmService {
 
         if (response.failureCount > noFailures) {
             response.responses.forEachIndexed { index, sendResponse ->
-                if (!sendResponse.isSuccessful) {
-                    val failedToken = tokens[index]
-                    val errorCode = sendResponse.exception?.messagingErrorCode
-                    if (errorCode == MessagingErrorCode.UNREGISTERED || errorCode == MessagingErrorCode.INVALID_ARGUMENT) {
+                if (sendResponse.isSuccessful) {
+                    return@forEachIndexed
+                }
+
+                val failedToken = tokens[index]
+                val errorCode = sendResponse.exception?.messagingErrorCode
+
+                if (errorCode == MessagingErrorCode.UNREGISTERED) {
+                    invalidTokens.add(failedToken)
+                    logger.warn("Unregistered FCM token: {}. Error: {}", failedToken, errorCode)
+                    return@forEachIndexed
+                }
+
+                if (errorCode == MessagingErrorCode.INVALID_ARGUMENT) {
+                    val errorMessage = sendResponse.exception?.message ?: ""
+                    if (errorMessage.contains("invalid registration token", ignoreCase = true)) {
                         invalidTokens.add(failedToken)
-                        logger.warn("Invalid FCM token found: {}. Error: {}", failedToken, errorCode)
-                    } else {
-                        logger.error("Failed to send to token: {}. Error: {}", failedToken, errorCode, sendResponse.exception)
+                        logger.warn("Invalid FCM token format: {}. Error: {}", failedToken, errorMessage)
+                        return@forEachIndexed
                     }
                 }
+
+                logger.error("Failed to send to token: {}. Error: {}", failedToken, errorCode, sendResponse.exception)
             }
         }
 
