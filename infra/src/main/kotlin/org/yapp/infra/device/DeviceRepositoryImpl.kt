@@ -21,4 +21,8 @@ class DeviceRepositoryImpl(
     override fun findByUserId(userId: UUID): List<Device> {
         return deviceJpaRepository.findByUserId(userId).map { it.toDomain() }
     }
+
+    override fun deleteByTokens(tokens: List<String>) {
+        deviceJpaRepository.deleteByFcmTokenIn(tokens)
+    }
 }

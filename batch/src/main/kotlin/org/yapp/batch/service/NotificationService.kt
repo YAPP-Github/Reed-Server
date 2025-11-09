@@ -121,20 +121,22 @@ class NotificationService(
         message: String
     ): Int {
         val validTokens = devices
-            .filter { it.fcmToken.isNotBlank() }
             .map { it.fcmToken }
+            .filter { it.isNotBlank() }
 
         if (validTokens.isEmpty()) {
+            logger.warn("No valid FCM tokens found for devices: {}", devices.map { it.id })
             return 0
         }
 
-        return try {
-            val results = fcmService.sendMulticastNotification(validTokens, title, message)
-            results.size
-        } catch (e: Exception) {
-            logger.error("Error sending notifications to devices", e)
-            0
+        val result = fcmService.sendMulticastNotification(validTokens, title, message)
+
+        if (result.invalidTokens.isNotEmpty()) {
+            logger.info("Found ${result.invalidTokens.size} invalid tokens to remove.")
+            deviceDomainService.removeDevicesByTokens(result.invalidTokens)
         }
+
+        return result.successCount
     }
 
     @Transactional
