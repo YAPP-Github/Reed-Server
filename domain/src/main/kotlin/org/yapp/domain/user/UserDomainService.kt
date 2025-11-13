@@ -127,6 +127,13 @@ class UserDomainService(
         }
     }
 
+    fun forceUpdateLastActivity(userId: UUID, newLastActivity: LocalDateTime) {
+        val user = userRepository.findById(userId)
+            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+
+        userRepository.save(user.forceUpdateLastActivity(newLastActivity))
+    }
+
     fun updateNotificationSettings(userId: UUID, notificationEnabled: Boolean): UserProfileVO {
         val user = userRepository.findById(userId)
             ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)

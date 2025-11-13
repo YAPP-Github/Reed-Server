@@ -8,6 +8,7 @@ import java.util.UUID
 
 interface DeviceJpaRepository : JpaRepository<DeviceEntity, UUID> {
     fun findByDeviceId(deviceId: String): DeviceEntity?
+    fun findByFcmToken(fcmToken: String): DeviceEntity?
     fun findByUserId(userId: UUID): List<DeviceEntity>
 
     @Modifying(clearAutomatically = true)

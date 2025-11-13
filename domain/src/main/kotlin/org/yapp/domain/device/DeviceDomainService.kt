@@ -21,6 +21,11 @@ class DeviceDomainService(
             .map { DeviceVO.from(it) }
     }
 
+    fun findDeviceByFcmToken(fcmToken: String): DeviceVO? {
+        return deviceRepository.findByFcmToken(fcmToken)
+            ?.let { DeviceVO.from(it) }
+    }
+
     fun removeDevicesByTokens(tokens: List<String>) {
         if (tokens.isNotEmpty()) {
             deviceRepository.deleteByTokens(tokens)

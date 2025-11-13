@@ -14,6 +14,10 @@ class DeviceRepositoryImpl(
         return deviceJpaRepository.findByDeviceId(deviceId)?.toDomain()
     }
 
+    override fun findByFcmToken(fcmToken: String): Device? {
+        return deviceJpaRepository.findByFcmToken(fcmToken)?.toDomain()
+    }
+
     override fun save(device: Device): Device {
         return deviceJpaRepository.save(DeviceEntity.fromDomain(device)).toDomain()
     }

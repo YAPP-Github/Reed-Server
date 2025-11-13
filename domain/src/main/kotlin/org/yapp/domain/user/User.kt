@@ -54,6 +54,12 @@ data class User private constructor(
         )
     }
 
+    fun forceUpdateLastActivity(newLastActivity: LocalDateTime): User {
+        return this.copy(
+            lastActivity = newLastActivity
+        )
+    }
+
     companion object {
         fun create(
             email: String,
