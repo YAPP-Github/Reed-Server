@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8082
   shutdown: graceful
 
 spring:
@@ -9,15 +9,22 @@ spring:
     group:
       dev:
         - persistence
-        - jwt
+        - crosscutting
         - redis
+        - external
+        - observability
       prod:
         - persistence
-        - jwt
+        - crosscutting
         - redis
+        - external
+        - observability
       test:
         - persistence
-        - jwt
+        - crosscutting
+        - redis
+        - external
+        - observability
   servlet:
     multipart:
       max-file-size: 10MB
@@ -43,6 +50,5 @@ spring:
 ---
 spring:
   config:
-    import: optional:file:../secret/application-test-secret.properties
     activate:
       on-profile: test

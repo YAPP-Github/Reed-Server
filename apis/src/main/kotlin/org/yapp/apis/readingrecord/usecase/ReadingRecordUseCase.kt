@@ -86,6 +86,7 @@ class ReadingRecordUseCase(
         userService.validateUserExists(userId)
 
         return readingRecordService.updateReadingRecord(
+            userId = userId,
             readingRecordId = readingRecordId,
             request = request
         )

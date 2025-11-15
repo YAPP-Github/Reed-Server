@@ -1,4 +1,4 @@
-package org.yapp.gateway.config
+package org.yapp.observability.metrics.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

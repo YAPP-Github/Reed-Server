@@ -105,8 +105,8 @@ interface ReadingRecordControllerApi {
         @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
         @PathVariable @Parameter(description = "독서 기록을 조회할 사용자 책 ID") userBookId: UUID,
         @RequestParam(required = false) @Parameter(description = "정렬 방식 (PAGE_NUMBER_ASC, PAGE_NUMBER_DESC, CREATED_DATE_ASC, CREATED_DATE_DESC)") sort: ReadingRecordSortType?,
-        @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
-        @Parameter(description = "페이지네이션 정보 (페이지 번호, 페이지 크기, 정렬 방식)") pageable: Pageable
+        @PageableDefault(size = 10, sort = ["updatedAt"], direction = Sort.Direction.DESC)
+        @Parameter(description = "페이지네이션 정보 (기본값: 10개, 최신 수정일 순)") pageable: Pageable
     ): ResponseEntity<ReadingRecordPageResponse>
 
     @Operation(

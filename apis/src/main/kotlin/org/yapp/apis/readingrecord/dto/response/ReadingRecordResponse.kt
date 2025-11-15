@@ -24,7 +24,7 @@ data class ReadingRecordResponse private constructor(
     val quote: String,
 
     @field:Schema(description = "감상평", example = "이 책은 매우 인상적이었습니다.")
-    val review: String,
+    val review: String?,
 
     @field:Schema(description = "감정 태그 목록", example = "[\"감동적\", \"슬픔\", \"희망\"]")
     val emotionTags: List<String>,
@@ -56,7 +56,7 @@ data class ReadingRecordResponse private constructor(
                 userBookId = readingRecordInfoVO.userBookId.value,
                 pageNumber = readingRecordInfoVO.pageNumber.value,
                 quote = readingRecordInfoVO.quote.value,
-                review = readingRecordInfoVO.review.value,
+                review = readingRecordInfoVO.review?.value,
                 emotionTags = readingRecordInfoVO.emotionTags,
                 createdAt = readingRecordInfoVO.createdAt.format(dateTimeFormatter),
                 updatedAt = readingRecordInfoVO.updatedAt.format(dateTimeFormatter),

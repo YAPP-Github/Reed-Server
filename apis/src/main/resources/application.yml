@@ -11,23 +11,23 @@ spring:
         - persistence
         - crosscutting
         - jwt
-        - web
         - redis
         - external
+        - observability
       prod:
         - persistence
         - crosscutting
         - jwt
-        - web
         - redis
         - external
+        - observability
       test:
         - persistence
         - crosscutting
         - jwt
-        - web
         - redis
         - external
+        - observability
   servlet:
     multipart:
       max-file-size: 10MB

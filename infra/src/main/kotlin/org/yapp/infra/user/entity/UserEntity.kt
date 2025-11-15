@@ -9,6 +9,7 @@ import org.yapp.domain.user.User
 import org.yapp.globalutils.auth.Role
 import org.yapp.infra.common.BaseTimeEntity
 import java.sql.Types
+import java.time.LocalDateTime
 import java.util.*
 
 @Entity
@@ -39,7 +40,13 @@ class UserEntity private constructor(
 
     termsAgreed: Boolean = false,
 
-    appleRefreshToken: String? = null
+    appleRefreshToken: String? = null,
+
+    @Column(name = "notification_enabled", nullable = false)
+    var notificationEnabled: Boolean = true,
+
+    @Column(name = "last_activity")
+    var lastActivity: LocalDateTime? = null
 ) : BaseTimeEntity() {
 
     @Column(nullable = false, length = 100)
@@ -73,6 +80,8 @@ class UserEntity private constructor(
         role = role,
         termsAgreed = termsAgreed,
         appleRefreshToken = appleRefreshToken,
+        notificationEnabled = notificationEnabled,
+        lastActivity = lastActivity,
         createdAt = createdAt,
         updatedAt = updatedAt,
         deletedAt = deletedAt
@@ -88,7 +97,9 @@ class UserEntity private constructor(
             providerId = user.providerId.value,
             role = user.role,
             termsAgreed = user.termsAgreed,
-            appleRefreshToken = user.appleRefreshToken
+            appleRefreshToken = user.appleRefreshToken,
+            notificationEnabled = user.notificationEnabled,
+            lastActivity = user.lastActivity
         )
     }
 

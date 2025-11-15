@@ -71,7 +71,7 @@ class BookController(
         @RequestParam(required = false) status: BookStatus?,
         @RequestParam(required = false) sort: UserBookSortType?,
         @RequestParam(required = false) title: String?,
-        @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
+        @PageableDefault(size = 10, sort = ["updatedAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<UserBookPageResponse> {
         val response = bookUseCase.getUserLibraryBooks(userId, status, sort, title, pageable)

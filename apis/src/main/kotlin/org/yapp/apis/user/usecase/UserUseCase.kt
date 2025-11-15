@@ -1,6 +1,8 @@
 package org.yapp.apis.user.usecase
 
 import org.springframework.transaction.annotation.Transactional
+import org.yapp.apis.user.dto.request.DeviceRequest
+import org.yapp.apis.user.dto.request.NotificationSettingsRequest
 import org.yapp.apis.user.dto.request.TermsAgreementRequest
 import org.yapp.apis.user.dto.response.UserProfileResponse
 import org.yapp.apis.user.service.UserService
@@ -19,5 +21,15 @@ class UserUseCase(
     @Transactional
     fun updateTermsAgreement(userId: UUID, request: TermsAgreementRequest): UserProfileResponse {
         return userService.updateTermsAgreement(userId, request)
+    }
+
+    @Transactional
+    fun updateNotificationSettings(userId: UUID, request: NotificationSettingsRequest): UserProfileResponse {
+        return userService.updateNotificationSettings(userId, request)
+    }
+
+    @Transactional
+    fun registerDevice(userId: UUID, request: DeviceRequest): UserProfileResponse {
+        return userService.registerDevice(userId, request)
     }
 }

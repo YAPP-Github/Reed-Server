@@ -7,12 +7,14 @@ import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponse
 import org.yapp.domain.readingrecord.ReadingRecordDomainService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
+import org.yapp.domain.user.UserDomainService
 import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
 @ApplicationService
 class ReadingRecordService(
     private val readingRecordDomainService: ReadingRecordDomainService,
+    private val userDomainService: UserDomainService
 ) {
     fun createReadingRecord(
         userId: UUID,
@@ -23,9 +25,12 @@ class ReadingRecordService(
             userBookId = userBookId,
             pageNumber = request.validPageNumber(),
             quote = request.validQuote(),
-            review = request.validReview(),
+            review = request.review,
             emotionTags = request.validEmotionTags()
         )
+
+        // Update user's lastActivity when a reading record is created
+        userDomainService.updateLastActivity(userId)
 
         return ReadingRecordResponse.from(readingRecordInfoVO)
     }
@@ -51,16 +56,21 @@ class ReadingRecordService(
         readingRecordDomainService.deleteAllByUserBookId(userBookId)
     }
     fun updateReadingRecord(
+        userId: UUID,
         readingRecordId: UUID,
         request: UpdateReadingRecordRequest
     ): ReadingRecordResponse {
         val readingRecordInfoVO = readingRecordDomainService.modifyReadingRecord(
             readingRecordId = readingRecordId,
-            pageNumber = request.validPageNumber(),
-            quote = request.validQuote(),
-            review = request.validReview(),
-            emotionTags = request.validEmotionTags()
+            pageNumber = request.pageNumber,
+            quote = request.quote,
+            review = request.review,
+            emotionTags = request.emotionTags
         )
+
+        // Update user's lastActivity when a reading record is updated
+        userDomainService.updateLastActivity(userId)
+
         return ReadingRecordResponse.from(readingRecordInfoVO)
     }
 

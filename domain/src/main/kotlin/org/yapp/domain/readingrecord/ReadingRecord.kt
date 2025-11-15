@@ -1,15 +1,16 @@
 package org.yapp.domain.readingrecord
 
+import org.yapp.domain.userbook.UserBook
 import org.yapp.globalutils.util.UuidGenerator
 import java.time.LocalDateTime
 import java.util.*
 
 data class ReadingRecord private constructor(
     val id: Id,
-    val userBookId: UserBookId,
+    val userBookId: UserBook.Id,
     val pageNumber: PageNumber,
     val quote: Quote,
-    val review: Review,
+    val review: Review?,
     val emotionTags: List<EmotionTag> = emptyList(),
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
@@ -20,12 +21,12 @@ data class ReadingRecord private constructor(
             userBookId: UUID,
             pageNumber: Int,
             quote: String,
-            review: String,
+            review: String?,
             emotionTags: List<String> = emptyList()
         ): ReadingRecord {
             return ReadingRecord(
                 id = Id.newInstance(UuidGenerator.create()),
-                userBookId = UserBookId.newInstance(userBookId),
+                userBookId = UserBook.Id.newInstance(userBookId),
                 pageNumber = PageNumber.newInstance(pageNumber),
                 quote = Quote.newInstance(quote),
                 review = Review.newInstance(review),
@@ -35,10 +36,10 @@ data class ReadingRecord private constructor(
 
         fun reconstruct(
             id: Id,
-            userBookId: UserBookId,
+            userBookId: UserBook.Id,
             pageNumber: PageNumber,
             quote: Quote,
-            review: Review,
+            review: Review?,
             emotionTags: List<EmotionTag> = emptyList(),
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null,
@@ -67,7 +68,7 @@ data class ReadingRecord private constructor(
         return this.copy(
             pageNumber = pageNumber?.let { PageNumber.newInstance(it) } ?: this.pageNumber,
             quote = quote?.let { Quote.newInstance(it) } ?: this.quote,
-            review = review?.let { Review.newInstance(it) } ?: this.review,
+            review = if (review != null) Review.newInstance(review) else this.review,
             emotionTags = emotionTags?.map { EmotionTag.newInstance(it) } ?: this.emotionTags,
             updatedAt = LocalDateTime.now()
         )
@@ -77,13 +78,6 @@ data class ReadingRecord private constructor(
     value class Id(val value: UUID) {
         companion object {
             fun newInstance(value: UUID) = Id(value)
-        }
-    }
-
-    @JvmInline
-    value class UserBookId(val value: UUID) {
-        companion object {
-            fun newInstance(value: UUID) = UserBookId(value)
         }
     }
 
@@ -111,8 +105,10 @@ data class ReadingRecord private constructor(
     @JvmInline
     value class Review(val value: String) {
         companion object {
-            fun newInstance(value: String): Review {
-                require(value.isNotBlank()) { "Review cannot be blank" }
+            fun newInstance(value: String?): Review? {
+                if (value.isNullOrBlank()) {
+                    return null
+                }
                 require(value.length <= 1000) { "Review cannot exceed 1000 characters" }
                 return Review(value)
             }

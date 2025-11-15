@@ -1,0 +1,177 @@
+name: 'Deploy Module'
+description: 'Build, push and deploy a module to server (dev/prod)'
+
+inputs:
+  environment:
+    description: 'Environment (dev or prod)'
+    required: true
+  module:
+    description: 'Module name (apis, admin, batch)'
+    required: true
+  port:
+    description: 'Server port (for logging only - actual port defined in docker-compose.yml)'
+    required: false
+    default: 'N/A'
+  dockerhub-username:
+    description: 'Docker Hub username'
+    required: true
+  dockerhub-token:
+    description: 'Docker Hub token'
+    required: true
+  secret-properties:
+    description: 'Secret properties (dev or prod)'
+    required: true
+  apple-auth-key:
+    description: 'Apple Auth Key'
+    required: true
+  host:
+    description: 'Server host'
+    required: true
+  username:
+    description: 'Server username'
+    required: true
+  ssh-key:
+    description: 'Server SSH key'
+    required: true
+  ssh-port:
+    description: 'Server SSH port'
+    required: true
+  discord-webhook-url:
+    description: 'Discord webhook URL'
+    required: true
+  image-prefix:
+    description: 'Docker image prefix'
+    required: true
+  image-tag-type:
+    description: 'Image tag type (development-latest or semver)'
+    required: true
+  deploy-script:
+    description: 'Deploy script name (deploy-dev.sh or deploy-prod.sh)'
+    required: true
+    default: 'deploy-dev.sh'
+  release-version:
+    description: 'Release version tag (e.g., v1.2.3). Only used in production for metadata tracking.'
+    required: false
+    default: 'unknown'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Inject application-secret.properties from Secrets
+      shell: bash
+      run: |
+        mkdir -p ./secret
+        echo "$SECRET_CONTENT" > ./secret/application-${{ inputs.environment }}-secret.properties
+        echo "$APPLE_KEY_CONTENT" > ./secret/AuthKey.p8
+        chmod 600 ./secret/*
+      env:
+        SECRET_CONTENT: ${{ inputs.secret-properties }}
+        APPLE_KEY_CONTENT: ${{ inputs.apple-auth-key }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.dockerhub-username }}
+        password: ${{ inputs.dockerhub-token }}
+
+    - name: Extract metadata for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: docker.io/${{ inputs.image-prefix }}-${{ inputs.module }}
+        tags: ${{ inputs.image-tag-type }}
+
+    - name: Build and push Docker image
+      id: build-and-push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        cache-from: type=gha,scope=${{ inputs.module }}
+        cache-to: type=gha,mode=max,scope=${{ inputs.module }}
+        build-args: |
+          MODULE=${{ inputs.module }}
+
+    - name: Deploy to Server
+      uses: appleboy/ssh-action@v1.2.2
+      with:
+        host: ${{ inputs.host }}
+        username: ${{ inputs.username }}
+        key: ${{ inputs.ssh-key }}
+        port: ${{ inputs.ssh-port }}
+        script: |
+          export DOCKERHUB_USERNAME="${{ inputs.dockerhub-username }}"
+          export DOCKERHUB_TOKEN="${{ inputs.dockerhub-token }}"
+          export MODULE="${{ inputs.module }}"
+          export SPRING_PROFILE="${{ inputs.environment }}"
+          export IMAGE_TAG="$(echo "${{ steps.meta.outputs.tags }}" | head -n1)"
+          export RELEASE_VERSION="${{ inputs.release-version }}"
+          cd ~/deploy
+          chmod +x ./${{ inputs.deploy-script }}
+          ./${{ inputs.deploy-script }}
+
+    - name: Send Discord notification on success (Development)
+      uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
+      if: success() && inputs.environment == 'dev'
+      continue-on-error: true
+      with:
+        webhook-url: ${{ inputs.discord-webhook-url }}
+        embed-title: "✅ [${{ github.repository }}] Development Deploy Succeeded - ${{ inputs.module }}"
+        embed-description: |
+          **Module**: `${{ inputs.module }}`
+          **Commit**: `${{ github.sha }}`
+          **Author**: `${{ github.actor }}`
+          **Message**: `${{ github.event.head_commit.message }}`
+          [View Committed Changes](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+        embed-color: 65280
+
+    - name: Send Discord notification on success (Production)
+      uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
+      if: success() && inputs.environment == 'prod'
+      continue-on-error: true
+      with:
+        webhook-url: ${{ inputs.discord-webhook-url }}
+        content: "🚀 **Production Deploy Succeeded!**"
+        embed-title: "✅ [${{ github.repository }}] Production Deploy Succeeded - ${{ inputs.module }}"
+        embed-description: |
+          **Module**: `${{ inputs.module }}`
+          **Deployed by**: `${{ github.actor }}`
+          The new version has been successfully deployed to production.
+          [View Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        embed-color: 65280
+
+    - name: Send Discord notification on failure (Development)
+      uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
+      if: failure() && inputs.environment == 'dev'
+      continue-on-error: true
+      with:
+        webhook-url: ${{ inputs.discord-webhook-url }}
+        embed-title: "❌ [${{ github.repository }}] Development Deploy Failed - ${{ inputs.module }}"
+        embed-description: |
+          **Module**: `${{ inputs.module }}`
+          **Commit**: `${{ github.sha }}`
+          **Author**: `${{ github.actor }}`
+          An error occurred during the workflow execution.
+          [View Failed Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        embed-color: 16711680
+
+    - name: Send Discord notification on failure (Production)
+      uses: tsickert/discord-webhook@b217a69502f52803de774ded2b1ab7c282e99645
+      if: failure() && inputs.environment == 'prod'
+      continue-on-error: true
+      with:
+        webhook-url: ${{ inputs.discord-webhook-url }}
+        content: "🚨 **Production Deploy Failed!**"
+        embed-title: "❌ [${{ github.repository }}] Production Deploy Failed - ${{ inputs.module }}"
+        embed-description: |
+          **Module**: `${{ inputs.module }}`
+          **Deployed by**: `${{ github.actor }}`
+          An error occurred during the production deployment workflow.
+          [View Failed Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        embed-color: 16711680
