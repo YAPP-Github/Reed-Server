@@ -1,0 +1,118 @@
+name: Dev CI/CD - Sequential Deploy Test
+
+on:
+  push:
+    branches:
+      - test/sequential-deploy  # 테스트 브랜치에서만 실행
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: docker.io
+  IMAGE_PREFIX: ninecraft0523/ninecraft
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-24.04
+    outputs:
+      apis: ${{ steps.filter.outputs.apis }}
+      batch: ${{ steps.filter.outputs.batch }}
+      any: ${{ steps.filter.outputs.any }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check changed files
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            apis:
+              - 'apis/**'
+              - 'domain/**'
+              - 'infra/**'
+              - 'global-utils/**'
+              - 'observability/**'
+              - '.github/**'
+            batch:
+              - 'batch/**'
+              - 'domain/**'
+              - 'infra/**'
+              - 'global-utils/**'
+              - 'observability/**'
+              - '.github/**'
+            any:
+              - 'apis/**'
+              - 'batch/**'
+              - 'domain/**'
+              - 'infra/**'
+              - 'global-utils/**'
+              - 'observability/**'
+              - '.github/**'
+
+  # ========================================
+  # 순차 배포: APIs 먼저
+  # ========================================
+  deploy-apis-sequential:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.apis == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy APIs module (Sequential)
+        uses: ./.github/actions/deploy-module
+        with:
+          environment: dev
+          module: apis
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          secret-properties: ${{ secrets.DEV_SECRET_PROPERTIES }}
+          apple-auth-key: ${{ secrets.APPLE_AUTH_KEY }}
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+          ssh-key: ${{ secrets.DEV_SSH_KEY }}
+          ssh-port: ${{ secrets.DEV_PORT }}
+          discord-webhook-url: ${{ secrets.DEV_DEPLOY_DISCORD_WEBHOOK_URL }}
+          image-prefix: ${{ env.IMAGE_PREFIX }}
+          image-tag-type: type=raw,value=development-latest
+          deploy-script: deploy-dev.sh
+
+  # ========================================
+  # 순차 배포: Batch는 APIs 완료 후
+  # ========================================
+  deploy-batch-sequential:
+    needs: [detect-changes, deploy-apis-sequential]  # ← 핵심: APIs 끝나야 시작!
+    if: |
+      always() &&
+      needs.detect-changes.outputs.batch == 'true' &&
+      (needs.deploy-apis-sequential.result == 'success' || needs.deploy-apis-sequential.result == 'skipped')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy Batch module (Sequential - after APIs)
+        uses: ./.github/actions/deploy-module
+        with:
+          environment: dev
+          module: batch
+          dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+          secret-properties: ${{ secrets.DEV_SECRET_PROPERTIES }}
+          apple-auth-key: ${{ secrets.APPLE_AUTH_KEY }}
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+          ssh-key: ${{ secrets.DEV_SSH_KEY }}
+          ssh-port: ${{ secrets.DEV_PORT }}
+          discord-webhook-url: ${{ secrets.DEV_DEPLOY_DISCORD_WEBHOOK_URL }}
+          image-prefix: ${{ env.IMAGE_PREFIX }}
+          image-tag-type: type=raw,value=development-latest
+          deploy-script: deploy-dev.sh
