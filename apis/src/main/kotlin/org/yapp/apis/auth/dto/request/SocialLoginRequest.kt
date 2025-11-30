@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.auth.strategy.signin.AppleAuthCredentials
+import org.yapp.apis.auth.strategy.signin.GoogleAuthCredentials
 import org.yapp.apis.auth.strategy.signin.KakaoAuthCredentials
 import org.yapp.apis.auth.strategy.signin.SignInCredentials
 import org.yapp.domain.user.ProviderType
@@ -61,6 +62,8 @@ data class SocialLoginRequest private constructor(
                         )
                     AppleAuthCredentials(request.validOauthToken(), authCode)
                 }
+
+                ProviderType.GOOGLE -> GoogleAuthCredentials(request.validOauthToken())
             }
         }
     }
