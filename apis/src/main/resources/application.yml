@@ -90,3 +90,8 @@ springdoc:
     enabled: false
   api-docs:
     enabled: false
+
+oauth:
+  google:
+    url:
+      user-info: https://www.googleapis.com/oauth2/v2/userinfo
