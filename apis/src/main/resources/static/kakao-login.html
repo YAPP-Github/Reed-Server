@@ -53,38 +53,50 @@
             color: #000;
         }
 
-        .apple-btn {
-            background-color: #000;
-            color: #fff;
-        }
-    </style>
-</head>
-<body>
-
-<h1 style="text-align:center">소셜 로그인 테스트</h1>
-
-<div class="tabs">
-    <div class="tab active" data-tab="kakao">카카오 로그인</div>
-    <div class="tab" data-tab="apple">애플 로그인</div>
-</div>
-
-<div class="tab-content active" id="kakao">
-    <p style="text-align:center;">카카오 계정으로 로그인하려면 아래 버튼을 클릭하세요.</p>
-    <div style="text-align:center;">
-        <button id="kakao-login-btn" class="btn kakao-btn">카카오 로그인</button>
-    </div>
-</div>
-
-<div class="tab-content" id="apple">
-    <p style="text-align:center;">애플 계정으로 로그인하려면 아래 버튼을 클릭하세요.</p>
-    <div style="text-align:center;">
-        <button id="apple-login-btn" class="btn apple-btn">Apple 로그인</button>
-    </div>
-</div>
-
+                .apple-btn {
+                    background-color: #000;
+                    color: #fff;
+                }
+                .google-btn {
+                    background-color: #4285F4;
+                    color: #fff;
+                }
+            </style>
+        </head>
+        <body>
+        
+        <h1 style="text-align:center">소셜 로그인 테스트</h1>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="kakao">카카오 로그인</div>
+            <div class="tab" data-tab="apple">애플 로그인</div>
+            <div class="tab" data-tab="google">구글 로그인</div>
+        </div>
+        
+        <div class="tab-content active" id="kakao">
+            <p style="text-align:center;">카카오 계정으로 로그인하려면 아래 버튼을 클릭하세요.</p>
+            <div style="text-align:center;">
+                <button id="kakao-login-btn" class="btn kakao-btn">카카오 로그인</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="apple">
+            <p style="text-align:center;">애플 계정으로 로그인하려면 아래 버튼을 클릭하세요.</p>
+            <div style="text-align:center;">
+                <button id="apple-login-btn" class="btn apple-btn">Apple 로그인</button>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="google">
+            <p style="text-align:center;">구글 계정으로 로그인하려면 아래 버튼을 클릭하세요.</p>
+            <div style="text-align:center;">
+                <button id="google-login-btn" class="btn google-btn">Google 로그인</button>
+            </div>
+        </div>
 <!-- 결과 출력 -->
 <pre id="result" style="margin-top: 30px; white-space: pre-wrap;"></pre>
 
+<meta name="google-signin-client_id" content="">
 <!-- Kakao SDK -->
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 
@@ -93,6 +105,26 @@
         src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
 
 <script>
+    // Google Sign-In Callback (Global function)
+    function onSignIn(googleUser) {
+        var id_token = googleUser.getAuthResponse().id_token;
+        fetch(`${API_SERVER}/api/v1/auth/signin`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                providerType: "GOOGLE",
+                oauthToken: id_token
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('result').textContent = 'Google 로그인 성공\n\nJWT: ' + data.accessToken;
+            })
+            .catch(err => {
+                document.getElementById('result').textContent = 'Google 로그인 실패: ' + err.message;
+            });
+    }
+
     // 탭 전환
     const tabs = document.querySelectorAll('.tab');
     const contents = document.querySelectorAll('.tab-content');
@@ -238,7 +270,30 @@
                 });
         }
     });
-</script>
 
+    // Google Sign-In Initialization
+    var GoogleAuth; // GoogleAuth object
+
+    function initGoogleAuth() {
+        gapi.client.init({
+            clientId: document.querySelector('meta[name="google-signin-client_id"]').content,
+            scope: 'profile email'
+        }).then(function () {
+            GoogleAuth = gapi.auth2.getAuthInstance();
+            // Attach the click listener to the Google login button
+            document.getElementById('google-login-btn').addEventListener('click', () => {
+                GoogleAuth.signIn().then(onSignIn, (error) => {
+                    console.error('Google Sign-In failed:', error);
+                    document.getElementById('result').textContent = 'Google 로그인 실패: ' + JSON.stringify(error);
+                });
+            });
+        });
+    }
+
+    function handleGoogleClientLoad() {
+        gapi.load('client:auth2', initGoogleAuth);
+    }
+</script>
+<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleGoogleClientLoad();"></script>
 </body>
 </html>

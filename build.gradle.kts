@@ -192,6 +192,7 @@ sonar {
 // SonarQube 태스크가 통합 JaCoCo 리포트에 의존하도록 설정
 tasks.named("sonar") {
     dependsOn("jacocoRootReport")
+    onlyIf { System.getenv("SONAR_TOKEN") != null }
 }
 
 /**

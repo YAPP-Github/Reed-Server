@@ -7,14 +7,23 @@ sealed class SignInCredentials {
 }
 
 data class KakaoAuthCredentials(
-    val accessToken: String
+    val accessToken: String,
 ) : SignInCredentials() {
     override fun getProviderType(): ProviderType = ProviderType.KAKAO
 }
 
 data class AppleAuthCredentials(
     val idToken: String,
-    val authorizationCode: String
+    val authorizationCode: String,
 ) : SignInCredentials() {
     override fun getProviderType(): ProviderType = ProviderType.APPLE
 }
+
+data class GoogleAuthCredentials(
+    val accessToken: String,
+) : SignInCredentials() {
+    override fun getProviderType(): ProviderType {
+        return ProviderType.GOOGLE
+    }
+}
+
