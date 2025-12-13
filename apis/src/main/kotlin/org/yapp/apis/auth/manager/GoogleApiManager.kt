@@ -1,20 +1,40 @@
 package org.yapp.apis.auth.manager
 
-import org.springframework.beans.factory.annotation.Value
+import mu.KotlinLogging
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestClient
+import org.springframework.web.client.HttpClientErrorException
+import org.yapp.apis.auth.exception.AuthErrorCode
+import org.yapp.apis.auth.exception.AuthException
+import org.yapp.apis.config.GoogleOauthProperties
+import org.yapp.infra.external.oauth.google.GoogleApi
 import org.yapp.infra.external.oauth.google.response.GoogleUserInfo
 
 @Component
 class GoogleApiManager(
-    @Value("\${oauth.google.url.user-info}") private val userInfoUrl: String,
-    private val restClient: RestClient,
+    private val googleApi: GoogleApi,
+    private val googleOauthProperties: GoogleOauthProperties,
 ) {
+    private val log = KotlinLogging.logger {}
+
     fun getUserInfo(accessToken: String): GoogleUserInfo {
-        return restClient.get()
-            .uri(userInfoUrl)
-            .headers { it.setBearerAuth(accessToken) }
-            .retrieve()
-            .body(GoogleUserInfo::class.java)!!
+        return googleApi.fetchUserInfo(accessToken, googleOauthProperties.url.userInfo)
+            .onSuccess { userInfo ->
+                log.info { "Successfully fetched Google user info for userId: ${userInfo.id}" }
+            }
+            .getOrElse { exception ->
+                log.error(exception) { "Failed to fetch Google user info" }
+
+                when (exception) {
+                    is HttpClientErrorException -> throw AuthException(
+                        AuthErrorCode.INVALID_OAUTH_TOKEN,
+                        "Invalid Google Access Token.",
+                    )
+
+                    else -> throw AuthException(
+                        AuthErrorCode.OAUTH_SERVER_ERROR,
+                        "Failed to communicate with Google server.",
+                    )
+                }
+            }
     }
 }
