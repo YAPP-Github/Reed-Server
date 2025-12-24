@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.SQLRestriction
+import org.yapp.domain.readingrecord.PrimaryEmotion
 import org.yapp.domain.readingrecord.ReadingRecord
 import org.yapp.domain.userbook.UserBook
 import org.yapp.infra.common.BaseTimeEntity
@@ -24,15 +25,14 @@ class ReadingRecordEntity(
     @JdbcTypeCode(Types.VARCHAR)
     val userBookId: UUID,
 
-    pageNumber: Int,
+    pageNumber: Int?,
     quote: String,
     review: String?,
-
-    
+    primaryEmotion: PrimaryEmotion
 ) : BaseTimeEntity() {
 
-    @Column(name = "page_number", nullable = false)
-    var pageNumber: Int = pageNumber
+    @Column(name = "page_number", nullable = true)
+    var pageNumber: Int? = pageNumber
         protected set
 
     @Column(name = "quote", nullable = false, length = 1000)
@@ -43,13 +43,19 @@ class ReadingRecordEntity(
     var review: String? = review
         protected set
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "primary_emotion", nullable = false, length = 20)
+    var primaryEmotion: PrimaryEmotion = primaryEmotion
+        protected set
+
     fun toDomain(): ReadingRecord {
         return ReadingRecord.reconstruct(
             id = ReadingRecord.Id.newInstance(this.id),
             userBookId = UserBook.Id.newInstance(this.userBookId),
-            pageNumber = ReadingRecord.PageNumber.newInstance(this.pageNumber),
+            pageNumber = this.pageNumber?.let { ReadingRecord.PageNumber.newInstance(it) },
             quote = ReadingRecord.Quote.newInstance(this.quote),
             review = ReadingRecord.Review.newInstance(this.review),
+            primaryEmotion = this.primaryEmotion,
             emotionTags = emptyList(),
             createdAt = this.createdAt,
             updatedAt = this.updatedAt,
@@ -62,9 +68,10 @@ class ReadingRecordEntity(
             return ReadingRecordEntity(
                 id = readingRecord.id.value,
                 userBookId = readingRecord.userBookId.value,
-                pageNumber = readingRecord.pageNumber.value,
+                pageNumber = readingRecord.pageNumber?.value,
                 quote = readingRecord.quote.value,
-                review = readingRecord.review?.value
+                review = readingRecord.review?.value,
+                primaryEmotion = readingRecord.primaryEmotion
             )
         }
     }
