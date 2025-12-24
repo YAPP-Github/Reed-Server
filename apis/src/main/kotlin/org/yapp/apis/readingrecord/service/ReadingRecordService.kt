@@ -26,7 +26,7 @@ class ReadingRecordService(
             pageNumber = request.validPageNumber(),
             quote = request.validQuote(),
             review = request.review,
-            emotionTags = request.validEmotionTags()
+            emotionTags = request.emotionTags
         )
 
         // Update user's lastActivity when a reading record is created
