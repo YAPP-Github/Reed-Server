@@ -8,9 +8,10 @@ import java.util.*
 data class ReadingRecord private constructor(
     val id: Id,
     val userBookId: UserBook.Id,
-    val pageNumber: PageNumber,
+    val pageNumber: PageNumber?,
     val quote: Quote,
     val review: Review?,
+    val primaryEmotion: PrimaryEmotion,
     val emotionTags: List<EmotionTag> = emptyList(),
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null,
@@ -19,17 +20,19 @@ data class ReadingRecord private constructor(
     companion object {
         fun create(
             userBookId: UUID,
-            pageNumber: Int,
+            pageNumber: Int?,
             quote: String,
             review: String?,
+            primaryEmotion: PrimaryEmotion,
             emotionTags: List<String> = emptyList()
         ): ReadingRecord {
             return ReadingRecord(
                 id = Id.newInstance(UuidGenerator.create()),
                 userBookId = UserBook.Id.newInstance(userBookId),
-                pageNumber = PageNumber.newInstance(pageNumber),
+                pageNumber = pageNumber?.let { PageNumber.newInstance(it) },
                 quote = Quote.newInstance(quote),
                 review = Review.newInstance(review),
+                primaryEmotion = primaryEmotion,
                 emotionTags = emotionTags.map { EmotionTag.newInstance(it) }
             )
         }
@@ -37,9 +40,10 @@ data class ReadingRecord private constructor(
         fun reconstruct(
             id: Id,
             userBookId: UserBook.Id,
-            pageNumber: PageNumber,
+            pageNumber: PageNumber?,
             quote: Quote,
             review: Review?,
+            primaryEmotion: PrimaryEmotion,
             emotionTags: List<EmotionTag> = emptyList(),
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null,
@@ -51,6 +55,7 @@ data class ReadingRecord private constructor(
                 pageNumber = pageNumber,
                 quote = quote,
                 review = review,
+                primaryEmotion = primaryEmotion,
                 emotionTags = emotionTags,
                 createdAt = createdAt,
                 updatedAt = updatedAt,
@@ -63,12 +68,14 @@ data class ReadingRecord private constructor(
         pageNumber: Int?,
         quote: String?,
         review: String?,
+        primaryEmotion: PrimaryEmotion?,
         emotionTags: List<String>?
     ): ReadingRecord {
         return this.copy(
             pageNumber = pageNumber?.let { PageNumber.newInstance(it) } ?: this.pageNumber,
             quote = quote?.let { Quote.newInstance(it) } ?: this.quote,
             review = if (review != null) Review.newInstance(review) else this.review,
+            primaryEmotion = primaryEmotion ?: this.primaryEmotion,
             emotionTags = emotionTags?.map { EmotionTag.newInstance(it) } ?: this.emotionTags,
             updatedAt = LocalDateTime.now()
         )
