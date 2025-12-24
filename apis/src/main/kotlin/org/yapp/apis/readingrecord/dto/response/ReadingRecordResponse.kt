@@ -18,7 +18,7 @@ data class ReadingRecordResponse private constructor(
     val userBookId: UUID,
 
     @field:Schema(description = "현재 읽은 페이지 번호", example = "42")
-    val pageNumber: Int,
+    val pageNumber: Int?,
 
     @field:Schema(description = "기억에 남는 문장", example = "이것은 기억에 남는 문장입니다.")
     val quote: String,
@@ -54,7 +54,7 @@ data class ReadingRecordResponse private constructor(
             return ReadingRecordResponse(
                 id = readingRecordInfoVO.id.value,
                 userBookId = readingRecordInfoVO.userBookId.value,
-                pageNumber = readingRecordInfoVO.pageNumber.value,
+                pageNumber = readingRecordInfoVO.pageNumber?.value,
                 quote = readingRecordInfoVO.quote.value,
                 review = readingRecordInfoVO.review?.value,
                 emotionTags = readingRecordInfoVO.emotionTags,
@@ -68,3 +68,4 @@ data class ReadingRecordResponse private constructor(
         }
     }
 }
+
