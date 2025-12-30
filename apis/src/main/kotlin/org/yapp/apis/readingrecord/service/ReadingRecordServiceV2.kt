@@ -75,7 +75,7 @@ class ReadingRecordServiceV2(
             return Page.empty(pageable)
         }
 
-        val readingRecords = readingRecordPage.content
+        val readingRecords = readingRecordPage.content.toList()
         val readingRecordIds = readingRecords.map { it.id.value }
 
         // Fetch detail tags
