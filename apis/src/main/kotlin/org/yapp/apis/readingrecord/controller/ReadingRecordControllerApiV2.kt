@@ -68,6 +68,11 @@ interface ReadingRecordControllerApiV2 {
                 content = [Content(schema = Schema(implementation = ReadingRecordResponseV2::class))]
             ),
             ApiResponse(
+                responseCode = "403",
+                description = "해당 독서 기록에 대한 접근 권한이 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
                 responseCode = "404",
                 description = "사용자 또는 독서 기록을 찾을 수 없음",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
@@ -120,6 +125,11 @@ interface ReadingRecordControllerApiV2 {
                 content = [Content(schema = Schema(implementation = ReadingRecordResponseV2::class))]
             ),
             ApiResponse(
+                responseCode = "403",
+                description = "해당 독서 기록에 대한 접근 권한이 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
                 responseCode = "404",
                 description = "독서 기록을 찾을 수 없음",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
@@ -140,6 +150,11 @@ interface ReadingRecordControllerApiV2 {
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "204", description = "독서 기록 삭제 성공"),
+            ApiResponse(
+                responseCode = "403",
+                description = "해당 독서 기록에 대한 접근 권한이 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
             ApiResponse(
                 responseCode = "404",
                 description = "독서 기록을 찾을 수 없음",
