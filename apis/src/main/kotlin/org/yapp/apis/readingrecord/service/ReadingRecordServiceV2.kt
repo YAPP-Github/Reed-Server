@@ -2,6 +2,7 @@ package org.yapp.apis.readingrecord.service
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponseV2
@@ -23,6 +24,7 @@ class ReadingRecordServiceV2(
     private val readingRecordDetailTagDomainService: ReadingRecordDetailTagDomainService,
     private val userDomainService: UserDomainService
 ) {
+    @Transactional
     fun createReadingRecord(
         userId: UUID,
         userBookId: UUID,
@@ -55,6 +57,7 @@ class ReadingRecordServiceV2(
         return buildResponse(savedReadingRecord, detailEmotionTagIds)
     }
 
+    @Transactional(readOnly = true)
     fun getReadingRecordDetail(
         readingRecordId: UUID
     ): ReadingRecordResponseV2 {
@@ -65,6 +68,7 @@ class ReadingRecordServiceV2(
         return buildResponse(readingRecord, detailTagIds)
     }
 
+    @Transactional(readOnly = true)
     fun getReadingRecordsByDynamicCondition(
         userBookId: UUID,
         sort: ReadingRecordSortType?,
@@ -101,6 +105,7 @@ class ReadingRecordServiceV2(
         }
     }
 
+    @Transactional
     fun updateReadingRecord(
         userId: UUID,
         readingRecordId: UUID,
@@ -137,6 +142,7 @@ class ReadingRecordServiceV2(
         return buildResponse(savedReadingRecord, finalDetailTagIds)
     }
 
+    @Transactional
     fun deleteReadingRecord(readingRecordId: UUID) {
         readingRecordDetailTagDomainService.deleteAllByReadingRecordId(readingRecordId)
         readingRecordDomainService.deleteReadingRecordV2(readingRecordId)
@@ -208,6 +214,7 @@ class ReadingRecordServiceV2(
         )
     }
 
+    @Transactional(readOnly = true)
     fun getUserBookIdByReadingRecordId(readingRecordId: UUID): UUID {
         return readingRecordDomainService.findById(readingRecordId).userBookId.value
     }

@@ -43,6 +43,11 @@ interface ReadingRecordControllerApiV2 {
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
             ),
             ApiResponse(
+                responseCode = "403",
+                description = "해당 책에 대한 접근 권한이 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            ),
+            ApiResponse(
                 responseCode = "404",
                 description = "사용자 또는 책을 찾을 수 없음",
                 content = [Content(schema = Schema(implementation = ErrorResponse::class))]
