@@ -1,5 +1,6 @@
 package org.yapp.apis.readingrecord.service
 
+import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.readingrecord.dto.response.SeedStatsResponse
 import org.yapp.domain.readingrecordtag.ReadingRecordTagDomainService
 import org.yapp.globalutils.annotation.ApplicationService
@@ -10,6 +11,7 @@ import java.util.*
 class ReadingRecordTagService(
     private val readingRecordTagDomainService: ReadingRecordTagDomainService
 ) {
+    @Transactional(readOnly = true)
     fun getSeedStatsByUserIdAndUserBookId(userId: UUID, userBookId: UUID): SeedStatsResponse {
         val tagStatsVO = readingRecordTagDomainService.countTagsByUserIdAndUserBookIdAndCategories(
             userId = userId,
