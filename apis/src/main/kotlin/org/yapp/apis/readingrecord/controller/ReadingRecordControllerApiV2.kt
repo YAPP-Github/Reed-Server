@@ -166,5 +166,5 @@ interface ReadingRecordControllerApiV2 {
     fun deleteReadingRecord(
         @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
         @PathVariable @Parameter(description = "삭제할 독서 기록 ID") readingRecordId: UUID
-    ): ResponseEntity<Void>
+    ): ResponseEntity<Unit>
 }
