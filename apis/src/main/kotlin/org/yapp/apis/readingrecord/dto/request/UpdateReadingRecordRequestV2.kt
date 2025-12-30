@@ -11,7 +11,7 @@ import java.util.UUID
     name = "UpdateReadingRecordRequestV2",
     description = "독서 기록 수정 요청 (V2)"
 )
-data class UpdateReadingRecordRequestV2(
+data class UpdateReadingRecordRequestV2 private constructor(
 
     @field:Min(1, message = "페이지 번호는 1 이상이어야 합니다.")
     @field:Max(9999, message = "페이지 번호는 9999 이하여야 합니다.")

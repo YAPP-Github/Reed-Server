@@ -59,12 +59,12 @@ data class ReadingRecordResponseV2 private constructor(
                 pageNumber = readingRecordInfoVO.pageNumber?.value,
                 quote = readingRecordInfoVO.quote.value,
                 review = readingRecordInfoVO.review?.value,
-                primaryEmotion = PrimaryEmotionDto(
+                primaryEmotion = PrimaryEmotionDto.of(
                     code = readingRecordInfoVO.primaryEmotion.name,
                     displayName = readingRecordInfoVO.primaryEmotion.displayName
                 ),
                 detailEmotions = readingRecordInfoVO.detailEmotions.map {
-                    DetailEmotionDto(id = it.id, name = it.name)
+                    DetailEmotionDto.of(id = it.id, name = it.name)
                 },
                 createdAt = readingRecordInfoVO.createdAt.format(dateTimeFormatter),
                 updatedAt = readingRecordInfoVO.updatedAt.format(dateTimeFormatter),
@@ -75,22 +75,34 @@ data class ReadingRecordResponseV2 private constructor(
             )
         }
     }
+
+    @Schema(name = "PrimaryEmotionDto", description = "대분류 감정")
+    data class PrimaryEmotionDto private constructor(
+        @field:Schema(description = "감정 코드", example = "JOY")
+        val code: String,
+
+        @field:Schema(description = "감정 표시 이름", example = "즐거움")
+        val displayName: String
+    ) {
+        companion object {
+            fun of(code: String, displayName: String): PrimaryEmotionDto {
+                return PrimaryEmotionDto(code = code, displayName = displayName)
+            }
+        }
+    }
+
+    @Schema(name = "DetailEmotionDto", description = "세부 감정")
+    data class DetailEmotionDto private constructor(
+        @field:Schema(description = "세부 감정 ID", example = "123e4567-e89b-12d3-a456-426614174000")
+        val id: UUID,
+
+        @field:Schema(description = "세부 감정 이름", example = "설레는")
+        val name: String
+    ) {
+        companion object {
+            fun of(id: UUID, name: String): DetailEmotionDto {
+                return DetailEmotionDto(id = id, name = name)
+            }
+        }
+    }
 }
-
-@Schema(name = "PrimaryEmotionDto", description = "대분류 감정")
-data class PrimaryEmotionDto(
-    @field:Schema(description = "감정 코드", example = "JOY")
-    val code: String,
-
-    @field:Schema(description = "감정 표시 이름", example = "즐거움")
-    val displayName: String
-)
-
-@Schema(name = "DetailEmotionDto", description = "세부 감정")
-data class DetailEmotionDto(
-    @field:Schema(description = "세부 감정 ID", example = "123e4567-e89b-12d3-a456-426614174000")
-    val id: UUID,
-
-    @field:Schema(description = "세부 감정 이름", example = "설레는")
-    val name: String
-)

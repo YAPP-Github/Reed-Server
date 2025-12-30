@@ -6,47 +6,67 @@ import org.yapp.domain.readingrecord.PrimaryEmotion
 import java.util.UUID
 
 @Schema(name = "EmotionListResponse", description = "감정 목록 응답")
-data class EmotionListResponse(
+data class EmotionListResponse private constructor(
     @field:Schema(description = "감정 그룹 목록")
     val emotions: List<EmotionGroupDto>
 ) {
     companion object {
         fun from(detailTags: List<DetailTag>): EmotionListResponse {
             val grouped = detailTags.groupBy { it.primaryEmotion }
-            
+
             val emotions = PrimaryEmotion.entries.map { primary ->
-                EmotionGroupDto(
+                EmotionGroupDto.of(
                     code = primary.name,
                     displayName = primary.displayName,
                     detailEmotions = grouped[primary]
                         ?.sortedBy { it.displayOrder }
-                        ?.map { EmotionDetailDto(id = it.id.value, name = it.name) }
+                        ?.map { EmotionDetailDto.of(id = it.id.value, name = it.name) }
                         ?: emptyList()
                 )
             }
-            
+
             return EmotionListResponse(emotions = emotions)
         }
     }
+
+    @Schema(name = "EmotionGroupDto", description = "감정 그룹 (대분류 + 세부감정)")
+    data class EmotionGroupDto private constructor(
+        @field:Schema(description = "대분류 코드", example = "JOY")
+        val code: String,
+
+        @field:Schema(description = "대분류 표시 이름", example = "즐거움")
+        val displayName: String,
+
+        @field:Schema(description = "세부 감정 목록")
+        val detailEmotions: List<EmotionDetailDto>
+    ) {
+        companion object {
+            fun of(
+                code: String,
+                displayName: String,
+                detailEmotions: List<EmotionDetailDto>
+            ): EmotionGroupDto {
+                return EmotionGroupDto(
+                    code = code,
+                    displayName = displayName,
+                    detailEmotions = detailEmotions
+                )
+            }
+        }
+    }
+
+    @Schema(name = "EmotionDetailDto", description = "세부 감정")
+    data class EmotionDetailDto private constructor(
+        @field:Schema(description = "세부 감정 ID", example = "123e4567-e89b-12d3-a456-426614174000")
+        val id: UUID,
+
+        @field:Schema(description = "세부 감정 이름", example = "설레는")
+        val name: String
+    ) {
+        companion object {
+            fun of(id: UUID, name: String): EmotionDetailDto {
+                return EmotionDetailDto(id = id, name = name)
+            }
+        }
+    }
 }
-
-@Schema(name = "EmotionGroupDto", description = "감정 그룹 (대분류 + 세부감정)")
-data class EmotionGroupDto(
-    @field:Schema(description = "대분류 코드", example = "JOY")
-    val code: String,
-
-    @field:Schema(description = "대분류 표시 이름", example = "즐거움")
-    val displayName: String,
-
-    @field:Schema(description = "세부 감정 목록")
-    val detailEmotions: List<EmotionDetailDto>
-)
-
-@Schema(name = "EmotionDetailDto", description = "세부 감정")
-data class EmotionDetailDto(
-    @field:Schema(description = "세부 감정 ID", example = "123e4567-e89b-12d3-a456-426614174000")
-    val id: UUID,
-
-    @field:Schema(description = "세부 감정 이름", example = "설레는")
-    val name: String
-)
