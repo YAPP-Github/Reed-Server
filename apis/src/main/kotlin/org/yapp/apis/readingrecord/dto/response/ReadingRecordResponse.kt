@@ -17,7 +17,7 @@ data class ReadingRecordResponse private constructor(
     @field:Schema(description = "사용자 책 ID", example = "123e4567-e89b-12d3-a456-426614174000")
     val userBookId: UUID,
 
-    @field:Schema(description = "현재 읽은 페이지 번호", example = "42")
+    @field:Schema(description = "현재 읽은 페이지 번호 (선택)", example = "42")
     val pageNumber: Int?,
 
     @field:Schema(description = "기억에 남는 문장", example = "이것은 기억에 남는 문장입니다.")
