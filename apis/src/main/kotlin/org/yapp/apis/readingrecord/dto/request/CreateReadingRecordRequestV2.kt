@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.yapp.domain.readingrecord.PrimaryEmotion
 import java.util.UUID
@@ -37,6 +38,7 @@ data class CreateReadingRecordRequestV2 private constructor(
     @field:Schema(description = "감상평", example = "이 책은 매우 인상적이었습니다.", required = false)
     val review: String? = null,
 
+    @field:NotNull(message = "대분류 감정은 필수입니다.")
     @field:Schema(description = "대분류 감정", example = "JOY", required = true)
     val primaryEmotion: PrimaryEmotion? = null,
 
