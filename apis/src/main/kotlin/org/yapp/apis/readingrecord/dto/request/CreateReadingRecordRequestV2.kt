@@ -45,9 +45,6 @@ data class CreateReadingRecordRequestV2 private constructor(
     @field:Schema(description = "세부 감정 태그 ID 목록 (선택, 다중 선택 가능)", example = "[\"uuid-1\", \"uuid-2\"]")
     val detailEmotionTagIds: List<UUID> = emptyList()
 ) {
-    fun validQuote(): String =
-        requireNotNull(quote) { "quote는 null일 수 없습니다." }
-
-    fun validPrimaryEmotion(): PrimaryEmotion =
-        requireNotNull(primaryEmotion) { "primaryEmotion은 null일 수 없습니다." }
+    fun validQuote(): String = quote!!
+    fun validPrimaryEmotion(): PrimaryEmotion = primaryEmotion!!
 }
