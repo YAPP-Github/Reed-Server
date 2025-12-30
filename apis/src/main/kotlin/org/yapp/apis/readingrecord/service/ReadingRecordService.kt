@@ -79,4 +79,8 @@ class ReadingRecordService(
     ) {
         readingRecordDomainService.deleteReadingRecord(readingRecordId)
     }
+
+    fun getUserBookIdByReadingRecordId(readingRecordId: UUID): UUID {
+        return readingRecordDomainService.findById(readingRecordId).userBookId.value
+    }
 }

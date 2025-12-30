@@ -207,4 +207,8 @@ class ReadingRecordServiceV2(
             )
         )
     }
+
+    fun getUserBookIdByReadingRecordId(readingRecordId: UUID): UUID {
+        return readingRecordDomainService.findById(readingRecordId).userBookId.value
+    }
 }

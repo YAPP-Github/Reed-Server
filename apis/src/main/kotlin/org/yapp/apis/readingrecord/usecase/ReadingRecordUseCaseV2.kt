@@ -41,6 +41,8 @@ class ReadingRecordUseCaseV2(
         readingRecordId: UUID
     ): ReadingRecordResponseV2 {
         userService.validateUserExists(userId)
+        val userBookId = readingRecordServiceV2.getUserBookIdByReadingRecordId(readingRecordId)
+        userBookService.validateUserBookExists(userBookId, userId)
 
         return readingRecordServiceV2.getReadingRecordDetail(
             readingRecordId = readingRecordId
@@ -70,6 +72,8 @@ class ReadingRecordUseCaseV2(
         request: UpdateReadingRecordRequestV2
     ): ReadingRecordResponseV2 {
         userService.validateUserExists(userId)
+        val userBookId = readingRecordServiceV2.getUserBookIdByReadingRecordId(readingRecordId)
+        userBookService.validateUserBookExists(userBookId, userId)
 
         return readingRecordServiceV2.updateReadingRecord(
             userId = userId,
@@ -84,6 +88,8 @@ class ReadingRecordUseCaseV2(
         readingRecordId: UUID
     ) {
         userService.validateUserExists(userId)
+        val userBookId = readingRecordServiceV2.getUserBookIdByReadingRecordId(readingRecordId)
+        userBookService.validateUserBookExists(userBookId, userId)
         readingRecordServiceV2.deleteReadingRecord(readingRecordId)
     }
 }
