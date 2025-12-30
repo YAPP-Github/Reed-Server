@@ -108,6 +108,7 @@ class ReadingRecordServiceV2(
     ): ReadingRecordResponseV2 {
         val existingRecord = readingRecordDomainService.findById(readingRecordId)
         val newPrimaryEmotion = request.primaryEmotion ?: existingRecord.primaryEmotion
+        val primaryEmotionChanged = isPrimaryEmotionChanged(request.primaryEmotion, existingRecord.primaryEmotion)
 
         // Validate detail emotion tags if provided
         if (!request.detailEmotionTagIds.isNullOrEmpty()) {
@@ -123,17 +124,12 @@ class ReadingRecordServiceV2(
             primaryEmotion = request.primaryEmotion
         )
 
-        // Update detail emotion tags if provided
-        if (request.detailEmotionTagIds != null) {
-            readingRecordDetailTagDomainService.deleteAllByReadingRecordId(readingRecordId)
-            readingRecordDetailTagDomainService.createAndSaveAll(
-                readingRecordId = savedReadingRecord.id.value,
-                detailTagIds = request.detailEmotionTagIds
-            )
-        }
-
-        val finalDetailTagIds = request.detailEmotionTagIds
-            ?: readingRecordDetailTagDomainService.findByReadingRecordId(readingRecordId).map { it.detailTagId.value }
+        // Handle detail emotion tags
+        val finalDetailTagIds = updateDetailEmotionTags(
+            readingRecordId = readingRecordId,
+            newDetailTagIds = request.detailEmotionTagIds,
+            primaryEmotionChanged = primaryEmotionChanged
+        )
 
         // Update user's lastActivity
         userDomainService.updateLastActivity(userId)
@@ -155,6 +151,40 @@ class ReadingRecordServiceV2(
         }
         require(detailTags.all { it.primaryEmotion == primaryEmotion }) {
             "All detail emotions must belong to the selected primary emotion"
+        }
+    }
+
+    private fun isPrimaryEmotionChanged(
+        requestPrimaryEmotion: PrimaryEmotion?,
+        existingPrimaryEmotion: PrimaryEmotion
+    ): Boolean {
+        return requestPrimaryEmotion != null && requestPrimaryEmotion != existingPrimaryEmotion
+    }
+
+    private fun updateDetailEmotionTags(
+        readingRecordId: UUID,
+        newDetailTagIds: List<UUID>?,
+        primaryEmotionChanged: Boolean
+    ): List<UUID> {
+        return when {
+            newDetailTagIds != null -> {
+                readingRecordDetailTagDomainService.deleteAllByReadingRecordId(readingRecordId)
+                readingRecordDetailTagDomainService.createAndSaveAll(
+                    readingRecordId = readingRecordId,
+                    detailTagIds = newDetailTagIds
+                )
+                newDetailTagIds
+            }
+
+            primaryEmotionChanged -> {
+                readingRecordDetailTagDomainService.deleteAllByReadingRecordId(readingRecordId)
+                emptyList()
+            }
+
+            else -> {
+                readingRecordDetailTagDomainService.findByReadingRecordId(readingRecordId)
+                    .map { it.detailTagId.value }
+            }
         }
     }
 
