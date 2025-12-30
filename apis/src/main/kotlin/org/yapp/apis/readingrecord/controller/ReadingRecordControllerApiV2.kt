@@ -82,7 +82,7 @@ interface ReadingRecordControllerApiV2 {
 
     @Operation(
         summary = "독서 기록 목록 조회 (V2)",
-        description = "사용자의 책에 대한 독서 기록을 페이징하여 조회합니다."
+        description = "사용자의 책에 대한 독서 기록을 페이징하여 조회합니다. sort 파라미터가 지정된 경우 해당 정렬이 우선 적용되며, 지정하지 않으면 기본 정렬(updatedAt DESC)이 적용됩니다."
     )
     @ApiResponses(
         value = [
@@ -101,9 +101,11 @@ interface ReadingRecordControllerApiV2 {
     fun getReadingRecords(
         @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
         @PathVariable @Parameter(description = "독서 기록을 조회할 사용자 책 ID") userBookId: UUID,
-        @RequestParam(required = false) @Parameter(description = "정렬 타입") sort: ReadingRecordSortType?,
-        @PageableDefault(size = 10, sort = ["createdAt"], direction = Sort.Direction.DESC)
-        @Parameter(description = "페이징 정보") pageable: Pageable
+        @RequestParam(required = false) @Parameter(
+            description = "정렬 타입 (PAGE_NUMBER_ASC, PAGE_NUMBER_DESC, CREATED_DATE_ASC, CREATED_DATE_DESC, UPDATED_DATE_ASC, UPDATED_DATE_DESC). 지정 시 Pageable의 sort보다 우선 적용됨"
+        ) sort: ReadingRecordSortType?,
+        @PageableDefault(size = 10, sort = ["updatedAt"], direction = Sort.Direction.DESC)
+        @Parameter(description = "페이지네이션 정보 (기본값: 10개). 정렬은 sort 파라미터로 제어되며, Pageable의 sort는 무시됩니다.") pageable: Pageable
     ): ResponseEntity<Page<ReadingRecordResponseV2>>
 
     @Operation(
