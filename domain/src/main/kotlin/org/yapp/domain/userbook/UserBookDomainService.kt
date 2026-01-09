@@ -6,7 +6,6 @@ import org.yapp.domain.userbook.vo.HomeBookVO
 import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
 import org.yapp.globalutils.annotation.DomainService
-import org.yapp.domain.readingrecord.ReadingRecordRepository
 import java.util.*
 
 @DomainService
