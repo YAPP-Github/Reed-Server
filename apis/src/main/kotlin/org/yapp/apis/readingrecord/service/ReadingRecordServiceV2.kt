@@ -16,6 +16,7 @@ import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.domain.readingrecord.vo.ReadingRecordInfoVO
 import org.yapp.domain.readingrecorddetailtag.ReadingRecordDetailTagDomainService
 import org.yapp.domain.user.UserDomainService
+import org.yapp.domain.userbook.UserBookDomainService
 import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
@@ -24,7 +25,8 @@ class ReadingRecordServiceV2(
     private val readingRecordDomainService: ReadingRecordDomainService,
     private val detailTagDomainService: DetailTagDomainService,
     private val readingRecordDetailTagDomainService: ReadingRecordDetailTagDomainService,
-    private val userDomainService: UserDomainService
+    private val userDomainService: UserDomainService,
+    private val userBookDomainService: UserBookDomainService
 ) {
     @Transactional
     fun createReadingRecord(
@@ -230,10 +232,16 @@ class ReadingRecordServiceV2(
             emptyList()
         }
 
+        val userBook = userBookDomainService.findById(readingRecord.userBookId.value)
+
         return ReadingRecordResponseV2.from(
             ReadingRecordInfoVO.newInstance(
                 readingRecord = readingRecord,
-                detailEmotions = detailEmotions
+                detailEmotions = detailEmotions,
+                bookTitle = userBook?.title,
+                bookPublisher = userBook?.publisher,
+                bookCoverImageUrl = userBook?.coverImageUrl,
+                author = userBook?.author
             )
         )
     }

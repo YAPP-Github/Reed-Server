@@ -82,6 +82,11 @@ class UserBookDomainService(
         userBookRepository.deleteById(userBookId)
     }
 
+    fun findById(userBookId: UUID): UserBookInfoVO? {
+        val userBook = userBookRepository.findById(userBookId)
+        return userBook?.let { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
+    }
+
     fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {
         val resultTriples = userBookRepository.findRecordedBooksSortedByRecency(userId)
 
