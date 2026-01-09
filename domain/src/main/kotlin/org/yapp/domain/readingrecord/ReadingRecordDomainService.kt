@@ -23,35 +23,6 @@ class ReadingRecordDomainService(
     private val readingRecordTagRepository: ReadingRecordTagRepository,
     private val userBookRepository: UserBookRepository
 ) {
-
-    // ===================== Private Helper Methods =====================
-
-    private fun findReadingRecordOrThrow(id: UUID): ReadingRecord =
-        readingRecordRepository.findById(id)
-            ?: throw ReadingRecordNotFoundException(
-                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
-                "Reading record not found with id: $id"
-            )
-
-    private fun findUserBookOrThrow(id: UUID): UserBook =
-        userBookRepository.findById(id)
-            ?: throw UserBookNotFoundException(
-                UserBookErrorCode.USER_BOOK_NOT_FOUND,
-                "User book not found with id: $id"
-            )
-
-    private fun findOrCreateTags(tagNames: List<String>): List<Tag> =
-        tagNames.map { tagName ->
-            tagRepository.findByName(tagName) ?: tagRepository.save(Tag.create(tagName))
-        }
-
-    private fun saveReadingRecordTags(readingRecordId: UUID, tags: List<Tag>) {
-        val readingRecordTags = tags.map {
-            ReadingRecordTag.create(readingRecordId = readingRecordId, tagId = it.id.value)
-        }
-        readingRecordTagRepository.saveAll(readingRecordTags)
-    }
-
     // ===================== V2 API (Simple CRUD) =====================
 
     fun createReadingRecordV2(
@@ -255,5 +226,34 @@ class ReadingRecordDomainService(
      * V1 Legacy delete - delegates to V2 implementation
      */
     fun deleteReadingRecord(readingRecordId: UUID) = deleteReadingRecordV2(readingRecordId)
+
+    // ===================== Private Helper Methods =====================
+
+    private fun findReadingRecordOrThrow(id: UUID): ReadingRecord =
+        readingRecordRepository.findById(id)
+            ?: throw ReadingRecordNotFoundException(
+                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
+                "Reading record not found with id: $id"
+            )
+
+    private fun findUserBookOrThrow(id: UUID): UserBook =
+        userBookRepository.findById(id)
+            ?: throw UserBookNotFoundException(
+                UserBookErrorCode.USER_BOOK_NOT_FOUND,
+                "User book not found with id: $id"
+            )
+
+    private fun findOrCreateTags(tagNames: List<String>): List<Tag> =
+        tagNames.map { tagName ->
+            tagRepository.findByName(tagName) ?: tagRepository.save(Tag.create(tagName))
+        }
+
+    private fun saveReadingRecordTags(readingRecordId: UUID, tags: List<Tag>) {
+        val readingRecordTags = tags.map {
+            ReadingRecordTag.create(readingRecordId = readingRecordId, tagId = it.id.value)
+        }
+        readingRecordTagRepository.saveAll(readingRecordTags)
+    }
+
 }
 
