@@ -5,7 +5,9 @@ import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequestV2
+import org.yapp.apis.readingrecord.dto.response.PrimaryEmotionDto
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponseV2
+import org.yapp.apis.readingrecord.dto.response.ReadingRecordsWithPrimaryEmotionResponse
 import org.yapp.domain.detailtag.DetailTagDomainService
 import org.yapp.domain.readingrecord.PrimaryEmotion
 import org.yapp.domain.readingrecord.ReadingRecord
@@ -73,36 +75,58 @@ class ReadingRecordServiceV2(
         userBookId: UUID,
         sort: ReadingRecordSortType?,
         pageable: Pageable
-    ): Page<ReadingRecordResponseV2> {
+    ): ReadingRecordsWithPrimaryEmotionResponse {
+        val primaryEmotion = readingRecordDomainService.findPrimaryEmotionByUserBookId(userBookId)
+        val primaryEmotionDto = toPrimaryEmotionDto(primaryEmotion)
+
         val readingRecordPage = readingRecordDomainService.findByDynamicCondition(userBookId, sort, pageable)
         if (readingRecordPage.isEmpty) {
-            return Page.empty(pageable)
-        }
-
-        val readingRecords = readingRecordPage.content.toList()
-        val readingRecordIds = readingRecords.map { it.id.value }
-
-        // Fetch detail tags
-        val readingRecordDetailTags = readingRecordDetailTagDomainService.findByReadingRecordIdIn(readingRecordIds)
-        val detailTagIds = readingRecordDetailTags.map { it.detailTagId.value }.distinct()
-        val detailTagsById = detailTagDomainService.findAllById(detailTagIds).associateBy { it.id.value }
-
-        val detailTagsByReadingRecordId = readingRecordDetailTags
-            .groupBy { it.readingRecordId.value }
-            .mapValues { (_, tags) ->
-                tags.mapNotNull { detailTagsById[it.detailTagId.value] }
-                    .map { ReadingRecordInfoVO.DetailEmotionInfo(it.id.value, it.name) }
-            }
-
-        return readingRecordPage.map { readingRecord ->
-            val detailEmotions = detailTagsByReadingRecordId[readingRecord.id.value] ?: emptyList()
-            ReadingRecordResponseV2.from(
-                ReadingRecordInfoVO.newInstance(
-                    readingRecord = readingRecord,
-                    detailEmotions = detailEmotions
-                )
+            return ReadingRecordsWithPrimaryEmotionResponse.of(
+                primaryEmotion = primaryEmotionDto,
+                records = Page.empty(pageable)
             )
         }
+
+        val readingRecordIds = readingRecordPage.content.map { it.id.value }
+        val detailTagsMap = buildDetailTagsMap(readingRecordIds)
+        val recordsPage = toResponsePage(readingRecordPage, detailTagsMap)
+
+        return ReadingRecordsWithPrimaryEmotionResponse.of(
+            primaryEmotion = primaryEmotionDto,
+            records = recordsPage
+        )
+    }
+
+    private fun toPrimaryEmotionDto(primaryEmotion: PrimaryEmotion?): PrimaryEmotionDto? =
+        primaryEmotion?.let { PrimaryEmotionDto.of(code = it.name, displayName = it.displayName) }
+
+    private fun buildDetailTagsMap(readingRecordIds: List<UUID>): Map<UUID, List<ReadingRecordInfoVO.DetailEmotionInfo>> {
+        val detailTags = readingRecordDetailTagDomainService.findByReadingRecordIdIn(readingRecordIds)
+        val tagLookup = detailTagDomainService
+            .findAllById(detailTags.map { it.detailTagId.value }.distinct())
+            .associateBy { it.id.value }
+
+        return detailTags
+            .groupBy { it.readingRecordId.value }
+            .mapValues { (_, tags) ->
+                tags.mapNotNull { tag ->
+                    tagLookup[tag.detailTagId.value]?.let {
+                        ReadingRecordInfoVO.DetailEmotionInfo(it.id.value, it.name)
+                    }
+                }
+            }
+    }
+
+    private fun toResponsePage(
+        readingRecordPage: Page<ReadingRecord>,
+        detailTagsByRecordId: Map<UUID, List<ReadingRecordInfoVO.DetailEmotionInfo>>
+    ): Page<ReadingRecordResponseV2> = readingRecordPage.map { record ->
+        ReadingRecordResponseV2.from(
+            ReadingRecordInfoVO.newInstance(
+                readingRecord = record,
+                detailEmotions = detailTagsByRecordId[record.id.value] ?: emptyList()
+            )
+        )
     }
 
     @Transactional

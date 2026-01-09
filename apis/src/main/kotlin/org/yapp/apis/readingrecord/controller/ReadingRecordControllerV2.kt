@@ -1,7 +1,6 @@
 package org.yapp.apis.readingrecord.controller
 
 import jakarta.validation.Valid
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.*
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponseV2
+import org.yapp.apis.readingrecord.dto.response.ReadingRecordsWithPrimaryEmotionResponse
 import org.yapp.apis.readingrecord.usecase.ReadingRecordUseCaseV2
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import java.util.UUID
@@ -55,7 +55,7 @@ class ReadingRecordControllerV2(
         @RequestParam(required = false) sort: ReadingRecordSortType?,
         @PageableDefault(size = 10, sort = ["updatedAt"], direction = Sort.Direction.DESC)
         pageable: Pageable
-    ): ResponseEntity<Page<ReadingRecordResponseV2>> {
+    ): ResponseEntity<ReadingRecordsWithPrimaryEmotionResponse> {
         val response = readingRecordUseCaseV2.getReadingRecordsByUserBookId(
             userId = userId,
             userBookId = userBookId,

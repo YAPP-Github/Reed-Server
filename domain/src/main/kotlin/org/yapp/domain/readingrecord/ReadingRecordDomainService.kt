@@ -111,27 +111,7 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
     }
 
     fun findPrimaryEmotionByUserBookId(userBookId: UUID): PrimaryEmotion? {
-        val readingRecords = readingRecordRepository.findAllByUserBookId(userBookId)
-        if (readingRecords.isEmpty()) return null
-
-        val emotionCounts = readingRecords
-            .groupBy { it.primaryEmotion }
-            .mapValues { (_, records) -> records.size }
-
-        val maxCount = emotionCounts.values.maxOrNull() ?: return null
-
-        val candidateEmotions = emotionCounts.filter { it.value == maxCount }.keys
-
-        if (candidateEmotions.size == 1) {
-            return candidateEmotions.first()
-        }
-
-        return readingRecords
-            .filter { it.primaryEmotion in candidateEmotions }
-            .mapNotNull { record -> record.createdAt?.let { record to it } }
-            .maxByOrNull { it.second }
-            ?.first
-            ?.primaryEmotion
+        return readingRecordRepository.findMostFrequentPrimaryEmotion(userBookId)
     }
 
     // ===================== V1 API (Legacy) =====================
