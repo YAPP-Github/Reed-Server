@@ -2,8 +2,6 @@ package org.yapp.infra.readingrecorddetailtag.entity
 
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
-import org.hibernate.annotations.SQLDelete
-import org.hibernate.annotations.SQLRestriction
 import org.yapp.domain.detailtag.DetailTag
 import org.yapp.domain.readingrecord.ReadingRecord
 import org.yapp.domain.readingrecorddetailtag.ReadingRecordDetailTag
@@ -25,8 +23,6 @@ import java.util.*
         Index(name = "idx_rrdt_detail_tag_id", columnList = "detail_tag_id")
     ]
 )
-@SQLDelete(sql = "UPDATE reading_record_detail_tags SET deleted_at = NOW() WHERE id = ?")
-@SQLRestriction("deleted_at IS NULL")
 class ReadingRecordDetailTagEntity(
     @Id
     @JdbcTypeCode(Types.VARCHAR)
