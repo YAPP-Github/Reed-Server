@@ -9,20 +9,48 @@ import org.yapp.domain.readingrecordtag.ReadingRecordTag
 import org.yapp.domain.readingrecordtag.ReadingRecordTagRepository
 import org.yapp.domain.tag.Tag
 import org.yapp.domain.tag.TagRepository
+import org.yapp.domain.userbook.UserBook
 import org.yapp.domain.userbook.UserBookRepository
+import org.yapp.domain.userbook.exception.UserBookErrorCode
+import org.yapp.domain.userbook.exception.UserBookNotFoundException
 import org.yapp.globalutils.annotation.DomainService
 import java.util.UUID
 
-import org.yapp.domain.userbook.exception.UserBookNotFoundException
-import org.yapp.domain.userbook.exception.UserBookErrorCode
-
 @DomainService
-class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 제거
+class ReadingRecordDomainService(
     private val readingRecordRepository: ReadingRecordRepository,
     private val tagRepository: TagRepository,
     private val readingRecordTagRepository: ReadingRecordTagRepository,
     private val userBookRepository: UserBookRepository
 ) {
+
+    // ===================== Private Helper Methods =====================
+
+    private fun findReadingRecordOrThrow(id: UUID): ReadingRecord =
+        readingRecordRepository.findById(id)
+            ?: throw ReadingRecordNotFoundException(
+                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
+                "Reading record not found with id: $id"
+            )
+
+    private fun findUserBookOrThrow(id: UUID): UserBook =
+        userBookRepository.findById(id)
+            ?: throw UserBookNotFoundException(
+                UserBookErrorCode.USER_BOOK_NOT_FOUND,
+                "User book not found with id: $id"
+            )
+
+    private fun findOrCreateTags(tagNames: List<String>): List<Tag> =
+        tagNames.map { tagName ->
+            tagRepository.findByName(tagName) ?: tagRepository.save(Tag.create(tagName))
+        }
+
+    private fun saveReadingRecordTags(readingRecordId: UUID, tags: List<Tag>) {
+        val readingRecordTags = tags.map {
+            ReadingRecordTag.create(readingRecordId = readingRecordId, tagId = it.id.value)
+        }
+        readingRecordTagRepository.saveAll(readingRecordTags)
+    }
 
     // ===================== V2 API (Simple CRUD) =====================
 
@@ -33,11 +61,7 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
         review: String?,
         primaryEmotion: PrimaryEmotion
     ): ReadingRecord {
-        val userBook = userBookRepository.findById(userBookId)
-            ?: throw UserBookNotFoundException(
-                UserBookErrorCode.USER_BOOK_NOT_FOUND,
-                "User book not found with id: $userBookId"
-            )
+        val userBook = findUserBookOrThrow(userBookId)
 
         val readingRecord = ReadingRecord.create(
             userBookId = userBookId,
@@ -60,11 +84,7 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
         review: String?,
         primaryEmotion: PrimaryEmotion?
     ): ReadingRecord {
-        val readingRecord = readingRecordRepository.findById(readingRecordId)
-            ?: throw ReadingRecordNotFoundException(
-                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
-                "Reading record not found with id: $readingRecordId"
-            )
+        val readingRecord = findReadingRecordOrThrow(readingRecordId)
 
         val updatedReadingRecord = readingRecord.update(
             pageNumber = pageNumber,
@@ -77,42 +97,25 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
         return readingRecordRepository.save(updatedReadingRecord)
     }
 
-    fun findById(readingRecordId: UUID): ReadingRecord {
-        return readingRecordRepository.findById(readingRecordId)
-            ?: throw ReadingRecordNotFoundException(
-                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
-                "Reading record not found with id: $readingRecordId"
-            )
-    }
+    fun findById(readingRecordId: UUID): ReadingRecord = findReadingRecordOrThrow(readingRecordId)
 
     fun findByDynamicCondition(
         userBookId: UUID,
         sort: ReadingRecordSortType?,
         pageable: Pageable
-    ): Page<ReadingRecord> {
-        return readingRecordRepository.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)
-    }
+    ): Page<ReadingRecord> =
+        readingRecordRepository.findReadingRecordsByDynamicCondition(userBookId, sort, pageable)
 
     fun deleteReadingRecordV2(readingRecordId: UUID) {
-        val readingRecord = readingRecordRepository.findById(readingRecordId)
-            ?: throw ReadingRecordNotFoundException(
-                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
-                "Reading record not found with id: $readingRecordId"
-            )
-
-        val userBook = userBookRepository.findById(readingRecord.userBookId.value)
-            ?: throw UserBookNotFoundException(
-                UserBookErrorCode.USER_BOOK_NOT_FOUND,
-                "User book not found with id: ${readingRecord.userBookId.value}"
-            )
+        val readingRecord = findReadingRecordOrThrow(readingRecordId)
+        val userBook = findUserBookOrThrow(readingRecord.userBookId.value)
 
         readingRecordRepository.deleteById(readingRecordId)
         userBookRepository.save(userBook.decreaseReadingRecordCount())
     }
 
-    fun findPrimaryEmotionByUserBookId(userBookId: UUID): PrimaryEmotion? {
-        return readingRecordRepository.findMostFrequentPrimaryEmotion(userBookId)
-    }
+    fun findPrimaryEmotionByUserBookId(userBookId: UUID): PrimaryEmotion? =
+        readingRecordRepository.findMostFrequentPrimaryEmotion(userBookId)
 
     // ===================== V1 API (Legacy) =====================
 
@@ -123,15 +126,10 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
         review: String?,
         emotionTags: List<String>
     ): ReadingRecordInfoVO {
-        val userBook = userBookRepository.findById(userBookId)
-            ?: throw UserBookNotFoundException(
-                UserBookErrorCode.USER_BOOK_NOT_FOUND,
-                "User book not found with id: $userBookId"
-            )
+        val userBook = findUserBookOrThrow(userBookId)
 
-        // Convert emotion tag to primary emotion
-        val primaryEmotion = emotionTags.firstOrNull()?.let { 
-            PrimaryEmotion.fromDisplayName(it) 
+        val primaryEmotion = emotionTags.firstOrNull()?.let {
+            PrimaryEmotion.fromDisplayName(it)
         } ?: PrimaryEmotion.OTHER
 
         val readingRecord = ReadingRecord.create(
@@ -144,18 +142,8 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
 
         val savedReadingRecord = readingRecordRepository.save(readingRecord)
 
-        // Also save to legacy reading_record_tags for backward compatibility
-        val tags = emotionTags.map { tagName ->
-            tagRepository.findByName(tagName) ?: tagRepository.save(Tag.create(tagName))
-        }
-
-        val readingRecordTags = tags.map {
-            ReadingRecordTag.create(
-                readingRecordId = savedReadingRecord.id.value,
-                tagId = it.id.value
-            )
-        }
-        readingRecordTagRepository.saveAll(readingRecordTags)
+        val tags = findOrCreateTags(emotionTags)
+        saveReadingRecordTags(savedReadingRecord.id.value, tags)
 
         userBookRepository.save(userBook.increaseReadingRecordCount())
 
@@ -170,12 +158,7 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
     }
 
     fun findReadingRecordById(readingRecordId: UUID): ReadingRecordInfoVO {
-        val readingRecord = readingRecordRepository.findById(readingRecordId)
-            ?: throw ReadingRecordNotFoundException(
-                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
-                "Reading record not found with id: $readingRecordId"
-            )
-
+        val readingRecord = findReadingRecordOrThrow(readingRecordId)
         return buildReadingRecordInfoVO(readingRecord)
     }
 
@@ -205,7 +188,7 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
             return Page.empty(pageable)
         }
 
-        val readingRecords = readingRecordPage.content
+        val readingRecords = readingRecordPage.content.toList()
         val readingRecordIds = readingRecords.map { it.id.value }
 
         val readingRecordTags = readingRecordTagRepository.findByReadingRecordIdIn(readingRecordIds)
@@ -239,15 +222,10 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
         review: String?,
         emotionTags: List<String>?
     ): ReadingRecordInfoVO {
-        val readingRecord = readingRecordRepository.findById(readingRecordId)
-            ?: throw ReadingRecordNotFoundException(
-                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
-                "Reading record not found with id: $readingRecordId"
-            )
+        val readingRecord = findReadingRecordOrThrow(readingRecordId)
 
-        // Convert emotion tag to primary emotion if provided
-        val primaryEmotion = emotionTags?.firstOrNull()?.let { 
-            PrimaryEmotion.fromDisplayName(it) 
+        val primaryEmotion = emotionTags?.firstOrNull()?.let {
+            PrimaryEmotion.fromDisplayName(it)
         }
 
         val updatedReadingRecord = readingRecord.update(
@@ -260,19 +238,10 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
 
         val savedReadingRecord = readingRecordRepository.save(updatedReadingRecord)
 
-        // Update emotion tags
         if (emotionTags != null) {
             readingRecordTagRepository.deleteAllByReadingRecordId(readingRecordId)
-            val tags = emotionTags.map { tagName ->
-                tagRepository.findByName(tagName) ?: tagRepository.save(Tag.create(tagName))
-            }
-            val newReadingRecordTags = tags.map {
-                ReadingRecordTag.create(
-                    readingRecordId = savedReadingRecord.id.value,
-                    tagId = it.id.value
-                )
-            }
-            readingRecordTagRepository.saveAll(newReadingRecordTags)
+            val tags = findOrCreateTags(emotionTags)
+            saveReadingRecordTags(savedReadingRecord.id.value, tags)
         }
 
         return buildReadingRecordInfoVO(savedReadingRecord)
@@ -282,20 +251,9 @@ class ReadingRecordDomainService( // TODO: readingRecordRepository만 남기고 
         readingRecordRepository.deleteAllByUserBookId(userBookId)
     }
 
-    fun deleteReadingRecord(readingRecordId: UUID) {
-        val readingRecord = readingRecordRepository.findById(readingRecordId)
-            ?: throw ReadingRecordNotFoundException(
-                ReadingRecordErrorCode.READING_RECORD_NOT_FOUND,
-                "Reading record not found with id: $readingRecordId"
-            )
-
-        val userBook = userBookRepository.findById(readingRecord.userBookId.value)
-            ?: throw UserBookNotFoundException(
-                UserBookErrorCode.USER_BOOK_NOT_FOUND,
-                "User book not found with id: ${readingRecord.userBookId.value}"
-            )
-
-        readingRecordRepository.deleteById(readingRecordId)
-        userBookRepository.save(userBook.decreaseReadingRecordCount())
-    }
+    /**
+     * V1 Legacy delete - delegates to V2 implementation
+     */
+    fun deleteReadingRecord(readingRecordId: UUID) = deleteReadingRecordV2(readingRecordId)
 }
+
