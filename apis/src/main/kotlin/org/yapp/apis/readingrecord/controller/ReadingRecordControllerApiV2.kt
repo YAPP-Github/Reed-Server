@@ -149,7 +149,7 @@ interface ReadingRecordControllerApiV2 {
     ): ResponseEntity<ReadingRecordResponseV2>
 
     @Operation(
-        summary = "독서 기록 삭제",
+        summary = "독서 기록 삭제 (V2)",
         description = "독서 기록을 삭제합니다."
     )
     @ApiResponses(
