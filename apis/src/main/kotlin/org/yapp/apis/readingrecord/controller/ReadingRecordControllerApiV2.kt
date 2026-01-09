@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponseV2
+import org.yapp.apis.readingrecord.dto.response.ReadingRecordsWithPrimaryEmotionResponse
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.globalutils.exception.ErrorResponse
 import java.util.*
@@ -116,7 +116,7 @@ interface ReadingRecordControllerApiV2 {
         ) sort: ReadingRecordSortType?,
         @PageableDefault(size = 10, sort = ["updatedAt"], direction = Sort.Direction.DESC)
         @Parameter(description = "페이지네이션 정보 (기본값: 10개). 정렬은 sort 파라미터로 제어되며, Pageable의 sort는 무시됩니다.") pageable: Pageable
-    ): ResponseEntity<Page<ReadingRecordResponseV2>>
+    ): ResponseEntity<ReadingRecordsWithPrimaryEmotionResponse>
 
     @Operation(
         summary = "독서 기록 수정 (V2)",
@@ -149,7 +149,7 @@ interface ReadingRecordControllerApiV2 {
     ): ResponseEntity<ReadingRecordResponseV2>
 
     @Operation(
-        summary = "독서 기록 삭제",
+        summary = "독서 기록 삭제 (V2)",
         description = "독서 기록을 삭제합니다."
     )
     @ApiResponses(

@@ -72,9 +72,9 @@ data class ReadingRecord private constructor(
         emotionTags: List<String>?
     ): ReadingRecord {
         return this.copy(
-            pageNumber = pageNumber?.let { PageNumber.newInstance(it) } ?: this.pageNumber,
+            pageNumber = pageNumber?.let { PageNumber.newInstance(it) },
             quote = quote?.let { Quote.newInstance(it) } ?: this.quote,
-            review = if (review != null) Review.newInstance(review) else this.review,
+            review = review?.let { Review.newInstance(it) },
             primaryEmotion = primaryEmotion ?: this.primaryEmotion,
             emotionTags = emotionTags?.map { EmotionTag.newInstance(it) } ?: this.emotionTags,
             updatedAt = LocalDateTime.now()

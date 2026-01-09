@@ -1,12 +1,11 @@
 package org.yapp.apis.readingrecord.usecase
 
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponseV2
+import org.yapp.apis.readingrecord.dto.response.ReadingRecordsWithPrimaryEmotionResponse
 import org.yapp.apis.readingrecord.service.ReadingRecordServiceV2
 import org.yapp.apis.user.service.UserService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
@@ -52,7 +51,7 @@ class ReadingRecordUseCaseV2(
         userBookId: UUID,
         sort: ReadingRecordSortType?,
         pageable: Pageable
-    ): Page<ReadingRecordResponseV2> {
+    ): ReadingRecordsWithPrimaryEmotionResponse {
         userService.validateUserExists(userId)
         userBookService.validateUserBookExists(userBookId, userId)
 

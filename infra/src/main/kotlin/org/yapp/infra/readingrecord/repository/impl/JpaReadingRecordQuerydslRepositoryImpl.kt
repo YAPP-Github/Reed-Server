@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
+import org.yapp.domain.readingrecord.PrimaryEmotion
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.infra.readingrecord.entity.QReadingRecordEntity
 import org.yapp.infra.readingrecord.entity.ReadingRecordEntity
@@ -45,6 +46,22 @@ class JpaReadingRecordQuerydslRepositoryImpl(
         return PageImpl(results, pageable, total)
     }
 
+    override fun findMostFrequentPrimaryEmotion(userBookId: UUID): PrimaryEmotion? {
+        return queryFactory
+            .select(readingRecord.primaryEmotion)
+            .from(readingRecord)
+            .where(
+                readingRecord.userBookId.eq(userBookId)
+                    .and(readingRecord.deletedAt.isNull())
+            )
+            .groupBy(readingRecord.primaryEmotion)
+            .orderBy(
+                readingRecord.id.count().desc(),
+                readingRecord.createdAt.max().desc()
+            )
+            .fetchFirst()
+    }
+
     private fun createOrderSpecifiers(sort: ReadingRecordSortType?): Array<OrderSpecifier<*>> {
         return when (sort) {
             ReadingRecordSortType.PAGE_NUMBER_ASC -> arrayOf(
@@ -64,5 +81,5 @@ class JpaReadingRecordQuerydslRepositoryImpl(
             null -> arrayOf(readingRecord.updatedAt.desc())
         }
     }
-
 }
+

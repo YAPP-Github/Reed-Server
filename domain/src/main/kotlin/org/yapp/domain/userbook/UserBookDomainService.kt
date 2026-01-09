@@ -6,7 +6,6 @@ import org.yapp.domain.userbook.vo.HomeBookVO
 import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.domain.userbook.vo.UserBookStatusCountsVO
 import org.yapp.globalutils.annotation.DomainService
-import org.yapp.domain.readingrecord.ReadingRecordRepository
 import java.util.*
 
 @DomainService
@@ -80,6 +79,11 @@ class UserBookDomainService(
 
     fun deleteById(userBookId: UUID) {
         userBookRepository.deleteById(userBookId)
+    }
+
+    fun findById(userBookId: UUID): UserBookInfoVO? {
+        val userBook = userBookRepository.findById(userBookId)
+        return userBook?.let { UserBookInfoVO.newInstance(it, it.readingRecordCount) }
     }
 
     fun findBooksWithRecordsOrderByLatest(userId: UUID): List<HomeBookVO> {
