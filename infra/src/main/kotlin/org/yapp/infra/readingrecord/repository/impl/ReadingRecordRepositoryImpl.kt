@@ -70,6 +70,5 @@ class ReadingRecordRepositoryImpl(
 
     override fun findMostFrequentPrimaryEmotion(userBookId: UUID): PrimaryEmotion? {
         return jpaReadingRecordRepository.findMostFrequentPrimaryEmotion(userBookId)
-            ?.let { emotionName -> PrimaryEmotion.entries.find { it.name == emotionName } }
     }
 }
