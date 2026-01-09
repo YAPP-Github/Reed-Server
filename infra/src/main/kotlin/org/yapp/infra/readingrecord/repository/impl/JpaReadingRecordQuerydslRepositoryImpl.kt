@@ -45,6 +45,22 @@ class JpaReadingRecordQuerydslRepositoryImpl(
         return PageImpl(results, pageable, total)
     }
 
+    override fun findMostFrequentPrimaryEmotion(userBookId: UUID): String? {
+        return queryFactory
+            .select(readingRecord.primaryEmotion.stringValue())
+            .from(readingRecord)
+            .where(
+                readingRecord.userBookId.eq(userBookId)
+                    .and(readingRecord.deletedAt.isNull())
+            )
+            .groupBy(readingRecord.primaryEmotion)
+            .orderBy(
+                readingRecord.count().desc(),
+                readingRecord.createdAt.max().desc()
+            )
+            .fetchFirst()
+    }
+
     private fun createOrderSpecifiers(sort: ReadingRecordSortType?): Array<OrderSpecifier<*>> {
         return when (sort) {
             ReadingRecordSortType.PAGE_NUMBER_ASC -> arrayOf(
@@ -64,5 +80,5 @@ class JpaReadingRecordQuerydslRepositoryImpl(
             null -> arrayOf(readingRecord.updatedAt.desc())
         }
     }
-
 }
+

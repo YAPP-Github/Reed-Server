@@ -13,4 +13,7 @@ interface JpaReadingRecordQuerydslRepository {
         sort: ReadingRecordSortType?,
         pageable: Pageable
     ): Page<ReadingRecordEntity>
+
+    fun findMostFrequentPrimaryEmotion(userBookId: UUID): String?
 }
+
