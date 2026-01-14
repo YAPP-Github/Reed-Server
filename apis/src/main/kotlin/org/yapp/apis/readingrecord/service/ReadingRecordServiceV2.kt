@@ -84,8 +84,8 @@ class ReadingRecordServiceV2(
         val readingRecordPage = readingRecordDomainService.findByDynamicCondition(userBookId, sort, pageable)
         if (readingRecordPage.isEmpty) {
             return ReadingRecordsWithPrimaryEmotionResponse.of(
-                primaryEmotion = primaryEmotionDto,
-                records = Page.empty(pageable)
+                representativeEmotion = primaryEmotionDto,
+                page = Page.empty(pageable)
             )
         }
 
@@ -94,8 +94,8 @@ class ReadingRecordServiceV2(
         val recordsPage = toResponsePage(readingRecordPage, detailTagsMap)
 
         return ReadingRecordsWithPrimaryEmotionResponse.of(
-            primaryEmotion = primaryEmotionDto,
-            records = recordsPage
+            representativeEmotion = primaryEmotionDto,
+            page = recordsPage
         )
     }
 
