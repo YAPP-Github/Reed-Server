@@ -17,6 +17,7 @@ import org.yapp.domain.readingrecord.vo.ReadingRecordInfoVO
 import org.yapp.domain.readingrecorddetailtag.ReadingRecordDetailTagDomainService
 import org.yapp.domain.user.UserDomainService
 import org.yapp.domain.userbook.UserBookDomainService
+import org.yapp.domain.userbook.vo.UserBookInfoVO
 import org.yapp.globalutils.annotation.ApplicationService
 import java.util.*
 
@@ -91,7 +92,8 @@ class ReadingRecordServiceV2(
 
         val readingRecordIds = readingRecordPage.content.map { it.id.value }
         val detailTagsMap = buildDetailTagsMap(readingRecordIds)
-        val recordsPage = toResponsePage(readingRecordPage, detailTagsMap)
+        val userBookInfoVO = userBookDomainService.findById(userBookId)
+        val recordsPage = toResponsePage(readingRecordPage, detailTagsMap, userBookInfoVO)
 
         return ReadingRecordsWithPrimaryEmotionResponse.of(
             representativeEmotion = primaryEmotionDto,
@@ -121,12 +123,17 @@ class ReadingRecordServiceV2(
 
     private fun toResponsePage(
         readingRecordPage: Page<ReadingRecord>,
-        detailTagsByRecordId: Map<UUID, List<ReadingRecordInfoVO.DetailEmotionInfo>>
+        detailTagsByRecordId: Map<UUID, List<ReadingRecordInfoVO.DetailEmotionInfo>>,
+        userBookInfoVO: UserBookInfoVO?
     ): Page<ReadingRecordResponseV2> = readingRecordPage.map { record ->
         ReadingRecordResponseV2.from(
             ReadingRecordInfoVO.newInstance(
                 readingRecord = record,
-                detailEmotions = detailTagsByRecordId[record.id.value] ?: emptyList()
+                detailEmotions = detailTagsByRecordId[record.id.value] ?: emptyList(),
+                bookTitle = userBookInfoVO?.title,
+                bookPublisher = userBookInfoVO?.publisher,
+                bookCoverImageUrl = userBookInfoVO?.coverImageUrl,
+                author = userBookInfoVO?.author
             )
         )
     }
