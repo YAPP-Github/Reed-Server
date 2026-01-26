@@ -8,6 +8,7 @@ import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.response.PrimaryEmotionDto
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponseV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordsWithPrimaryEmotionResponse
+import org.yapp.apis.readingrecord.dto.response.SeedStatsResponseV2
 import org.yapp.domain.detailtag.DetailTagDomainService
 import org.yapp.domain.readingrecord.PrimaryEmotion
 import org.yapp.domain.readingrecord.ReadingRecord
@@ -256,5 +257,11 @@ class ReadingRecordServiceV2(
     @Transactional(readOnly = true)
     fun getUserBookIdByReadingRecordId(readingRecordId: UUID): UUID {
         return readingRecordDomainService.findById(readingRecordId).userBookId.value
+    }
+
+    @Transactional(readOnly = true)
+    fun getSeedStats(userBookId: UUID): SeedStatsResponseV2 {
+        val primaryEmotionCounts = readingRecordDomainService.countPrimaryEmotionsByUserBookId(userBookId)
+        return SeedStatsResponseV2.from(primaryEmotionCounts)
     }
 }
