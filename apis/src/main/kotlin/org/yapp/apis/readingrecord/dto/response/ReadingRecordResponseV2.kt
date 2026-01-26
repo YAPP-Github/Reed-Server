@@ -5,12 +5,11 @@ import org.yapp.domain.readingrecord.vo.ReadingRecordInfoVO
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-
 @Schema(
-    name = "ReadingRecordResponse",
-    description = "독서 기록 응답"
+    name = "ReadingRecordResponseV2",
+    description = "독서 기록 응답 (V2)"
 )
-data class ReadingRecordResponse private constructor(
+data class ReadingRecordResponseV2 private constructor(
     @field:Schema(description = "독서 기록 ID", example = "123e4567-e89b-12d3-a456-426614174000")
     val id: UUID,
 
@@ -26,8 +25,11 @@ data class ReadingRecordResponse private constructor(
     @field:Schema(description = "감상평", example = "이 책은 매우 인상적이었습니다.")
     val review: String?,
 
-    @field:Schema(description = "감정 태그 목록", example = "[\"감동적\", \"슬픔\", \"희망\"]")
-    val emotionTags: List<String>,
+    @field:Schema(description = "대분류 감정")
+    val primaryEmotion: PrimaryEmotionDto,
+
+    @field:Schema(description = "세부 감정 목록")
+    val detailEmotions: List<DetailEmotionDto>,
 
     @field:Schema(description = "생성 일시", example = "2023-01-01T12:00:00")
     val createdAt: String,
@@ -50,14 +52,20 @@ data class ReadingRecordResponse private constructor(
     companion object {
         private val dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
-        fun from(readingRecordInfoVO: ReadingRecordInfoVO): ReadingRecordResponse {
-            return ReadingRecordResponse(
+        fun from(readingRecordInfoVO: ReadingRecordInfoVO): ReadingRecordResponseV2 {
+            return ReadingRecordResponseV2(
                 id = readingRecordInfoVO.id.value,
                 userBookId = readingRecordInfoVO.userBookId.value,
                 pageNumber = readingRecordInfoVO.pageNumber?.value,
                 quote = readingRecordInfoVO.quote.value,
                 review = readingRecordInfoVO.review?.value,
-                emotionTags = readingRecordInfoVO.emotionTags,
+                primaryEmotion = PrimaryEmotionDto.of(
+                    code = readingRecordInfoVO.primaryEmotion.name,
+                    displayName = readingRecordInfoVO.primaryEmotion.displayName
+                ),
+                detailEmotions = readingRecordInfoVO.detailEmotions.map {
+                    DetailEmotionDto.of(id = it.id, name = it.name)
+                },
                 createdAt = readingRecordInfoVO.createdAt.format(dateTimeFormatter),
                 updatedAt = readingRecordInfoVO.updatedAt.format(dateTimeFormatter),
                 bookTitle = readingRecordInfoVO.bookTitle,
@@ -67,5 +75,34 @@ data class ReadingRecordResponse private constructor(
             )
         }
     }
-}
 
+    @Schema(name = "PrimaryEmotionDto", description = "대분류 감정")
+    data class PrimaryEmotionDto private constructor(
+        @field:Schema(description = "감정 코드", example = "JOY")
+        val code: String,
+
+        @field:Schema(description = "감정 표시 이름", example = "즐거움")
+        val displayName: String
+    ) {
+        companion object {
+            fun of(code: String, displayName: String): PrimaryEmotionDto {
+                return PrimaryEmotionDto(code = code, displayName = displayName)
+            }
+        }
+    }
+
+    @Schema(name = "DetailEmotionDto", description = "세부 감정")
+    data class DetailEmotionDto private constructor(
+        @field:Schema(description = "세부 감정 ID", example = "123e4567-e89b-12d3-a456-426614174000")
+        val id: UUID,
+
+        @field:Schema(description = "세부 감정 이름", example = "설레는")
+        val name: String
+    ) {
+        companion object {
+            fun of(id: UUID, name: String): DetailEmotionDto {
+                return DetailEmotionDto(id = id, name = name)
+            }
+        }
+    }
+}

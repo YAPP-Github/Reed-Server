@@ -4,25 +4,29 @@ import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
+import org.yapp.domain.readingrecord.PrimaryEmotion
+import java.util.UUID
 
 @Schema(
-    name = "CreateReadingRecordRequest",
-    description = "독서 기록 생성 요청",
+    name = "CreateReadingRecordRequestV2",
+    description = "독서 기록 생성 요청 (V2)",
     example = """
         {
           "pageNumber": 42,
           "quote": "이것은 기억에 남는 문장입니다.",
           "review": "이 책은 매우 인상적이었습니다.",
-          "emotionTags": ["감동적"]
+          "primaryEmotion": "JOY",
+          "detailEmotionTagIds": ["uuid-1", "uuid-2"]
         }
     """
 )
-data class CreateReadingRecordRequest private constructor(
+data class CreateReadingRecordRequestV2 private constructor(
 
     @field:Min(1, message = "페이지 번호는 1 이상이어야 합니다.")
     @field:Max(9999, message = "페이지 번호는 9999 이하여야 합니다.")
-    @field:Schema(description = "현재 읽은 페이지 번호", example = "42", required = true)
+    @field:Schema(description = "현재 읽은 페이지 번호", example = "42", required = false)
     val pageNumber: Int? = null,
 
     @field:NotBlank(message = "기억에 남는 문장은 필수입니다.")
@@ -34,13 +38,13 @@ data class CreateReadingRecordRequest private constructor(
     @field:Schema(description = "감상평", example = "이 책은 매우 인상적이었습니다.", required = false)
     val review: String? = null,
 
-    @field:Size(max = 1, message = "감정 태그는 최대 1개까지 가능합니다. (단일 감정만 받지만, 확장성을 위해 리스트 형태로 관리됩니다.)")
-    @field:Schema(description = "감정 태그 목록 (현재는 최대 1개, 확장 가능)", example = "[\"감동적\"]")
-    val emotionTags: List<@Size(max = 10, message = "감정 태그는 10자를 초과할 수 없습니다.") String> = emptyList()
-) {
-    fun validPageNumber(): Int =
-        requireNotNull(pageNumber) { "pageNumber는 null일 수 없습니다." }
+    @field:NotNull(message = "대분류 감정은 필수입니다.")
+    @field:Schema(description = "대분류 감정", example = "JOY", required = true)
+    val primaryEmotion: PrimaryEmotion? = null,
 
-    fun validQuote(): String =
-        requireNotNull(quote) { "quote는 null일 수 없습니다." }
+    @field:Schema(description = "세부 감정 태그 ID 목록 (선택, 다중 선택 가능)", example = "[\"uuid-1\", \"uuid-2\"]")
+    val detailEmotionTagIds: List<UUID> = emptyList()
+) {
+    fun validQuote(): String = quote!!
+    fun validPrimaryEmotion(): PrimaryEmotion = primaryEmotion!!
 }

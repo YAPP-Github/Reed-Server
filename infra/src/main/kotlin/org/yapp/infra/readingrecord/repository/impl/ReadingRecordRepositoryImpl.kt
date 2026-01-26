@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
+import org.yapp.domain.readingrecord.PrimaryEmotion
 import org.yapp.domain.readingrecord.ReadingRecord
 import org.yapp.domain.readingrecord.ReadingRecordRepository
 import org.yapp.domain.readingrecord.ReadingRecordSortType
@@ -65,5 +66,9 @@ class ReadingRecordRepositoryImpl(
     override fun findByUserBookIdInAndCreatedAtAfter(userBookIds: List<UUID>, after: LocalDateTime): List<ReadingRecord> {
         val entities = jpaReadingRecordRepository.findByUserBookIdInAndCreatedAtAfter(userBookIds, after)
         return entities.map { it.toDomain() }
+    }
+
+    override fun findMostFrequentPrimaryEmotion(userBookId: UUID): PrimaryEmotion? {
+        return jpaReadingRecordRepository.findMostFrequentPrimaryEmotion(userBookId)
     }
 }

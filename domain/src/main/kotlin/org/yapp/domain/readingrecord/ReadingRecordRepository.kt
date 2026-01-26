@@ -35,12 +35,7 @@ interface ReadingRecordRepository {
 
     fun deleteById(id: UUID)
 
-    /**
-     * Find reading records created after the specified time for books owned by the user
-     * 
-     * @param userBookIds List of user book IDs to search in
-     * @param after Find records created after this time
-     * @return List of reading records matching the criteria
-     */
     fun findByUserBookIdInAndCreatedAtAfter(userBookIds: List<UUID>, after: LocalDateTime): List<ReadingRecord>
+
+    fun findMostFrequentPrimaryEmotion(userBookId: UUID): PrimaryEmotion?
 }

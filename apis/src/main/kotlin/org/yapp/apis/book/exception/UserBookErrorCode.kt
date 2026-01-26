@@ -8,8 +8,7 @@ enum class UserBookErrorCode(
     private val code: String,
     private val message: String
 ) : BaseErrorCode {
-
-    USER_BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_BOOK_404_01", "사용자의 책을 찾을 수 없습니다.");
+    USER_BOOK_ACCESS_DENIED(HttpStatus.FORBIDDEN, "USER_BOOK_403_01", "해당 책에 대한 접근 권한이 없습니다.");
 
     override fun getHttpStatus(): HttpStatus = httpStatus
     override fun getCode(): String = code
