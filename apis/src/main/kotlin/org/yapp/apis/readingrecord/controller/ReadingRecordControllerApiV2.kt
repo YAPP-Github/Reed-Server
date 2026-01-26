@@ -18,6 +18,7 @@ import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponseV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordsWithPrimaryEmotionResponse
+import org.yapp.apis.readingrecord.dto.response.SeedStatsResponseV2
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import org.yapp.globalutils.exception.ErrorResponse
 import java.util.*
@@ -172,4 +173,28 @@ interface ReadingRecordControllerApiV2 {
         @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
         @PathVariable @Parameter(description = "삭제할 독서 기록 ID") readingRecordId: UUID
     ): ResponseEntity<Unit>
+
+    @Operation(
+        summary = "씨앗 통계 조회 (V2)",
+        description = "사용자의 책에 대한 감정별 씨앗 통계를 조회합니다. 5가지 감정(따뜻함, 즐거움, 슬픔, 깨달음, 기타)을 포함합니다."
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "씨앗 통계 조회 성공",
+                content = [Content(schema = Schema(implementation = SeedStatsResponseV2::class))]
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "사용자 또는 책을 찾을 수 없음",
+                content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+            )
+        ]
+    )
+    @GetMapping("/{userBookId}/seed/stats")
+    fun getSeedStats(
+        @AuthenticationPrincipal @Parameter(description = "인증된 사용자 ID") userId: UUID,
+        @PathVariable @Parameter(description = "씨앗 통계를 조회할 사용자 책 ID") userBookId: UUID
+    ): ResponseEntity<SeedStatsResponseV2>
 }

@@ -38,4 +38,6 @@ interface ReadingRecordRepository {
     fun findByUserBookIdInAndCreatedAtAfter(userBookIds: List<UUID>, after: LocalDateTime): List<ReadingRecord>
 
     fun findMostFrequentPrimaryEmotion(userBookId: UUID): PrimaryEmotion?
+
+    fun countPrimaryEmotionsByUserBookId(userBookId: UUID): Map<PrimaryEmotion, Int>
 }

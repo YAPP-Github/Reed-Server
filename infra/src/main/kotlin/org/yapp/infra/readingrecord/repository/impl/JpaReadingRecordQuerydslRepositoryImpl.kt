@@ -62,6 +62,24 @@ class JpaReadingRecordQuerydslRepositoryImpl(
             .fetchFirst()
     }
 
+    override fun countPrimaryEmotionsByUserBookId(userBookId: UUID): Map<PrimaryEmotion, Int> {
+        val results = queryFactory
+            .select(readingRecord.primaryEmotion, readingRecord.count())
+            .from(readingRecord)
+            .where(
+                readingRecord.userBookId.eq(userBookId)
+                    .and(readingRecord.deletedAt.isNull())
+            )
+            .groupBy(readingRecord.primaryEmotion)
+            .fetch()
+
+        return results.associate { tuple ->
+            val emotion = tuple[readingRecord.primaryEmotion] ?: PrimaryEmotion.OTHER
+            val count = tuple[readingRecord.count()]?.toInt() ?: 0
+            emotion to count
+        }
+    }
+
     private fun createOrderSpecifiers(sort: ReadingRecordSortType?): Array<OrderSpecifier<*>> {
         return when (sort) {
             ReadingRecordSortType.PAGE_NUMBER_ASC -> arrayOf(
