@@ -71,4 +71,8 @@ class ReadingRecordRepositoryImpl(
     override fun findMostFrequentPrimaryEmotion(userBookId: UUID): PrimaryEmotion? {
         return jpaReadingRecordRepository.findMostFrequentPrimaryEmotion(userBookId)
     }
+
+    override fun countPrimaryEmotionsByUserBookId(userBookId: UUID): Map<PrimaryEmotion, Int> {
+        return jpaReadingRecordRepository.countPrimaryEmotionsByUserBookId(userBookId)
+    }
 }
