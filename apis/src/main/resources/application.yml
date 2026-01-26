@@ -65,6 +65,7 @@ oauth:
   google:
     url:
       user-info: https://www.googleapis.com/oauth2/v2/userinfo
+    client-id: ${GOOGLE_CLIENT_ID}
 
 ---
 spring:

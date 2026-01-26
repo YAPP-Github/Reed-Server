@@ -1,18 +1,18 @@
 package org.yapp.apis.auth.strategy.signin
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import org.yapp.apis.auth.dto.response.UserCreateInfoResponse
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
-import org.yapp.apis.auth.manager.GoogleApiManager
+import org.yapp.apis.auth.helper.google.GoogleIdTokenProcessor
 import org.yapp.apis.auth.util.NicknameGenerator
 import org.yapp.domain.user.ProviderType
-import org.yapp.infra.external.oauth.google.response.GoogleUserInfo
 
 @Component
 class GoogleSignInStrategy(
-    private val googleApiManager: GoogleApiManager
+    private val googleIdTokenProcessor: GoogleIdTokenProcessor,
 ) : SignInStrategy {
 
     private val log = KotlinLogging.logger {}
@@ -22,8 +22,8 @@ class GoogleSignInStrategy(
     override fun authenticate(credentials: SignInCredentials): UserCreateInfoResponse {
         return try {
             val googleCredentials = validateCredentials(credentials)
-            val googleUser = googleApiManager.getUserInfo(googleCredentials.accessToken)
-            createUserInfo(googleUser)
+            val googleUserPayload = googleIdTokenProcessor.parseAndValidate(googleCredentials.idToken)
+            createUserInfo(googleUserPayload)
         } catch (exception: Exception) {
             log.error("Google authentication failed", exception)
             when (exception) {
@@ -41,13 +41,13 @@ class GoogleSignInStrategy(
             )
     }
 
-    private fun createUserInfo(googleUser: GoogleUserInfo): UserCreateInfoResponse {
+    private fun createUserInfo(googleUser: GoogleIdToken.Payload): UserCreateInfoResponse {
         return UserCreateInfoResponse.of(
-            email = googleUser.email ?: ("google_${googleUser.id}@google.com"),
+            email = googleUser.email ?: ("google_${googleUser.subject}@google.com"),
             nickname = NicknameGenerator.generate(),
-            profileImageUrl = googleUser.picture,
+            profileImageUrl = googleUser["picture"] as? String,
             providerType = ProviderType.GOOGLE,
-            providerId = googleUser.id
+            providerId = googleUser.subject
         )
     }
 }
