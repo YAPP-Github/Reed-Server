@@ -24,6 +24,7 @@ enum class AuthErrorCode(
     PROVIDER_TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "AUTH_400_11", "요청된 공급자 타입이 실제 사용자의 공급자 타입과 일치하지 않습니다."),
     APPLE_REFRESH_TOKEN_MISSING(HttpStatus.BAD_REQUEST, "AUTH_400_12", "Apple 사용자 탈퇴 시 리프레시 토큰이 누락되었습니다."),
     KAKAO_UNLINK_FAILED(HttpStatus.BAD_REQUEST, "AUTH_400_15", "카카오 회원탈퇴 처리에 실패했습니다."),
+    GOOGLE_REFRESH_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "AUTH_400_16", "Google 사용자 탈퇴 시 리프레시 토큰이 누락되었습니다."),
 
     /* 401 UNAUTHORIZED */
     INVALID_OAUTH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_401_01", "잘못된 소셜 OAuth 토큰입니다."),
@@ -52,7 +53,8 @@ enum class AuthErrorCode(
         "AUTH_500_06",
         "Apple에서 초기 로그인 시 리프레시 토큰을 제공하지 않았습니다."
     ),
-    KAKAO_UNLINK_RESPONSE_MISMATCH(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500_08", "카카오 회원탈퇴 응답이 요청과 일치하지 않습니다.");
+    KAKAO_UNLINK_RESPONSE_MISMATCH(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500_08", "카카오 회원탈퇴 응답이 요청과 일치하지 않습니다."),
+    FAILED_TO_REVOKE_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_500_09", "토큰 철회에 실패했습니다.");
 
     override fun getHttpStatus(): HttpStatus = httpStatus
     override fun getCode(): String = code

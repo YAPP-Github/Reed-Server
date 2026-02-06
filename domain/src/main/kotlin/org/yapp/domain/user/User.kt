@@ -16,6 +16,7 @@ data class User private constructor(
     val role: Role,
     val termsAgreed: Boolean = false,
     val appleRefreshToken: String? = null,
+    val googleRefreshToken: String? = null,
     val notificationEnabled: Boolean = true,
     val lastActivity: LocalDateTime? = null,
     val createdAt: LocalDateTime? = null,
@@ -39,6 +40,12 @@ data class User private constructor(
     fun updateAppleRefreshToken(token: String): User {
         return this.copy(
             appleRefreshToken = token
+        )
+    }
+
+    fun updateGoogleRefreshToken(token: String): User {
+        return this.copy(
+            googleRefreshToken = token
         )
     }
 
@@ -80,6 +87,7 @@ data class User private constructor(
                 role = Role.USER,
                 termsAgreed = termsAgreed,
                 appleRefreshToken = null,
+                googleRefreshToken = null,
                 notificationEnabled = notificationEnabled,
                 lastActivity = LocalDateTime.now()
             )
@@ -106,6 +114,7 @@ data class User private constructor(
                 role = role,
                 termsAgreed = termsAgreed,
                 appleRefreshToken = null,
+                googleRefreshToken = null,
                 notificationEnabled = notificationEnabled,
                 lastActivity = LocalDateTime.now()
             )
@@ -121,6 +130,7 @@ data class User private constructor(
             role: Role,
             termsAgreed: Boolean = false,
             appleRefreshToken: String? = null,
+            googleRefreshToken: String? = null,
             notificationEnabled: Boolean = true,
             lastActivity: LocalDateTime? = null,
             createdAt: LocalDateTime? = null,
@@ -137,6 +147,7 @@ data class User private constructor(
                 role = role,
                 termsAgreed = termsAgreed,
                 appleRefreshToken = appleRefreshToken,
+                googleRefreshToken = googleRefreshToken,
                 notificationEnabled = notificationEnabled,
                 lastActivity = lastActivity,
                 createdAt = createdAt,
@@ -175,3 +186,4 @@ data class User private constructor(
         }
     }
 }
+

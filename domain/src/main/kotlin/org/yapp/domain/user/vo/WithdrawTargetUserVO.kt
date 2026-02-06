@@ -7,7 +7,8 @@ data class WithdrawTargetUserVO private constructor(
     val id: User.Id,
     val providerType: ProviderType,
     val providerId: User.ProviderId,
-    val appleRefreshToken: String?
+    val appleRefreshToken: String?,
+    val googleRefreshToken: String?
 ) {
     companion object {
         fun newInstance(user: User): WithdrawTargetUserVO {
@@ -15,7 +16,8 @@ data class WithdrawTargetUserVO private constructor(
                 id = user.id,
                 providerType = user.providerType,
                 providerId = user.providerId,
-                appleRefreshToken = user.appleRefreshToken
+                appleRefreshToken = user.appleRefreshToken,
+                googleRefreshToken = user.googleRefreshToken
             )
         }
     }

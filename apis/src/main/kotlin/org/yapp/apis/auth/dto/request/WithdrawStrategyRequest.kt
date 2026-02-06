@@ -35,7 +35,13 @@ data class WithdrawStrategyRequest private constructor(
         example = "r_abc123def456ghi789jkl0mnopqrstu",
         required = false
     )
-    val appleRefreshToken: String?
+    val appleRefreshToken: String?,
+    @field:Schema(
+        description = "Google 로그인 시 발급받은 리프레시 토큰 (Google 로그인 회원 탈퇴 시에만 필요)",
+        example = "1//0g_xxxxxxxxxxxxxxxxxxxxxx",
+        required = false
+    )
+    val googleRefreshToken: String?
 ) {
     companion object {
         fun from(response: WithdrawTargetUserResponse): WithdrawStrategyRequest {
@@ -43,7 +49,8 @@ data class WithdrawStrategyRequest private constructor(
                 userId = response.id,
                 providerType = response.providerType,
                 providerId = response.providerId,
-                appleRefreshToken = response.appleRefreshToken
+                appleRefreshToken = response.appleRefreshToken,
+                googleRefreshToken = response.googleRefreshToken
             )
         }
     }
