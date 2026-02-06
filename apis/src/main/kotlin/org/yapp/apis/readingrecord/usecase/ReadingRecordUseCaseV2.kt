@@ -6,6 +6,7 @@ import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponseV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordsWithPrimaryEmotionResponse
+import org.yapp.apis.readingrecord.dto.response.SeedStatsResponseV2
 import org.yapp.apis.readingrecord.service.ReadingRecordServiceV2
 import org.yapp.apis.user.service.UserService
 import org.yapp.domain.readingrecord.ReadingRecordSortType
@@ -86,5 +87,15 @@ class ReadingRecordUseCaseV2(
         val userBookId = readingRecordServiceV2.getUserBookIdByReadingRecordId(readingRecordId)
         userBookService.validateUserBookExists(userBookId, userId)
         readingRecordServiceV2.deleteReadingRecord(readingRecordId)
+    }
+
+    fun getSeedStats(
+        userId: UUID,
+        userBookId: UUID
+    ): SeedStatsResponseV2 {
+        userService.validateUserExists(userId)
+        userBookService.validateUserBookExists(userBookId, userId)
+
+        return readingRecordServiceV2.getSeedStats(userBookId)
     }
 }

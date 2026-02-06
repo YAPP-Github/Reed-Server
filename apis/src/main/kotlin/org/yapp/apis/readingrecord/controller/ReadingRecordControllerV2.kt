@@ -12,6 +12,7 @@ import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequestV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordResponseV2
 import org.yapp.apis.readingrecord.dto.response.ReadingRecordsWithPrimaryEmotionResponse
+import org.yapp.apis.readingrecord.dto.response.SeedStatsResponseV2
 import org.yapp.apis.readingrecord.usecase.ReadingRecordUseCaseV2
 import org.yapp.domain.readingrecord.ReadingRecordSortType
 import java.util.UUID
@@ -86,5 +87,14 @@ class ReadingRecordControllerV2(
     ): ResponseEntity<Unit> {
         readingRecordUseCaseV2.deleteReadingRecord(userId, readingRecordId)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/{userBookId}/seed/stats")
+    override fun getSeedStats(
+        @AuthenticationPrincipal userId: UUID,
+        @PathVariable userBookId: UUID
+    ): ResponseEntity<SeedStatsResponseV2> {
+        val response = readingRecordUseCaseV2.getSeedStats(userId, userBookId)
+        return ResponseEntity.ok(response)
     }
 }

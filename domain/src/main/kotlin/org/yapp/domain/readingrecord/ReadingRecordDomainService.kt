@@ -88,6 +88,9 @@ class ReadingRecordDomainService(
     fun findPrimaryEmotionByUserBookId(userBookId: UUID): PrimaryEmotion? =
         readingRecordRepository.findMostFrequentPrimaryEmotion(userBookId)
 
+    fun countPrimaryEmotionsByUserBookId(userBookId: UUID): Map<PrimaryEmotion, Int> =
+        readingRecordRepository.countPrimaryEmotionsByUserBookId(userBookId)
+
     // ===================== V1 API (Legacy) =====================
 
     fun createReadingRecord(

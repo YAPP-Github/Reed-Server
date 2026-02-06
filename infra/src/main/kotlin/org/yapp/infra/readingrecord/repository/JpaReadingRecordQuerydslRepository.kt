@@ -16,4 +16,6 @@ interface JpaReadingRecordQuerydslRepository {
     ): Page<ReadingRecordEntity>
 
     fun findMostFrequentPrimaryEmotion(userBookId: UUID): PrimaryEmotion?
+
+    fun countPrimaryEmotionsByUserBookId(userBookId: UUID): Map<PrimaryEmotion, Int>
 }
