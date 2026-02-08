@@ -64,7 +64,7 @@ swagger:
 oauth:
   google:
     url:
-      user-info: https://www.googleapis.com/oauth2/v2/userinfo
+      user-info: ${GOOGLE_USER_INFO_URI:https://www.googleapis.com/oauth2/v2/userinfo}
     client-id: ${GOOGLE_CLIENT_ID}
 
 ---
@@ -95,5 +95,9 @@ springdoc:
 oauth:
   google:
     url:
-      user-info: https://www.googleapis.com/oauth2/v2/userinfo
-    client-id: test-client-id
+      user-info: ${GOOGLE_USER_INFO_URI:https://www.googleapis.com/oauth2/v2/userinfo}
+      token-uri: ${GOOGLE_TOKEN_URI:test-token-uri}
+    client-id: ${GOOGLE_CLIENT_ID:test-client-id}
+    client-secret: ${GOOGLE_CLIENT_SECRET:test-client-secret}
+    grant-type: ${GOOGLE_GRANT_TYPE:test-grant-type}
+    redirect-uri: ${GOOGLE_REDIRECT_URI:test-redirect-uri}

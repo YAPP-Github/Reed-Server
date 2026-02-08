@@ -99,6 +99,15 @@ class UserDomainService(
         return UserAuthVO.newInstance(updatedUser)
     }
 
+    fun updateGoogleRefreshToken(userId: UUID, refreshToken: String): UserAuthVO {
+        val user = userRepository.findById(userId)
+            ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)
+
+        val updatedUser = userRepository.save(user.updateGoogleRefreshToken(refreshToken))
+
+        return UserAuthVO.newInstance(updatedUser)
+    }
+
     fun deleteUser(userId: UUID) {
         val user = userRepository.findById(userId)
             ?: throw UserNotFoundException(UserErrorCode.USER_NOT_FOUND)

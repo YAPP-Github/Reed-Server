@@ -7,7 +7,7 @@ import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.config.GoogleOauthProperties
 import org.yapp.infra.external.oauth.google.GoogleApi
-import org.yapp.infra.external.oauth.google.response.GoogleUserInfo
+import org.yapp.infra.external.oauth.google.response.GoogleUserInfo // Changed to GoogleUserInfo
 
 @Component
 class GoogleApiManager(
@@ -16,7 +16,7 @@ class GoogleApiManager(
 ) {
     private val log = KotlinLogging.logger {}
 
-    fun getUserInfo(accessToken: String): GoogleUserInfo {
+    fun getUserInfo(accessToken: String): GoogleUserInfo { // Changed to GoogleUserInfo
         return googleApi.fetchUserInfo(accessToken, googleOauthProperties.url.userInfo)
             .onSuccess { userInfo ->
                 log.info { "Successfully fetched Google user info for userId: ${userInfo.id}" }
@@ -36,5 +36,10 @@ class GoogleApiManager(
                     )
                 }
             }
+    }
+
+    fun revokeToken(token: String) {
+        googleApi.revokeGoogleToken(token)
+            .getOrThrow()
     }
 }

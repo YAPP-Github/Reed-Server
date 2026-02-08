@@ -21,7 +21,9 @@ data class WithdrawTargetUserResponse private constructor(
     val providerId: String,
 
     @field:Schema(description = "Apple Refresh Token (애플 회원 탈퇴 시 필요, 카카오는 null)")
-    val appleRefreshToken: String? = null
+    val appleRefreshToken: String? = null,
+    @field:Schema(description = "Google Refresh Token (구글 회원 탈퇴 시 필요, 카카오/애플은 null)")
+    val googleRefreshToken: String? = null
 ) {
     companion object {
         fun from(vo: WithdrawTargetUserVO): WithdrawTargetUserResponse {
@@ -29,7 +31,8 @@ data class WithdrawTargetUserResponse private constructor(
                 id = vo.id.value,
                 providerType = vo.providerType,
                 providerId = vo.providerId.value,
-                appleRefreshToken = vo.appleRefreshToken
+                appleRefreshToken = vo.appleRefreshToken,
+                googleRefreshToken = vo.googleRefreshToken
             )
         }
     }
