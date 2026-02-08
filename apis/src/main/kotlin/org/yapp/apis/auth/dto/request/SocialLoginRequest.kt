@@ -32,7 +32,7 @@ data class SocialLoginRequest private constructor(
     val oauthToken: String? = null,
 
     @field:Schema(
-        description = "Authorization code used to issue Apple access/refresh tokens (required only for Apple login)",
+        description = "Authorization code used to issue access/refresh tokens (required for Apple and Google login)",
         example = "c322a426...",
         required = false
     )
@@ -63,7 +63,14 @@ data class SocialLoginRequest private constructor(
                     AppleAuthCredentials(request.validOauthToken(), authCode)
                 }
 
-                ProviderType.GOOGLE -> GoogleAuthCredentials(request.validOauthToken())
+                ProviderType.GOOGLE -> {
+                    val authCode = request.authorizationCode
+                        ?: throw AuthException(
+                            AuthErrorCode.INVALID_REQUEST,
+                            "Google login requires an authorization code."
+                        )
+                    GoogleAuthCredentials(request.validOauthToken(), authCode)
+                }
             }
         }
     }

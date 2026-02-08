@@ -2,7 +2,8 @@ package org.yapp.infra.external.oauth.google
 
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
-import org.yapp.infra.external.oauth.google.response.GoogleUserInfo // Changed to GoogleUserInfo
+import org.yapp.infra.external.oauth.google.response.GoogleTokenResponse
+import org.yapp.infra.external.oauth.google.response.GoogleUserInfo
 
 @Component
 class GoogleApi(
@@ -16,11 +17,26 @@ class GoogleApi(
     fun fetchUserInfo(
         accessToken: String,
         userInfoUrl: String,
-    ): Result<GoogleUserInfo> { // Changed to GoogleUserInfo
+    ): Result<GoogleUserInfo> {
         return runCatching {
             googleRestClient.getUserInfo(BEARER_PREFIX + accessToken, userInfoUrl)
         }
     }
+
+    fun exchangeAuthorizationCode(
+        code: String,
+        clientId: String,
+        clientSecret: String,
+        redirectUri: String,
+        tokenExchangeUrl: String,
+    ): Result<GoogleTokenResponse> {
+        return runCatching {
+            googleRestClient.exchangeAuthorizationCode(code, clientId, clientSecret, redirectUri, tokenExchangeUrl)
+        }
+    }
+
+    // Note: ID tokens cannot be exchanged for access tokens with Google's token endpoint.
+    // The ID token should be validated directly or use the authorization code flow instead.
 
     fun revokeGoogleToken(
         token: String

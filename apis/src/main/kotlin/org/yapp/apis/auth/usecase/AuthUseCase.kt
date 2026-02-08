@@ -5,6 +5,7 @@ import org.yapp.apis.auth.dto.request.*
 import org.yapp.apis.auth.dto.response.TokenPairResponse
 import org.yapp.apis.auth.service.*
 import org.yapp.apis.auth.strategy.signin.AppleAuthCredentials
+import org.yapp.apis.auth.strategy.signin.GoogleAuthCredentials
 import org.yapp.apis.auth.strategy.signin.SignInCredentials
 import org.yapp.apis.auth.strategy.signin.SignInStrategyResolver
 import org.yapp.apis.auth.strategy.withdraw.WithdrawStrategyResolver
@@ -12,6 +13,7 @@ import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
 import org.yapp.apis.user.dto.request.FindUserIdentityRequest
 import org.yapp.apis.user.service.UserAccountService
 import org.yapp.apis.user.service.UserService
+import org.yapp.apis.auth.manager.GoogleApiManager
 import org.yapp.globalutils.annotation.UseCase
 import java.util.*
 
@@ -25,7 +27,8 @@ class AuthUseCase(
     private val userWithdrawalService: UserWithdrawalService,
     private val refreshTokenService: RefreshTokenService,
     private val authTokenService: AuthTokenService,
-    private val appleAuthService: AppleAuthService
+    private val appleAuthService: AppleAuthService,
+    private val googleApiManager: GoogleApiManager
 ) {
     // 추후 Redis 저장을 비동기로 처리하고 실패 시 재시도 로직 도입
     fun signIn(socialLoginRequest: SocialLoginRequest): TokenPairResponse {
@@ -34,10 +37,12 @@ class AuthUseCase(
         val userCreateInfoResponse = strategy.authenticate(credentials)
 
         val appleRefreshToken = fetchAppleRefreshTokenIfNeeded(credentials)
+        val googleRefreshToken = fetchGoogleRefreshTokenIfNeeded(credentials)
 
         val createUserResponse = userSignInService.processSignIn(
             FindOrCreateUserRequest.from(userCreateInfoResponse),
-            appleRefreshToken
+            appleRefreshToken,
+            googleRefreshToken
         )
 
         return authTokenService.generateTokenPair(GenerateTokenPairRequest.from(createUserResponse))
@@ -72,6 +77,15 @@ class AuthUseCase(
     private fun fetchAppleRefreshTokenIfNeeded(credentials: SignInCredentials): String? {
         if (credentials is AppleAuthCredentials) {
             val tokenResponse = appleAuthService.fetchAppleOauthTokens(credentials.authorizationCode)
+            return tokenResponse.refreshToken
+        }
+
+        return null
+    }
+
+    private fun fetchGoogleRefreshTokenIfNeeded(credentials: SignInCredentials): String? {
+        if (credentials is GoogleAuthCredentials) {
+            val tokenResponse = googleApiManager.exchangeAuthorizationCode(credentials.authorizationCode)
             return tokenResponse.refreshToken
         }
 
