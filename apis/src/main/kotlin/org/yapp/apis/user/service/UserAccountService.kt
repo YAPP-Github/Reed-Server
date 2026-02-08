@@ -2,6 +2,7 @@ package org.yapp.apis.user.service
 
 import jakarta.validation.Valid
 import org.yapp.apis.user.dto.request.SaveAppleRefreshTokenRequest
+import org.yapp.apis.user.dto.request.SaveGoogleRefreshTokenRequest
 import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.user.dto.request.FindOrCreateUserRequest
@@ -49,6 +50,15 @@ class UserAccountService(
         val userAuthVO = userDomainService.updateAppleRefreshToken(
             saveAppleRefreshTokenRequest.validUserId(),
             saveAppleRefreshTokenRequest.validAppleRefreshToken()
+        )
+
+        return CreateUserResponse.from(userAuthVO)
+    }
+
+    fun updateGoogleRefreshToken(@Valid saveGoogleRefreshTokenRequest: SaveGoogleRefreshTokenRequest): CreateUserResponse {
+        val userAuthVO = userDomainService.updateGoogleRefreshToken(
+            saveGoogleRefreshTokenRequest.validUserId(),
+            saveGoogleRefreshTokenRequest.validGoogleRefreshToken()
         )
 
         return CreateUserResponse.from(userAuthVO)

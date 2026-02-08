@@ -35,16 +35,8 @@ class GoogleApi(
         }
     }
 
-    fun exchangeIdToken(
-        idToken: String,
-        clientId: String,
-        clientSecret: String,
-        tokenExchangeUrl: String,
-    ): Result<GoogleTokenResponse> {
-        return runCatching {
-            googleRestClient.exchangeIdToken(idToken, clientId, clientSecret, tokenExchangeUrl)
-        }
-    }
+    // Note: ID tokens cannot be exchanged for access tokens with Google's token endpoint.
+    // The ID token should be validated directly or use the authorization code flow instead.
 
     fun revokeGoogleToken(
         token: String

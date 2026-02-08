@@ -17,29 +17,46 @@ class GoogleApiManager(
 ) {
     private val log = KotlinLogging.logger {}
 
-    fun exchangeToken(idToken: String): GoogleTokenResponse {
+    // Note: ID tokens cannot be exchanged for access tokens with Google's token endpoint.
+    // The ID token should be validated directly using GoogleIdTokenProcessor.
+    // If an access token is needed, use the authorization code flow instead.
+
+    fun exchangeAuthorizationCode(authorizationCode: String): GoogleTokenResponse {
         val tokenUri = googleOauthProperties.url.tokenUri
             ?: throw AuthException(
                 AuthErrorCode.OAUTH_SERVER_ERROR,
                 "Google token URI is not configured."
             )
 
-        return googleApi.exchangeIdToken(
-            idToken = idToken,
+        val redirectUri = googleOauthProperties.redirectUri
+            ?: throw AuthException(
+                AuthErrorCode.OAUTH_SERVER_ERROR,
+                "Google redirect URI is not configured."
+            )
+
+        val clientSecret = googleOauthProperties.clientSecret
+            ?: throw AuthException(
+                AuthErrorCode.OAUTH_SERVER_ERROR,
+                "Google client secret is not configured."
+            )
+
+        return googleApi.exchangeAuthorizationCode(
+            code = authorizationCode,
             clientId = googleOauthProperties.clientId,
-            clientSecret = googleOauthProperties.clientSecret ?: "",
+            clientSecret = clientSecret,
+            redirectUri = redirectUri,
             tokenExchangeUrl = tokenUri
         )
             .onSuccess { tokenResponse ->
-                log.info { "Successfully exchanged Google ID token for access token" }
+                log.info { "Successfully exchanged Google authorization code for tokens" }
             }
             .getOrElse { exception ->
-                log.error(exception) { "Failed to exchange Google ID token" }
+                log.error(exception) { "Failed to exchange Google authorization code" }
 
                 when (exception) {
                     is HttpClientErrorException -> throw AuthException(
                         AuthErrorCode.INVALID_OAUTH_TOKEN,
-                        "Invalid Google ID Token.",
+                        "Invalid Google Authorization Code.",
                     )
 
                     else -> throw AuthException(

@@ -21,9 +21,9 @@ data class AppleAuthCredentials(
 
 data class GoogleAuthCredentials(
     val idToken: String,
+    val authorizationCode: String,
 ) : SignInCredentials() {
     override fun getProviderType(): ProviderType {
         return ProviderType.GOOGLE
     }
 }
-

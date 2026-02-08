@@ -49,27 +49,8 @@ class GoogleRestClient(
             ?: throw IllegalStateException("Google Token API 응답이 null 입니다.")
     }
 
-    fun exchangeIdToken(
-        idToken: String,
-        clientId: String,
-        clientSecret: String,
-        url: String,
-    ): GoogleTokenResponse {
-        val params = LinkedMultiValueMap<String, String>().apply {
-            add("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
-            add("assertion", idToken)
-            add("client_id", clientId)
-            add("client_secret", clientSecret)
-        }
-
-        return client.post()
-            .uri(url)
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .body(params)
-            .retrieve()
-            .body(GoogleTokenResponse::class.java)
-            ?: throw IllegalStateException("Google Token API 응답이 null 입니다.")
-    }
+    // Note: ID tokens cannot be exchanged for access tokens with Google's token endpoint.
+    // The ID token should be validated directly or use the authorization code flow instead.
 
     fun revoke(requestBody: LinkedMultiValueMap<String, String>) {
         client.post()
