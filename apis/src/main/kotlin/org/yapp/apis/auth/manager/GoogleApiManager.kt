@@ -7,7 +7,8 @@ import org.yapp.apis.auth.exception.AuthErrorCode
 import org.yapp.apis.auth.exception.AuthException
 import org.yapp.apis.config.GoogleOauthProperties
 import org.yapp.infra.external.oauth.google.GoogleApi
-import org.yapp.infra.external.oauth.google.response.GoogleUserInfo // Changed to GoogleUserInfo
+import org.yapp.infra.external.oauth.google.response.GoogleTokenResponse
+import org.yapp.infra.external.oauth.google.response.GoogleUserInfo
 
 @Component
 class GoogleApiManager(
@@ -16,7 +17,40 @@ class GoogleApiManager(
 ) {
     private val log = KotlinLogging.logger {}
 
-    fun getUserInfo(accessToken: String): GoogleUserInfo { // Changed to GoogleUserInfo
+    fun exchangeToken(idToken: String): GoogleTokenResponse {
+        val tokenUri = googleOauthProperties.url.tokenUri
+            ?: throw AuthException(
+                AuthErrorCode.OAUTH_SERVER_ERROR,
+                "Google token URI is not configured."
+            )
+
+        return googleApi.exchangeIdToken(
+            idToken = idToken,
+            clientId = googleOauthProperties.clientId,
+            clientSecret = googleOauthProperties.clientSecret ?: "",
+            tokenExchangeUrl = tokenUri
+        )
+            .onSuccess { tokenResponse ->
+                log.info { "Successfully exchanged Google ID token for access token" }
+            }
+            .getOrElse { exception ->
+                log.error(exception) { "Failed to exchange Google ID token" }
+
+                when (exception) {
+                    is HttpClientErrorException -> throw AuthException(
+                        AuthErrorCode.INVALID_OAUTH_TOKEN,
+                        "Invalid Google ID Token.",
+                    )
+
+                    else -> throw AuthException(
+                        AuthErrorCode.OAUTH_SERVER_ERROR,
+                        "Failed to communicate with Google server.",
+                    )
+                }
+            }
+    }
+
+    fun getUserInfo(accessToken: String): GoogleUserInfo {
         return googleApi.fetchUserInfo(accessToken, googleOauthProperties.url.userInfo)
             .onSuccess { userInfo ->
                 log.info { "Successfully fetched Google user info for userId: ${userInfo.id}" }
