@@ -8,6 +8,9 @@ dependencies {
     implementation(Dependencies.Spring.BOOT_STARTER_DATA_REDIS)
     implementation(Dependencies.Spring.KOTLIN_REFLECT)
 
+
+    implementation(Dependencies.Spring.BOOT_STARTER_OAUTH2_CLIENT)
+
     implementation(Dependencies.RestClient.HTTP_CLIENT5)
     implementation(Dependencies.RestClient.HTTP_CORE5)
 

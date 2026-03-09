@@ -22,6 +22,10 @@ dependencies {
     implementation(Dependencies.BouncyCastle.BC_PROV)
     implementation(Dependencies.BouncyCastle.BC_PKIX)
 
+    implementation(Dependencies.Google.API_CLIENT)
+    implementation(Dependencies.Google.HTTP_CLIENT_APACHE)
+    implementation(Dependencies.Google.HTTP_CLIENT_GSON)
+
     kapt(Dependencies.Spring.CONFIGURATION_PROCESSOR)
 
     testImplementation(Dependencies.Spring.BOOT_STARTER_TEST)

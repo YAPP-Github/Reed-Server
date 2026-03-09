@@ -43,6 +43,4 @@ data class CreateReadingRecordRequest private constructor(
 
     fun validQuote(): String =
         requireNotNull(quote) { "quote는 null일 수 없습니다." }
-    
-    fun validEmotionTags(): List<String> = emotionTags
 }

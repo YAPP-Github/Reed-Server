@@ -22,3 +22,4 @@ interface JpaReadingRecordRepository : JpaRepository<ReadingRecordEntity, UUID>,
 
     fun findByUserBookIdInAndCreatedAtAfter(userBookIds: List<UUID>, createdAt: LocalDateTime): List<ReadingRecordEntity>
 }
+

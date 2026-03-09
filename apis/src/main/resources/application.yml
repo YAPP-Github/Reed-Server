@@ -61,6 +61,12 @@ swagger:
     description: YAPP API Documentation for Development
     version: v1.0.0-dev
 
+oauth:
+  google:
+    url:
+      user-info: https://www.googleapis.com/oauth2/v2/userinfo
+    client-id: ${GOOGLE_CLIENT_ID}
+
 ---
 spring:
   config:
@@ -85,3 +91,9 @@ springdoc:
     enabled: false
   api-docs:
     enabled: false
+
+oauth:
+  google:
+    url:
+      user-info: https://www.googleapis.com/oauth2/v2/userinfo
+    client-id: test-client-id

@@ -43,8 +43,8 @@ class UserBookService(
     fun validateUserBookExists(userBookId: UUID, userId: UUID) {
         if (!userBookDomainService.existsByUserBookIdAndUserId(userBookId, userId)) {
             throw UserBookException(
-                UserBookErrorCode.USER_BOOK_NOT_FOUND,
-                "UserBook not found or access denied: $userBookId"
+                UserBookErrorCode.USER_BOOK_ACCESS_DENIED,
+                "UserBook access denied: $userBookId"
             )
         }
     }

@@ -80,4 +80,10 @@ object Dependencies {
     object Firebase {
         const val FIREBASE_ADMIN = "com.google.firebase:firebase-admin:9.2.0"
     }
+
+    object Google {
+        const val API_CLIENT = "com.google.api-client:google-api-client:2.2.0"
+        const val HTTP_CLIENT_APACHE = "com.google.http-client:google-http-client-apache-v2:1.43.3"
+        const val HTTP_CLIENT_GSON = "com.google.http-client:google-http-client-gson:1.43.3"
+    }
 }

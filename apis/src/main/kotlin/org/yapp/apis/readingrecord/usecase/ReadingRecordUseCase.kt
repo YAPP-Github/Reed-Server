@@ -1,7 +1,7 @@
 package org.yapp.apis.readingrecord.usecase
 
 import org.springframework.data.domain.Pageable
-import org.springframework.transaction.annotation.Transactional
+
 import org.yapp.apis.book.service.UserBookService
 import org.yapp.apis.readingrecord.dto.request.CreateReadingRecordRequest
 import org.yapp.apis.readingrecord.dto.request.UpdateReadingRecordRequest
@@ -16,14 +16,12 @@ import org.yapp.globalutils.annotation.UseCase
 import java.util.*
 
 @UseCase
-@Transactional(readOnly = true)
 class ReadingRecordUseCase(
     private val readingRecordService: ReadingRecordService,
     private val readingRecordTagService: ReadingRecordTagService,
     private val userService: UserService,
     private val userBookService: UserBookService,
 ) {
-    @Transactional
     fun createReadingRecord(
         userId: UUID,
         userBookId: UUID,
@@ -44,6 +42,8 @@ class ReadingRecordUseCase(
         readingRecordId: UUID
     ): ReadingRecordResponse {
         userService.validateUserExists(userId)
+        val userBookId = readingRecordService.getUserBookIdByReadingRecordId(readingRecordId)
+        userBookService.validateUserBookExists(userBookId, userId)
 
         return readingRecordService.getReadingRecordDetail(
             userId = userId,
@@ -77,13 +77,15 @@ class ReadingRecordUseCase(
         return readingRecordTagService.getSeedStatsByUserIdAndUserBookId(userId, userBookId)
     }
 
-    @Transactional
+
     fun updateReadingRecord(
         userId: UUID,
         readingRecordId: UUID,
         request: UpdateReadingRecordRequest
     ): ReadingRecordResponse {
         userService.validateUserExists(userId)
+        val userBookId = readingRecordService.getUserBookIdByReadingRecordId(readingRecordId)
+        userBookService.validateUserBookExists(userBookId, userId)
 
         return readingRecordService.updateReadingRecord(
             userId = userId,
@@ -92,12 +94,13 @@ class ReadingRecordUseCase(
         )
     }
 
-    @Transactional
     fun deleteReadingRecord(
         userId: UUID,
         readingRecordId: UUID
     ) {
         userService.validateUserExists(userId)
+        val userBookId = readingRecordService.getUserBookIdByReadingRecordId(readingRecordId)
+        userBookService.validateUserBookExists(userBookId, userId)
         readingRecordService.deleteReadingRecord(readingRecordId)
     }
 }
